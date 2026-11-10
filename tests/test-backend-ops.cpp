@@ -11694,6 +11694,24 @@ static std::vector<std::unique_ptr<test_case>> make_test_cases_eval() {
     test_cases.emplace_back(new test_flash_attn_ext(256, 256, 2, {16, 1},  1025,  64, true, false, 0, 0, GGML_PREC_F32, GGML_TYPE_Q8_0, GGML_TYPE_Q8_0, {0, 2, 1, 3}));
     test_cases.emplace_back(new test_flash_attn_ext(256, 256, 2, {16, 1}, 16384,   1, true, false, 0, 0, GGML_PREC_F32, GGML_TYPE_Q8_0, GGML_TYPE_Q8_0));
 
+    // 8 Nov fadec2: GQA q4_0 hsk256 decode / MTP-verify shapes (G=4/6/8, 1-4 rows); env FADEC2_CASES=1 so the default count is unchanged
+    if (getenv("FADEC2_CASES") != nullptr) {
+        for (int64_t nh : { 4, 2 }) {
+            for (int64_t nr2 : { 4, 6, 8 }) {
+                for (int64_t nr3 : { 1, 2 }) {
+                    for (int64_t kv : { 256, 1024, 4096 }) {
+                        for (int64_t nb : { 1, 2, 3, 4 }) {
+                            for (std::array<int32_t, 4> perm : { std::array<int32_t, 4>{0, 1, 2, 3}, std::array<int32_t, 4>{0, 2, 1, 3} }) {
+                                test_cases.emplace_back(new test_flash_attn_ext(256, 256, nh, {nr2, nr3}, kv, nb, true, false, 0, 0,
+                                    GGML_PREC_F32, GGML_TYPE_Q4_0, GGML_TYPE_Q4_0, perm));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // MLA shape: the V cache is a sub-view of the K cache, with quantized KV
     test_cases.emplace_back(new test_flash_attn_ext(576, 512, 1, {8, 1},  113,   1, true, false, 0, 0, GGML_PREC_F32, GGML_TYPE_Q8_0, GGML_TYPE_Q8_0, {0, 1, 2, 3}, true, true));
     test_cases.emplace_back(new test_flash_attn_ext(576, 512, 1, {8, 1}, 1024,   1, true, false, 0, 0, GGML_PREC_F32, GGML_TYPE_Q8_0, GGML_TYPE_Q8_0, {0, 1, 2, 3}, true, true));

@@ -1,4 +1,8 @@
 #include "mmvq.cuh"
+#include "mmvq_tune.h"
+#ifndef TUNE_XCOLS
+#define TUNE_XCOLS 0
+#endif
 #include "quantize.cuh"
 #include "unary.cuh"
 #include "vecdotq.cuh"
@@ -455,16 +459,17 @@ static constexpr __host__ __device__ int calc_nwarps(ggml_type type, int ncols_d
     if (table_id == MMVQ_PARAMETERS_GENERIC) {
         switch (ncols_dst) {
             case 1:
-                return 1; // sm52 experiment mmvq1 12 Oct 2026: 1 warp for single-token decode (N2 +8%, 4 upstream, 8 -24%)
+                return TUNE_NW1;
             case 2:
-            case 3:
             case 4:
-                return 2; // mmvq1: 2 warps for 2-4 parallel decodes (-np 2), upstream 4
+                return TUNE_NW24;
+            case 3:
+                return TUNE_NW3;
             case 5:
             case 6:
             case 7:
             case 8:
-                return 2;
+                return TUNE_NW58;
             default:
                 return 1;
         }
@@ -583,15 +588,16 @@ static constexpr __host__ __device__ int calc_rows_per_block(int ncols_dst, int 
     if (table_id == MMVQ_PARAMETERS_GENERIC || table_id == MMVQ_PARAMETERS_GCN || table_id == MMVQ_PARAMETERS_TURING || table_id == MMVQ_PARAMETERS_GB10) {
         switch (ncols_dst) {
             case 1:
-                return small_k ? nwarps : 1;
+                return small_k ? nwarps : TUNE_RPB1;
             case 2:
             case 3:
             case 4:
+                return TUNE_RPB24;
             case 5:
             case 6:
             case 7:
             case 8:
-                return 2;
+                return TUNE_RPB58;
             default:
                 return 1;
         }
@@ -644,7 +650,14 @@ static __device__ __forceinline__ float mmvq_pipe_dot(const mmvq_pipe_q4_0_frag 
 #define GGML_CUDA_MMVQ_PIPE_MIN_BLOCKS 32
 #endif
 
-template <ggml_type type, int ncols_dst, bool has_fusion, bool small_k = false, bool halve_iters = false, bool pipe = false>
+// 7 Nov 2026 sm52 integer path (GGML_CUDA_MMVQ_SM52=1): q4_0 x q8_1 sums for ncols 2..4 with 16-bit pair multiplies.
+// ptxas turns each int16*int16 product into one XMAD (the dp4a fallback costs ~3 XMAD per product); sums are exact int32 -> bit-identical.
+static __device__ __forceinline__ int mmvq_m16lo(const int a, const int b) { return (int)(short)a * (int)(short)b; }
+static __device__ __forceinline__ int mmvq_m16hi(const int a, const int b) { return (a >> 16) * (b >> 16); }
+static __device__ __forceinline__ int mmvq_pk02(const int x) { return __byte_perm(x, 0, 0xA280); } // sext8 bytes 0,2 -> two int16
+static __device__ __forceinline__ int mmvq_pk13(const int x) { return __byte_perm(x, 0, 0xB391); } // sext8 bytes 1,3 -> two int16
+
+template <ggml_type type, int ncols_dst, bool has_fusion, bool small_k = false, bool halve_iters = false, bool pipe = false, bool sm52 = false>
 __launch_bounds__(calc_nwarps(type, ncols_dst, get_device_table_id(), small_k, halve_iters)*ggml_cuda_get_physical_warp_size(), pipe ? GGML_CUDA_MMVQ_PIPE_MIN_BLOCKS : 1)
 static __global__ void mul_mat_vec_q(
         const void * vx_ptr, const void * vy_ptr, const int32_t * ids_ptr, const ggml_cuda_mm_fusion_args_device fusion, float * dst_ptr,
@@ -863,6 +876,115 @@ static __global__ void mul_mat_vec_q(
             }
         }
     } else
+    if constexpr (sm52 && type == GGML_TYPE_Q4_0 && ncols_dst >= 2 && ncols_dst <= 4 && !has_fusion) {
+        for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
+            const int kby = kbx * (qk/QK8_1);
+            const int kqs = vdr * (tid % (qi/vdr));
+            int    pu[ncols_dst][4*vdr];
+            float2 dsy[ncols_dst];
+#pragma unroll
+            for (int j = 0; j < ncols_dst; ++j) {
+                const block_q8_1 * by = &y[j*stride_col_y + kby];
+#pragma unroll
+                for (int ii = 0; ii < vdr; ++ii) {
+                    const int u0 = get_int_b4(by->qs, kqs + ii);
+                    const int u1 = get_int_b4(by->qs, kqs + ii + QI4_0);
+                    pu[j][4*ii + 0] = mmvq_pk02(u0);
+                    pu[j][4*ii + 1] = mmvq_pk13(u0);
+                    pu[j][4*ii + 2] = mmvq_pk02(u1);
+                    pu[j][4*ii + 3] = mmvq_pk13(u1);
+                }
+                dsy[j] = __half22float2(by->ds);
+            }
+#pragma unroll
+            for (int i = 0; i < rows_per_cuda_block; ++i) {
+                const block_q4_0 * bx = (const block_q4_0 *) vx + kbx_offset + i*stride_row_x + kbx;
+                int sumi[ncols_dst];
+#pragma unroll
+                for (int j = 0; j < ncols_dst; ++j) {
+                    sumi[j] = 0;
+                }
+#pragma unroll
+                for (int ii = 0; ii < vdr; ++ii) {
+                    const int v  = get_int_b2(bx->qs, kqs + ii);
+                    const int t  = v >> 4;
+                    const int wl02 = v & 0x000F000F;
+                    const int wl13 = (v >> 8) & 0x000F000F;
+                    const int wh02 = t & 0x000F000F;
+                    const int wh13 = (t >> 8) & 0x000F000F;
+#pragma unroll
+                    for (int j = 0; j < ncols_dst; ++j) {
+                        int s = sumi[j];
+                        s += mmvq_m16lo(wl02, pu[j][4*ii + 0]) + mmvq_m16hi(wl02, pu[j][4*ii + 0]);
+                        s += mmvq_m16lo(wl13, pu[j][4*ii + 1]) + mmvq_m16hi(wl13, pu[j][4*ii + 1]);
+                        s += mmvq_m16lo(wh02, pu[j][4*ii + 2]) + mmvq_m16hi(wh02, pu[j][4*ii + 2]);
+                        s += mmvq_m16lo(wh13, pu[j][4*ii + 3]) + mmvq_m16hi(wh13, pu[j][4*ii + 3]);
+                        sumi[j] = s;
+                    }
+                }
+                const float d4 = bx->d;
+#pragma unroll
+                for (int j = 0; j < ncols_dst; ++j) {
+                    tmp[j][i] += d4 * (sumi[j] * dsy[j].x - (8*vdr/QI4_0) * dsy[j].y);
+                }
+            }
+        }
+    } else
+#if TUNE_XCOLS && defined(__CUDA_ARCH__) && __CUDA_ARCH__ < GGML_CUDA_CC_DP4A
+    // 7 Nov 2026 sm52 q4_0 multi-column: no dp4a, so sign-extend the q8_1 activations once per block and reuse them
+    // across the rows of the CUDA block. Same integer sums and same float op order as vec_dot_q4_0_q8_1 -> identical bits.
+    if constexpr (type == GGML_TYPE_Q4_0 && ncols_dst >= 2 && !has_fusion) {
+        for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
+            const int kby = kbx * (qk/QK8_1);
+            const int kqs = vdr * (tid % (qi/vdr));
+            int    ua[ncols_dst][8*vdr];
+            float2 dsy[ncols_dst];
+#pragma unroll
+            for (int j = 0; j < ncols_dst; ++j) {
+                const block_q8_1 * by = &y[j*stride_col_y + kby];
+#pragma unroll
+                for (int ii = 0; ii < vdr; ++ii) {
+                    const int u0 = get_int_b4(by->qs, kqs + ii);
+                    const int u1 = get_int_b4(by->qs, kqs + ii + QI4_0);
+#pragma unroll
+                    for (int b = 0; b < 4; ++b) {
+                        ua[j][8*ii + b]     = (int)(int8_t)(u0 >> (8*b));
+                        ua[j][8*ii + 4 + b] = (int)(int8_t)(u1 >> (8*b));
+                    }
+                }
+                dsy[j] = __half22float2(by->ds);
+            }
+#pragma unroll
+            for (int i = 0; i < rows_per_cuda_block; ++i) {
+                const block_q4_0 * bx = (const block_q4_0 *) vx + kbx_offset + i*stride_row_x + kbx;
+                int w[8*vdr];
+#pragma unroll
+                for (int ii = 0; ii < vdr; ++ii) {
+                    const int v = get_int_b2(bx->qs, kqs + ii);
+#pragma unroll
+                    for (int b = 0; b < 4; ++b) {
+                        w[8*ii + b]     = (v >> (8*b))     & 0xF;
+                        w[8*ii + 4 + b] = (v >> (8*b + 4)) & 0xF;
+                    }
+                }
+                const float d4 = bx->d;
+#pragma unroll
+                for (int j = 0; j < ncols_dst; ++j) {
+                    int sumi = 0;
+#pragma unroll
+                    for (int k = 0; k < 8*vdr; ++k) {
+#if TUNE_XCOLS == 1
+                        sumi = __mul24(w[k], ua[j][k]) + sumi;
+#else
+                        sumi += w[k] * ua[j][k];
+#endif
+                    }
+                    tmp[j][i] += d4 * (sumi * dsy[j].x - (8*vdr/QI4_0) * dsy[j].y);
+                }
+            }
+        }
+    } else
+#endif
     for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
         const int kby = kbx * (qk/QK8_1); // y block index that aligns with kbx
 
@@ -1215,6 +1337,18 @@ static void mul_mat_vec_q_switch_fusion(
     }
 
     GGML_ASSERT(!has_fusion && "fusion only supported for ncols_dst=1");
+
+    if constexpr (type == GGML_TYPE_Q4_0 && c_ncols_dst >= 2 && c_ncols_dst <= 4) {
+        static const bool sm52_on = [] { const char * e = getenv("GGML_CUDA_MMVQ_SM52"); return e && e[0] == '1'; }();
+        if (sm52_on) {
+            const ggml_cuda_kernel_launch_params lp52 = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
+            ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, false, small_k, halve_iters, false, true>, lp52,
+                vx, vy, ids, fusion, dst, ncols_x, nchannels_y, stride_row_x, stride_col_y, stride_col_dst,
+                channel_ratio, stride_channel_x, stride_channel_y, stride_channel_dst,
+                sample_ratio, stride_sample_x, stride_sample_y, stride_sample_dst, ids_stride);
+            return;
+        }
+    }
 
     const ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
     ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, false, small_k, halve_iters>, launch_params,
@@ -1645,6 +1779,103 @@ static void mul_mat_vec_q_switch_type(
     }
 }
 
+
+// 7 Nov 2026: sm_52 q4_0 multi-column (n=2..4) FP32-FFMA matvec. Weight nibbles become floats via one PRMT into the
+// mantissa of 2.0f; y is prescaled (x64 lo, x8 hi) and the bias is removed with a per-quarter constant yc.
+// Enabled by GGML_CUDA_FP32MV=1. Microbench 4096x14336: n=2/3/4 151/186/229 us vs 167/217/284 for mmvq.
+static __global__ void fp32mv_prep_q4_0(const float * __restrict__ y, float * __restrict__ ys, float * __restrict__ yc,
+                                        const int K, const int64_t s11, const int n) {
+    const int nq = K / 8;
+    const int q = blockIdx.x * blockDim.x + threadIdx.x, c = blockIdx.y;
+    if (q >= nq || c >= n) return;
+    const int j = q >> 2, i = q & 3;
+    const float * yr = y + c * s11 + 32 * j + 4 * i;
+    float * o = ys + (int64_t) c * K + 32 * j + 4 * i;
+    float al = 0.f, ah = 0.f;
+#pragma unroll
+    for (int b = 0; b < 4; ++b) {
+        const float l = yr[b], h = yr[16 + b];
+        o[b] = l * 64.f; o[16 + b] = h * 8.f; al += l; ah += h;
+    }
+    yc[(int64_t) c * nq + q] = 136.f * al + 24.f * ah;
+}
+
+template <int N, int R, int NT, int MB>
+static __global__ void __launch_bounds__(NT, MB) fp32mv_q4_0(const block_q4_0 * __restrict__ x, const float * __restrict__ y,
+        const float * __restrict__ yc, float * __restrict__ dst, const int nblk, const int K, const int64_t stride_col_dst) {
+    const int row0 = blockIdx.x * R, tid = threadIdx.x;
+    float acc[R][N];
+#pragma unroll
+    for (int r = 0; r < R; ++r)
+#pragma unroll
+        for (int c = 0; c < N; ++c) acc[r][c] = 0.f;
+    const int nq = 4 * nblk, i = tid & 3;
+    const unsigned stride = (unsigned) nblk * sizeof(block_q4_0);
+    unsigned o[R];
+#pragma unroll
+    for (int r = 0; r < R; ++r) o[r] = (unsigned) (row0 + r) * stride + (unsigned) (tid >> 2) * sizeof(block_q4_0);
+    const char * xb = (const char *) x; const char * xq = xb + 2 + 4 * i;
+    const float * yp0 = y + 32 * (tid >> 2) + 4 * i; const float * yc0 = yc + tid;
+    const unsigned M = 0x40000000u;
+    for (int q = tid; q < nq; q += NT) {
+        float a[N][8], cc[N];
+#pragma unroll
+        for (int c = 0; c < N; ++c) {
+            const float * yp = yp0 + (int64_t) c * K;
+            const float4 t0 = __ldg((const float4 *) yp), t1 = __ldg((const float4 *) (yp + 16));
+            a[c][0] = t0.x; a[c][1] = t0.y; a[c][2] = t0.z; a[c][3] = t0.w;
+            a[c][4] = t1.x; a[c][5] = t1.y; a[c][6] = t1.z; a[c][7] = t1.w;
+            cc[c] = __ldg(yc0 + (int64_t) c * nq);
+        }
+        yp0 += 8 * NT; yc0 += NT;
+#pragma unroll
+        for (int r = 0; r < R; ++r) {
+            unsigned oo = o[r]; asm volatile("" : "+r"(oo));
+            const float d = __half2float(__ldg((const half *) (xb + oo)));
+            const uint16_t * q16 = (const uint16_t *) (xq + oo);
+            const int v = __byte_perm(__ldg(q16), __ldg(q16 + 1), 0x5410);
+            o[r] += (NT / 4) * sizeof(block_q4_0);
+            const int lo = v & 0x0F0F0F0F, hi = (v >> 1) & 0x78787878;
+            float s[N];
+#pragma unroll
+            for (int c = 0; c < N; ++c) s[c] = -cc[c];
+#pragma unroll
+            for (int bb = 0; bb < 4; ++bb) {
+                const float wl = __int_as_float(__byte_perm(lo, M, 0x7044 | (bb << 8)));
+                const float wh = __int_as_float(__byte_perm(hi, M, 0x7044 | (bb << 8)));
+#pragma unroll
+                for (int c = 0; c < N; ++c) { s[c] = fmaf(wl, a[c][bb], s[c]); s[c] = fmaf(wh, a[c][4 + bb], s[c]); }
+            }
+#pragma unroll
+            for (int c = 0; c < N; ++c) acc[r][c] = fmaf(d, s[c], acc[r][c]);
+        }
+    }
+    __shared__ float red[NT / 32][R * N];
+    const int lane = tid & 31, w = tid >> 5;
+#pragma unroll
+    for (int r = 0; r < R; ++r)
+#pragma unroll
+        for (int c = 0; c < N; ++c) {
+            float v = acc[r][c];
+#pragma unroll
+            for (int off = 16; off > 0; off >>= 1) v += __shfl_xor_sync(0xffffffff, v, off);
+            if (lane == 0) red[w][r * N + c] = v;
+        }
+    __syncthreads();
+    if (tid < R * N) {
+        float v = 0.f;
+#pragma unroll
+        for (int k = 0; k < NT / 32; ++k) v += red[k][tid];
+        dst[(int64_t) (tid % N) * stride_col_dst + row0 + tid / N] = v;
+    }
+}
+
+template <int N>
+static void fp32mv_q4_0_launch(const void * x, const float * ys, const float * yc, float * dst, int64_t nrows, int K,
+                               int64_t stride_col_dst, cudaStream_t stream) {
+    fp32mv_q4_0<N, 16, 128, 2><<<nrows / 16, 128, 0, stream>>>((const block_q4_0 *) x, ys, yc, dst, K / 32, K, stride_col_dst);
+}
+
 void ggml_cuda_mul_mat_vec_q(
         ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst,
         const ggml_cuda_mm_fusion_args_host * fusion) {
@@ -1738,6 +1969,26 @@ void ggml_cuda_mul_mat_vec_q(
             GGML_ASSERT(ggml_is_contiguously_allocated(src0));
             GGML_ASSERT(!src0->view_src);
             CUDA_CHECK(cudaMemsetAsync((char *) src0->data + size_data, 0, size_alloc - size_data, stream));
+        }
+    }
+
+    {
+        static const bool fp32mv = [] { const char * e = getenv("GGML_CUDA_FP32MV"); return e != nullptr && atoi(e) != 0; }();
+        if (fp32mv && src0->type == GGML_TYPE_Q4_0 && !ids && !fusion && ne11 >= 2 && ne11 <= 4 && ne12 == 1 && ne13 == 1 &&
+                ne02 == 1 && ne03 == 1 && ne01 % 16 == 0 && ne00 % 32 == 0 && ne00 == ne10 &&
+                nb01 == (size_t) (ne00 / 32) * sizeof(block_q4_0) &&
+                (size_t) ne01 * nb01 < (size_t) 0xFFFFFFFFu) {
+            const int K = (int) ne00, n = (int) ne11, nq = K / 8;
+            ggml_cuda_pool_alloc<float> ys_pool(ctx.pool(), (size_t) n * K + (size_t) n * nq);
+            float * ys = ys_pool.get(); float * yc = ys + (size_t) n * K;
+            fp32mv_prep_q4_0<<<dim3((nq + 127) / 128, n), 128, 0, stream>>>(src1_d, ys, yc, K, src1->nb[1] / ts_src1, n);
+            const int64_t scd = dst->nb[1] / ts_dst;
+            switch (n) {
+                case 2: fp32mv_q4_0_launch<2>(src0->data, ys, yc, dst_d, ne01, K, scd, stream); break;
+                case 3: fp32mv_q4_0_launch<3>(src0->data, ys, yc, dst_d, ne01, K, scd, stream); break;
+                default: fp32mv_q4_0_launch<4>(src0->data, ys, yc, dst_d, ne01, K, scd, stream); break;
+            }
+            return;
         }
     }
 

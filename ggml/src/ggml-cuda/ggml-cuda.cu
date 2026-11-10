@@ -1410,6 +1410,48 @@ struct batched_mul_mat_traits<GGML_TYPE_F16> {
     static inline auto convert_nc(ggml_type src_type) { return ggml_get_to_fp16_nc_cuda(src_type); }
 };
 
+// local 20261107: q4_0 -> fp32 TRANSPOSED dequant (W^T, M-contiguous) for cuBLAS NN sgemm on sm_52 (GGML_CUDA_SGEMM_NN=1)
+// 7 Nov 2026: tiled transposed q4_0 dequant (coalesced row-segment loads via smem), bit-identical to k_dequant_q4_0_T, ~1.6x faster on sm_52.
+static __global__ void __launch_bounds__(256) k_dequant_q4_0_T2(const block_q4_0 * __restrict__ x, float * __restrict__ y, const int K, const int M, const int LD) {
+    constexpr int TM = 128, KB = 8, TY = 2, RW = KB*9, RP = RW | 1;
+    __shared__ uint16_t s[TM*RP];
+    const int m0 = blockIdx.x*TM, kb0 = blockIdx.y*KB, tid = threadIdx.y*TM + threadIdx.x, nb = K/32;
+    const uint16_t * xs = (const uint16_t *) x;
+    for (int i = tid; i < TM*RW; i += TM*TY) {
+        const int r = i / RW, c = i - r*RW, m = m0 + r;
+        s[r*RP + c] = m < M ? __ldg(xs + ((int64_t) m*nb + kb0)*9 + c) : 0;
+    }
+    __syncthreads();
+    const int m = m0 + threadIdx.x; if (m >= M) return;
+    const uint16_t * sr = s + threadIdx.x*RP;
+    for (int b = threadIdx.y; b < KB; b += TY) {
+        const uint16_t * sb = sr + b*9;
+        const float d = __half2float(__ushort_as_half(sb[0]));
+        float * o = y + (int64_t) (kb0 + b)*32*LD + m;
+        #pragma unroll
+        for (int j = 0; j < 8; ++j) { const unsigned v = sb[1+j];
+            o[(2*j)*(int64_t)LD] = ((int)(v&15)-8)*d; o[(2*j+1)*(int64_t)LD] = ((int)((v>>8)&15)-8)*d;
+            o[(2*j+16)*(int64_t)LD] = ((int)((v>>4)&15)-8)*d; o[(2*j+17)*(int64_t)LD] = ((int)((v>>12)&15)-8)*d; }
+    }
+}
+
+static __global__ void k_dequant_q4_0_T(const block_q4_0 * __restrict__ x, float * __restrict__ y, const int K, const int M) {
+    const int m = blockIdx.x*blockDim.x + threadIdx.x, kb = blockIdx.y;
+    if (m >= M) return;
+    const block_q4_0 * b = x + (int64_t) m*(K/32) + kb;
+    const float d = __half2float(b->d);
+    const uint16_t * q = (const uint16_t *) b->qs;
+    float * o = y + (int64_t) kb*32*M + m;
+#pragma unroll
+    for (int j = 0; j < 8; ++j) {
+        const unsigned v = q[j];
+        o[(2*j   )*(int64_t)M] = ((int)( v       & 15) - 8)*d;
+        o[(2*j+1 )*(int64_t)M] = ((int)((v >> 8) & 15) - 8)*d;
+        o[(2*j+16)*(int64_t)M] = ((int)((v >> 4) & 15) - 8)*d;
+        o[(2*j+17)*(int64_t)M] = ((int)((v >>12) & 15) - 8)*d;
+    }
+}
+
 template<ggml_type compute_type>
 static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1, ggml_tensor * dst) {
     using traits = batched_mul_mat_traits<compute_type>;
@@ -1439,6 +1481,57 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
     int64_t s13 = nb13 / src1_ts;
 
     float * dst_ddf = (float *) dst->data;
+
+    if constexpr (compute_type == GGML_TYPE_F32) {
+        static const bool sgemm_nn = getenv("GGML_CUDA_SGEMM_NN") != nullptr && atoi(getenv("GGML_CUDA_SGEMM_NN"));
+        static const int  nn_algo  = getenv("GGML_CUDA_SGEMM_NN_ALGO") ? atoi(getenv("GGML_CUDA_SGEMM_NN_ALGO")) : 5;
+        if (sgemm_nn && src0->type == GGML_TYPE_Q4_0 && ggml_is_contiguous(src0) && src1->type == GGML_TYPE_F32 &&
+                ne02 == 1 && ne03 == 1 && ne12 == 1 && ne13 == 1 && ne00 % 32 == 0) {
+            ggml_cuda_pool_alloc<float> wt(ctx.pool(), ne00*ne01);
+            static const int nn_split = getenv("GGML_CUDA_SGEMM_NN_SPLIT") ? atoi(getenv("GGML_CUDA_SGEMM_NN_SPLIT")) : 1;
+            const float al = 1.0f, be = 0.0f;
+            const block_q4_0 * xq = (const block_q4_0 *) src0->data;
+            if (ne00 % 256 == 0 && nn_split > 1 && ne01 >= 4096 && ne11 >= 256) {
+                // 7 Nov 2026: overlap dequant of piece p+1 (aux stream) with GEMM of piece p (main stream)
+                const int nb = ne00/32;
+                const int ns = std::min(nn_split, 8);
+                const int64_t piece = ((ne01 + ns - 1)/ns + 127)/128*128;
+                const int np = (int) ((ne01 + piece - 1)/piece);
+                cudaStream_t aux = ctx.stream(ctx.device, 7);
+                static cudaEvent_t ev[GGML_CUDA_MAX_DEVICES][9];
+                if (!ev[ctx.device][0]) for (int i = 0; i < 9; ++i) CUDA_CHECK(cudaEventCreateWithFlags(&ev[ctx.device][i], cudaEventDisableTiming));
+                cudaEvent_t * e = ev[ctx.device];
+                CUDA_CHECK(cudaEventRecord(e[8], main_stream));
+                CUDA_CHECK(cudaStreamWaitEvent(aux, e[8], 0));
+                for (int p = 0; p < np; ++p) {
+                    const int64_t m0 = p*piece, mp = std::min<int64_t>(piece, ne01 - m0);
+                    cudaStream_t st = p == 0 ? main_stream : aux;
+                    const dim3 grid((mp + 127)/128, ne00/256), blk(128, 2);
+                    k_dequant_q4_0_T2<<<grid, blk, 0, st>>>(xq + m0*nb, wt.get() + m0, (int) ne00, (int) mp, (int) ne01);
+                    if (p > 0) CUDA_CHECK(cudaEventRecord(e[p], aux));
+                }
+                for (int p = 0; p < np; ++p) {
+                    const int64_t m0 = p*piece, mp = std::min<int64_t>(piece, ne01 - m0);
+                    if (p > 0) CUDA_CHECK(cudaStreamWaitEvent(main_stream, e[p], 0));
+                    CUBLAS_CHECK(cublasGemmEx(cublas_h, CUBLAS_OP_N, CUBLAS_OP_N, mp, ne11, ne10,
+                            &al, wt.get() + m0, CUDA_R_32F, ne01, src1->data, CUDA_R_32F, s11,
+                            &be, dst_ddf + m0, CUDA_R_32F, ldc, CUBLAS_COMPUTE_32F, (cublasGemmAlgo_t) nn_algo));
+                }
+                return;
+            }
+            if (ne00 % 256 == 0) {
+                const dim3 grid((ne01 + 127)/128, ne00/256), blk(128, 2);
+                k_dequant_q4_0_T2<<<grid, blk, 0, main_stream>>>(xq, wt.get(), (int) ne00, (int) ne01, (int) ne01);
+            } else {
+                const dim3 grid((ne01 + 255)/256, ne00/32);
+                k_dequant_q4_0_T<<<grid, 256, 0, main_stream>>>(xq, wt.get(), (int) ne00, (int) ne01);
+            }
+            CUBLAS_CHECK(cublasGemmEx(cublas_h, CUBLAS_OP_N, CUBLAS_OP_N, ne01, ne11, ne10,
+                    &al, wt.get(), CUDA_R_32F, ne01, src1->data, CUDA_R_32F, s11,
+                    &be, dst_ddf, CUDA_R_32F, ldc, CUBLAS_COMPUTE_32F, (cublasGemmAlgo_t) nn_algo));
+            return;
+        }
+    }
 
     const cuda_t * src0_ptr = nullptr;
     const cuda_t * src1_ptr = nullptr;

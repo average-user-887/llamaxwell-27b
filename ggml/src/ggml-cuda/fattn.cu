@@ -5,6 +5,8 @@
 #include "fattn-vec.cuh"
 #include "fattn.cuh"
 #include "fattn-occamy.cuh"
+#include "fattn-gemm.cuh"
+#include "fattn-dec.cuh"
 
 #if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
 // one list per group of ncols1 queries: a column is selected if any query of the group can see it
@@ -722,7 +724,7 @@ static best_fattn_kernel ggml_cuda_get_best_fattn_kernel(const int device, const
                 }
             }
         } else {
-            if (Q->ne[1] <= 2) {
+            if (Q->ne[1] <= 2 || (ggml_cuda_fattn_env_dec() && Q->ne[1] <= 4)) { // 8 Nov fadec
                 return BEST_FATTN_KERNEL_VEC;
             }
         }
@@ -784,6 +786,17 @@ static void ggml_cuda_flash_attn_ext_stock(ggml_backend_cuda_context & ctx, ggml
 
 void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     ggml_cuda_set_device(ctx.device);
+    // 7 Nov: GEMM-based prefill FA (env-gated, default off); only where stock picks the tile kernel (f16 extra region sized)
+    if (ggml_cuda_fa_gemm_mode() != 0 && ggml_cuda_get_best_fattn_kernel(ggml_cuda_get_device(), dst) == BEST_FATTN_KERNEL_TILE
+            && ggml_cuda_fa_gemm_applicable(dst)) {
+        ggml_cuda_fa_gemm(ctx, dst);
+        return;
+    }
+    // 8 Nov fadec design 2: GQA-grouped q4_0 decode FA (GGML_CUDA_FA_DEC=2, default off)
+    if (ggml_cuda_fa_dec_mode() == 2 && ggml_cuda_fa_dec_applicable(dst)) {
+        ggml_cuda_fa_dec(ctx, dst);
+        return;
+    }
     // Track F: occamy GQA split-K decode kernel (env-gated, default off)
     const int ofa = ggml_cuda_occamy_fa_mode();
     if (ofa != 0 && ggml_cuda_occamy_fa_applicable(dst)) {

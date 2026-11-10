@@ -39,6 +39,12 @@ static int ggml_cuda_fattn_env_parallel_blocks_mult() {
     static const int v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_PARALLEL_BLOCKS_MULT");
     return v;
 }
+// 8 Nov fadec: GGML_CUDA_FA_DEC=1 -> sm52-class generic path routes quantized-KV decode batches of 3-4 query columns
+// (MTP verify) to the vec kernel (cols_per_block=4, q8_1 dp4a K dot, no f16 K/V conversion of the whole cache).
+static bool ggml_cuda_fattn_env_dec() {
+    static const bool v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_DEC") == 1; // 8 Nov fadec2: ==1 (2 = design 2, fattn-dec.cu)
+    return v;
+}
 static bool ggml_cuda_fattn_env_debug() {
     static const bool v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_DEBUG") != 0;
     return v;

@@ -561,6 +561,16 @@ void ggml_cuda_flash_attn_ext_vec_case(ggml_backend_cuda_context & ctx, ggml_ten
         return;
     }
 
+    if (Q->ne[1] > 2) { // 8 Nov fadec: only reached with GGML_CUDA_FA_DEC=1 (3-4 columns)
+        constexpr int cols_per_block4 = 4;
+        if (logit_softcap == 0.0f) {
+            ggml_cuda_flash_attn_ext_vec_case_impl<D, cols_per_block4, type_K, type_V, false>(ctx, dst);
+        } else {
+            ggml_cuda_flash_attn_ext_vec_case_impl<D, cols_per_block4, type_K, type_V, true>(ctx, dst);
+        }
+        return;
+    }
+
     constexpr int cols_per_block = 2;
     if (logit_softcap == 0.0f) {
         constexpr bool use_logit_softcap = false;
