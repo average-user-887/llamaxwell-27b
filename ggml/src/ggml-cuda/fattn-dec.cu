@@ -579,4 +579,225 @@ void ggml_cuda_fa_dec(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
         }
     }
 }
+
+// ---- 8 Nov card F2 diagnostics (GGML_CUDA_FA_DBG=1). Nothing below runs unless that env is set. ----
+// GGML_CUDA_FA_DBG_AUTH   0: stock output goes downstream (default), 2: design-2 output goes downstream
+// GGML_CUDA_FA_DBG_FLIP   a:b calls in [a,b) use the other kernel as authority
+// GGML_CUDA_FA_DBG_CMP    1: run both kernels on the same inputs each call and log the difference
+// GGML_CUDA_FA_DBG_CPU    1: with CMP, also compare both with a CPU double reference
+// GGML_CUDA_FA_DBG_NOISERANGE a:b,... restrict noise to these calls (default all)
+// GGML_CUDA_FA_DBG_NOISE  eps: multiply each downstream element by (1 + eps*u), u uniform in [-1,1]; GGML_CUDA_FA_DBG_SEED
+// GGML_CUDA_FA_DBG_SNAP   a:b,... calls whose raw K,V are dumped; GGML_CUDA_FA_DBG_DUMP a:b,... also Q, mask and both outputs
+// GGML_CUDA_FA_DBG_DIR, GGML_CUDA_FA_DBG_TAG  output location
+static bool fdbg_in_list(const char * s, long long c) {
+    while (s && *s) {
+        long long a = 0, b = 0;
+        if (sscanf(s, "%lld:%lld", &a, &b) == 2 && c >= a && c < b) return true;
+        s = strchr(s, ',');
+        if (s) ++s;
+    }
+    return false;
+}
+static const char * fdbg_str(const char * n) { const char * s = getenv(n); return s ? s : ""; }
+static long long fdbg_call = -1;
+
+bool ggml_cuda_fa_dbg_on() {
+    static const bool v = fd_env_int("GGML_CUDA_FA_DBG", 0) != 0;
+    return v;
+}
+
+static size_t fdbg_span(const ggml_tensor * t, size_t row) {
+    size_t sz = row;
+    for (int i = 1; i < 4; ++i) sz += (size_t) (t->ne[i] - 1)*t->nb[i];
+    return sz;
+}
+static std::vector<uint8_t> fdbg_host(const ggml_tensor * t, size_t row) {
+    std::vector<uint8_t> h(fdbg_span(t, row));
+    CUDA_CHECK(cudaMemcpy(h.data(), t->data, h.size(), cudaMemcpyDeviceToHost));
+    return h;
+}
+static FILE * fdbg_open(const char * kind, long long c) {
+    char path[512];
+    snprintf(path, sizeof(path), "%s/%s-%s-%lld.bin", fdbg_str("GGML_CUDA_FA_DBG_DIR"), fdbg_str("GGML_CUDA_FA_DBG_TAG"), kind, c);
+    return fopen(path, "wb");
+}
+static void fdbg_put(FILE * f, const ggml_tensor * t, const std::vector<uint8_t> & h) {
+    int64_t hdr[9];
+    for (int i = 0; i < 4; ++i) { hdr[i] = t->ne[i]; hdr[4 + i] = (int64_t) t->nb[i]; }
+    hdr[8] = (int64_t) h.size();
+    fwrite(hdr, 8, 9, f);
+    fwrite(h.data(), 1, h.size(), f);
+}
+static uint64_t fdbg_hash(const void * d, size_t n) {
+    uint64_t x = 1469598103934665603ULL;
+    const uint8_t * p = (const uint8_t *) d;
+    for (size_t i = 0; i < n; ++i) { x ^= p[i]; x *= 1099511628211ULL; }
+    return x;
+}
+
+// every FA call: count it, and dump raw K/V for the listed calls
+void ggml_cuda_fa_dbg_pre(ggml_tensor * dst) {
+    ++fdbg_call;
+    const ggml_tensor * Q = dst->src[0];
+    const ggml_tensor * K = dst->src[1];
+    const ggml_tensor * V = dst->src[2];
+    if (fdbg_call < 34) {
+        fprintf(stderr, "ggml_cuda: fa_dbg call=%lld name=%s NR=%lld nkv=%lld K=%s V=%s\n", fdbg_call, dst->name, (long long) Q->ne[1], (long long) K->ne[1], K->name, V->name);
+    }
+    if (fdbg_in_list(fdbg_str("GGML_CUDA_FA_DBG_SNAP"), fdbg_call) && K->type == GGML_TYPE_Q4_0) {
+        CUDA_CHECK(cudaDeviceSynchronize());
+        FILE * f = fdbg_open("snap", fdbg_call);
+        if (f) { fdbg_put(f, K, fdbg_host(K, 144)); fdbg_put(f, V, fdbg_host(V, 144)); fclose(f); }
+    }
+}
+
+// exact reference for this call, [ns][NR][H][D] as dst
+static void fdbg_cpu_ref(const ggml_tensor * dst, std::vector<double> & out) {
+    const ggml_tensor * Q = dst->src[0];
+    const ggml_tensor * K = dst->src[1];
+    const ggml_tensor * V = dst->src[2];
+    const ggml_tensor * mask = dst->src[3];
+    float scale;
+    memcpy(&scale, (const float *) dst->op_params + 0, sizeof(float));
+    const int ns = (int) Q->ne[3], NR = (int) Q->ne[1], H = (int) Q->ne[2], nkvh = (int) K->ne[2], G = H/nkvh;
+    const int64_t nkv = K->ne[1];
+    const std::vector<uint8_t> hK = fdbg_host(K, 144), hV = fdbg_host(V, 144), hQ = fdbg_host(Q, FD_D*4), hM = fdbg_host(mask, (size_t) mask->ne[0]*2);
+    out.assign((size_t) ns*NR*H*FD_D, 0.0);
+    const auto deq = [](const uint8_t * row, double * o) {
+        for (int e = 0; e < FD_D; ++e) {
+            const uint8_t * blk = row + 18*(e/32);
+            unsigned short h; memcpy(&h, blk, 2);
+            const double d = __half2float(__ushort_as_half(h));
+            const int j = e % 32; const uint8_t by = blk[2 + j/2];
+            o[e] = (double) (((j & 1) == 0 ? (by & 15) : (by >> 4)) - 8)*d;
+        }
+    };
+    std::vector<double> dK((size_t) nkv*FD_D), dV((size_t) nkv*FD_D), sc(nkv), o(FD_D);
+    for (int sq = 0; sq < ns; ++sq) for (int kh = 0; kh < nkvh; ++kh) {
+        for (int64_t t = 0; t < nkv; ++t) {
+            deq(hK.data() + sq*K->nb[3] + kh*K->nb[2] + t*K->nb[1], &dK[t*FD_D]);
+            deq(hV.data() + sq*V->nb[3] + kh*V->nb[2] + t*V->nb[1], &dV[t*FD_D]);
+        }
+        for (int r = 0; r < NR; ++r) for (int g = 0; g < G; ++g) {
+            const int h = kh*G + g;
+            const float * q = (const float *) (hQ.data() + sq*Q->nb[3] + r*Q->nb[1] + h*Q->nb[2]);
+            const uint8_t * mr = hM.data() + (sq % mask->ne[3])*mask->nb[3] + r*mask->nb[1];
+            double mx = -HUGE_VAL;
+            for (int64_t t = 0; t < nkv; ++t) {
+                unsigned short mh; memcpy(&mh, mr + t*2, 2);
+                const double m = __half2float(__ushort_as_half(mh));
+                if (std::isinf(m) && m < 0) { sc[t] = -HUGE_VAL; continue; }
+                double a = 0.0;
+                for (int e = 0; e < FD_D; ++e) a += q[e]*dK[t*FD_D + e];
+                sc[t] = a*scale + m; mx = std::max(mx, sc[t]);
+            }
+            double L = 0.0; std::fill(o.begin(), o.end(), 0.0);
+            for (int64_t t = 0; t < nkv; ++t) {
+                if (sc[t] == -HUGE_VAL) continue;
+                const double w = std::exp(sc[t] - mx); L += w;
+                for (int e = 0; e < FD_D; ++e) o[e] += w*dV[t*FD_D + e];
+            }
+            double * d = &out[(((size_t) sq*NR + r)*H + h)*FD_D];
+            for (int e = 0; e < FD_D; ++e) d[e] = L > 0.0 ? o[e]/L : 0.0;
+        }
+    }
+}
+
+// per (row, head) max-norm relative difference: worst over the call, with its location; also worst abs and rms rel
+struct fdbg_cmp { double wrel, wabs, rms; int r, h, e; long long nf; };
+template <typename A, typename B>
+static fdbg_cmp fdbg_compare(const A * a, const B * b, size_t n, int H) {
+    fdbg_cmp c = {0.0, 0.0, 0.0, 0, 0, 0, 0};
+    double s2 = 0.0, b2 = 0.0;
+    for (size_t row = 0; row*H*FD_D < n; ++row) for (int h = 0; h < H; ++h) {
+        const A * pa = a + (row*H + h)*FD_D; const B * pb = b + (row*H + h)*FD_D;
+        double md = 0.0, mb = 0.0; int me = 0;
+        for (int e = 0; e < FD_D; ++e) {
+            const double x = pa[e], y = pb[e];
+            if (!std::isfinite(x) || !std::isfinite(y)) { ++c.nf; continue; }
+            const double d = std::fabs(x - y);
+            if (d > md) { md = d; me = e; }
+            mb = std::max(mb, std::fabs(y));
+            s2 += d*d; b2 += y*y;
+        }
+        const double rel = md/std::max(mb, 1e-30);
+        if (rel > c.wrel) { c.wrel = rel; c.r = (int) row; c.h = h; c.e = me; }
+        c.wabs = std::max(c.wabs, md);
+    }
+    c.rms = std::sqrt(s2/std::max(b2, 1e-60));
+    return c;
+}
+
+void ggml_cuda_fa_dbg_run(ggml_backend_cuda_context & ctx, ggml_tensor * dst, ggml_cuda_fa_dbg_stock_fn stock) {
+    static const int auth0 = fd_env_int("GGML_CUDA_FA_DBG_AUTH", 0);
+    static const int cmp   = fd_env_int("GGML_CUDA_FA_DBG_CMP", 0);
+    static const int cpu   = fd_env_int("GGML_CUDA_FA_DBG_CPU", 0);
+    static const double eps = []() { const char * s = getenv("GGML_CUDA_FA_DBG_NOISE"); return s ? atof(s) : 0.0; }();
+    static const unsigned long long seed = (unsigned long long) fd_env_int("GGML_CUDA_FA_DBG_SEED", 1);
+    static FILE * logf = []() { char p[512]; snprintf(p, sizeof(p), "%s/%s-cmp.txt", fdbg_str("GGML_CUDA_FA_DBG_DIR"), fdbg_str("GGML_CUDA_FA_DBG_TAG")); return cmp ? fopen(p, "w") : (FILE *) nullptr; }();
+    cudaStream_t stream = ctx.stream();
+    const ggml_tensor * Q = dst->src[0];
+    const long long c = fdbg_call;
+    const int auth = fdbg_in_list(fdbg_str("GGML_CUDA_FA_DBG_FLIP"), c) ? (auth0 == 2 ? 0 : 2) : auth0;
+    const int H = (int) Q->ne[2];
+    const size_t n = (size_t) Q->ne[3]*Q->ne[1]*H*FD_D;
+    const bool dump = fdbg_in_list(fdbg_str("GGML_CUDA_FA_DBG_DUMP"), c);
+    if (cmp || dump) {
+        std::vector<float> a(n), b(n);
+        ggml_cuda_fa_dec(ctx, dst);
+        CUDA_CHECK(cudaMemcpyAsync(a.data(), dst->data, n*4, cudaMemcpyDeviceToHost, stream));
+        stock(ctx, dst);
+        CUDA_CHECK(cudaMemcpyAsync(b.data(), dst->data, n*4, cudaMemcpyDeviceToHost, stream));
+        CUDA_CHECK(cudaStreamSynchronize(stream));
+        const fdbg_cmp d = fdbg_compare(a.data(), b.data(), n, H);
+        if (logf) {
+            fprintf(logf, "%lld NR=%lld nkv=%lld auth=%d wrel=%.4g rms=%.4g wabs=%.4g r=%d h=%d e=%d nf=%lld qhash=%016llx ohash=%016llx",
+                c, (long long) Q->ne[1], (long long) dst->src[1]->ne[1], auth, d.wrel, d.rms, d.wabs, d.r, d.h, d.e, d.nf,
+                (unsigned long long) fdbg_hash(fdbg_host(Q, FD_D*4).data(), fdbg_span(Q, FD_D*4)),
+                (unsigned long long) fdbg_hash(auth == 2 ? a.data() : b.data(), n*4));
+            if (cpu) {
+                std::vector<double> ref;
+                fdbg_cpu_ref(dst, ref);
+                const fdbg_cmp da = fdbg_compare(a.data(), ref.data(), n, H), db = fdbg_compare(b.data(), ref.data(), n, H);
+                fprintf(logf, " dec_cpu=%.4g dec_cpu_rms=%.4g stock_cpu=%.4g stock_cpu_rms=%.4g", da.wrel, da.rms, db.wrel, db.rms);
+            }
+            fprintf(logf, "\n");
+            if (c % 2736 == 0) fflush(logf);
+        }
+        if (dump) {
+            FILE * f = fdbg_open("dump", c);
+            if (f) {
+                const ggml_tensor * mask = dst->src[3];
+                float scale; memcpy(&scale, (const float *) dst->op_params + 0, sizeof(float));
+                fwrite(&scale, 4, 1, f);
+                fdbg_put(f, Q, fdbg_host(Q, FD_D*4)); fdbg_put(f, dst->src[1], fdbg_host(dst->src[1], 144)); fdbg_put(f, dst->src[2], fdbg_host(dst->src[2], 144));
+                fdbg_put(f, mask, fdbg_host(mask, (size_t) mask->ne[0]*2));
+                fwrite(a.data(), 4, n, f); fwrite(b.data(), 4, n, f);
+                fclose(f);
+            }
+        }
+        if (auth == 2) {
+            CUDA_CHECK(cudaMemcpyAsync(dst->data, a.data(), n*4, cudaMemcpyHostToDevice, stream));
+            CUDA_CHECK(cudaStreamSynchronize(stream));
+        }
+    } else if (auth == 2) {
+        ggml_cuda_fa_dec(ctx, dst);
+    } else {
+        stock(ctx, dst);
+    }
+    const char * nrange = fdbg_str("GGML_CUDA_FA_DBG_NOISERANGE");
+    if (eps != 0.0 && (!*nrange || fdbg_in_list(nrange, c))) {
+        std::vector<float> o(n);
+        CUDA_CHECK(cudaMemcpyAsync(o.data(), dst->data, n*4, cudaMemcpyDeviceToHost, stream));
+        CUDA_CHECK(cudaStreamSynchronize(stream));
+        unsigned long long x = (seed*0x9E3779B97F4A7C15ULL) ^ ((unsigned long long) (c + 1)*0xC2B2AE3D27D4EB4FULL);
+        for (size_t i = 0; i < n; ++i) {
+            x ^= x << 13; x ^= x >> 7; x ^= x << 17;
+            const double u = (double) (x >> 11)*(1.0/9007199254740992.0)*2.0 - 1.0;
+            o[i] = (float) ((double) o[i]*(1.0 + eps*u));
+        }
+        CUDA_CHECK(cudaMemcpyAsync(dst->data, o.data(), n*4, cudaMemcpyHostToDevice, stream));
+        CUDA_CHECK(cudaStreamSynchronize(stream));
+    }
+}
 #endif

@@ -792,6 +792,14 @@ void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst
         ggml_cuda_fa_gemm(ctx, dst);
         return;
     }
+    // 8 Nov card F2: env-gated stock vs design-2 comparison (GGML_CUDA_FA_DBG=1, default off)
+    if (ggml_cuda_fa_dbg_on()) {
+        ggml_cuda_fa_dbg_pre(dst);
+        if (ggml_cuda_fa_dec_applicable(dst)) {
+            ggml_cuda_fa_dbg_run(ctx, dst, ggml_cuda_flash_attn_ext_stock);
+            return;
+        }
+    }
     // 8 Nov fadec design 2: GQA-grouped q4_0 decode FA (GGML_CUDA_FA_DEC=2, default off)
     if (ggml_cuda_fa_dec_mode() == 2 && ggml_cuda_fa_dec_applicable(dst)) {
         ggml_cuda_fa_dec(ctx, dst);
