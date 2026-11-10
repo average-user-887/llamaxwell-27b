@@ -1,0 +1,8 @@
+== KC sweep at ~22.7k
+{"var": "1:2048", "prompt_n": 22730, "pp": 83.57, "out": " word120"}
+{"var": "1:1024", "prompt_n": 22730, "pp": 82.49, "out": " word120"}
+== long A/B
+{"var": "0", "prompt_n": 51901, "pp": 65.48, "out": " word260"}
+{"var": "0", "prompt_n": 100201, "pp": 51.74, "out": " word490"}
+{"var": "1", "prompt_n": 51901, "pp": 75.35, "out": " word260"}
+{"var": "1", "prompt_n": 100201, "pp": 64.32, "out": " word490"}

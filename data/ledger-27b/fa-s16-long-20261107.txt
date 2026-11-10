@@ -1,0 +1,4 @@
+{"var": "0", "prompt_n": 22730, "pp": 85.09, "out": " word120"}
+{"var": "0", "prompt_n": 51901, "pp": 76.4, "out": " word260"}
+{"var": "1", "prompt_n": 22730, "pp": 84.95, "out": " word120"}
+{"var": "1", "prompt_n": 51901, "pp": 76.81, "out": " word260"}

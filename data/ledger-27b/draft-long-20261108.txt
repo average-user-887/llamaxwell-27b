@@ -1,0 +1,9 @@
+{"draft": "2", "reps": 0, "prompt_n": 26, "pp": 13.96, "tg": 19.13, "accept": "69/115"}
+{"draft": "2", "reps": 2600, "prompt_n": 51927, "pp": 76.46, "tg": 11.59, "accept": "79/95"}
+{"draft": "2", "reps": 4900, "prompt_n": 100227, "pp": 65.33, "tg": 8.07, "accept": "80/94"}
+{"draft": "1", "reps": 0, "prompt_n": 26, "pp": 13.94, "tg": 19.14, "accept": "53/73"}
+{"draft": "1", "reps": 2600, "prompt_n": 51927, "pp": 76.41, "tg": 8.09, "accept": "58/68"}
+{"draft": "1", "reps": 4900, "prompt_n": 100227, "pp": 65.33, "tg": 5.2, "accept": "59/67"}
+{"draft": "0", "reps": 0, "prompt_n": 26, "pp": 17.77, "tg": 14.19, "accept": "None/None"}
+{"draft": "0", "reps": 2600, "prompt_n": 51927, "pp": 79.13, "tg": 5.8, "accept": "None/None"}
+{"draft": "0", "reps": 4900, "prompt_n": 100227, "pp": 68.01, "tg": 3.73, "accept": "None/None"}

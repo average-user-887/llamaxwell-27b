@@ -1,0 +1,58 @@
+{"tag": "", "flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.99, "tg": 19.08, "accept": "69/115"}
+{"tag": "", "flag": "0", "reps": 2600, "prompt_n": 51927, "pp": 76.44, "tg": 11.58, "accept": "79/95"}
+{"tag": "", "flag": "0", "reps": 4900, "prompt_n": 100227, "pp": 65.28, "tg": 8.06, "accept": "80/94"}
+{"tag": "", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 13.92, "tg": 18.89, "accept": "69/115"}
+{"tag": "", "flag": "2", "reps": 2600, "prompt_n": 51927, "pp": 76.27, "tg": 16.78, "accept": "77/99"}
+{"tag": "", "flag": "2", "reps": 4900, "prompt_n": 100227, "pp": 65.26, "tg": 14.4, "accept": "79/95"}
+{"tag": "", "flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.93, "tg": 18.88, "accept": "69/115"}
+{"tag": "", "flag": "0", "reps": 2600, "prompt_n": 51927, "pp": 76.3, "tg": 11.6, "accept": "79/95"}
+{"tag": "", "flag": "0", "reps": 4900, "prompt_n": 100227, "pp": 65.25, "tg": 8.07, "accept": "80/94"}
+{"tag": "", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 13.91, "tg": 18.84, "accept": "69/115"}
+{"tag": "", "flag": "2", "reps": 2600, "prompt_n": 51927, "pp": 76.29, "tg": 16.77, "accept": "77/99"}
+{"tag": "", "flag": "2", "reps": 4900, "prompt_n": 100227, "pp": 65.24, "tg": 14.38, "accept": "79/95"}
+{"tag": "shortAB", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 13.89, "tg": 19.02, "accept": "69/115"}
+{"tag": "shortAB", "flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.87, "tg": 19.02, "accept": "69/115"}
+{"tag": "shortAB", "flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.89, "tg": 18.99, "accept": "69/115"}
+{"tag": "shortAB", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 14.01, "tg": 18.86, "accept": "69/115"}
+{"tag": "shortAB", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 13.94, "tg": 18.93, "accept": "69/115"}
+{"tag": "shortAB", "flag": "0", "reps": 0, "prompt_n": 26, "pp": 14.0, "tg": 18.98, "accept": "69/115"}
+{"tag": "shortAB", "flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.89, "tg": 18.96, "accept": "69/115"}
+{"tag": "shortAB", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 13.77, "tg": 18.92, "accept": "69/115"}
+{"tag": "minq1", "flag": "2", "reps": 0, "prompt_n": 26, "pp": 13.93, "tg": 19.07, "accept": "69/115"}
+{"tag": "minq1", "flag": "2", "reps": 4900, "prompt_n": 100227, "pp": 65.4, "tg": 14.45, "accept": "78/97"}
+
+## 8 Nov Card F (design 2)
+Lib: mmvqtune-libs/libggml-cuda-mmvqT-fagemm-fadec2.so (build 3 of 4). Flag GGML_CUDA_FA_DEC=2; 0 and 1 unchanged. tbo, verify and MINQ=1 rows ran on build 3; KLD draws and DEC=0/2 tg rows ran on build 2. Build 3 only adds the env-gated CPU verify; the kernel default path did not change.
+
+Gate 1 tbo FLASH_ATTN_EXT: PASS. 3993/3993 for DEC=0, DEC=2 MINQ3, DEC=2 MINQ1. With FADEC2_CASES (G=4/6/8 hsk256 q4_0): 4281/4281, fa_dec2 total calls=120 (MINQ3), 264 (MINQ1). The stock 3993 cases never reach the DEC=2 path; only the added cases do.
+
+Gate 2 KLD -c 512 --chunks 16 -b 3 -ub 3 (pass: |d mean| <= 0.0005, same-top within 0.3 pt). 4080 scored tokens.
+| draw | mean KLD | max KLD | same top | d mean vs control | gate |
+|---|---|---|---|---|---|
+| DEC=0 control | 0.009094 | 1.498 | 97.745 | - | - |
+| DEC=2 default (shipped; 4x incl. both verify runs) | 0.010614 | 6.679 | 97.672 | +0.00152 | FAIL |
+| DEC=2 SPLIT=3 | 0.010577 | 6.831 | 97.770 | +0.00148 | FAIL |
+| DEC=2 SPLIT=2 | 0.009333 | 0.933 | 97.672 | +0.00024 | pass |
+| DEC=2 SPLIT=1 | 0.009073 | 0.593 | 97.672 | -0.00002 | pass |
+| GEMM_MINQ=1 (not DEC=2) | 0.009538 | 0.857 | 97.917 | +0.00044 | n/a |
+| DEC=1 | 0.009345 | 1.197 | 97.598 | +0.00025 | n/a |
+| OCCAMY_FA=1 | 0.009094 | 1.498 | 97.745 | 0 (same as control, not an independent draw) | n/a |
+Standard c512 KLD: DEC=0 and DEC=2 identical (0.004511, max 1.740, top 98.309); the DEC=2 path is not exercised there.
+The miss is one token of KLD ~6.7 (~0.0015 of the mean). It appears in 2 of 4 distinct DEC=2 settings and 0 of 3 distinct other paths. It is deterministic, not a race. The token was not identified.
+Self-consistency on real inputs, default settings, same 6.679 token reproduced:
+- VERIFY=1 (nsplit=1 re-run): ~43k calls, worst_rel 2.09e-6, 0 non-finite, 0 flagged.
+- VERIFY=2 (CPU double reference, per seq/row/head): ~43k calls, 0 flagged at rel>1e-3, worst_rel 8.33e-6 and worst_abs 7.02e-5 at the last 40k progress line.
+This points away from a computation error in the kernel, on calls that went through it. It does not compare with the stock kernel on the same inputs, the reference shares my reading of the inputs, and calls that fall back to stock are not checked. Rounding amplified through q4_0 KV re-quantization fits this but is UNVERIFIED. SPLIT=1/2 passing is not presented as a fix: choosing them would be selecting on noise.
+
+Gate 3 tg / pp (2 runs each unless noted; baseline 18.9/11.58/8.07 t/s):
+| ctx | tg DEC=0 | tg DEC=2 | d tg | pp DEC=0 | pp DEC=2 | d pp | accept 0 -> 2 |
+|---|---|---|---|---|---|---|---|
+| 26 (pooled 6+6) | 18.985 | 18.91 | -0.39% | 13.928 | 13.907 | -0.15% | 69/115 same |
+| 51.9k | 11.58/11.60 | 16.78/16.77 | +44.8% | 76.44/76.30 | 76.27/76.29 | -0.12% | 79/95 -> 77/99 |
+| 100k | 8.06/8.07 | 14.40/14.38 | +78% | 65.28/65.25 | 65.26/65.24 | -0.02% | 80/94 -> 79/95 |
+DEC=2 MINQ=1, 1 run, not a pair: 26 ctx tg 19.07 pp 13.93 (69/115); 100k tg 14.45 pp 65.4 (78/97). MTP-off not run. maxT 75 C on the DEC=0/2 long A/B. Outputs are not bit-identical at long ctx (accept differs).
+Speed criteria all pass; no SPLIT tuning was needed. The first 2+2 short runs alone were -0.61% (just over the limit); balanced extra runs give the pooled -0.39%.
+
+Profile: nvprof unusable (error 4211:27). Knockouts at n_kv=100352 G6 NR3 on the first version: full 4.9 ms/call, no phase A 1.0, no phase C 3.56, neither 0.11, so phase A dominated (~3.6 ms, ~1/6 of peak FMA, 222 regs). Low-register phase A (AV3, 204 regs, MINB=2): 2.94 ms, maxerr OK. AV3 MINB=3: 2.85-3.70 ms, unstable, spills.
+
+VERDICT: REJECTED as written on gate 2 (default +0.00152 > 0.0005); speed-qualified (+78% tg@100k, +44.8% @52k, -0.39% short, pp >= -0.15%). Not a clean CANDIDATE. Flagged for coordinator decision: accept the one-token miss, or first identify the token and compare it with stock. Prod not restored; NO_RESTORE left in place.

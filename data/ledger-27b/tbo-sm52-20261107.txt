@@ -1,0 +1,33 @@
+== SM52=0 test
+== SM52=1 test
+[MUL_MAT] ERR = 0.997973908 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.999238568 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997837323 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997922796 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=2,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997853769 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998456586 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=2,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997583239 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998065570 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=2,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998769377 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998311951 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998222011 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998371684 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 1.000234582 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.994820869 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=3,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997829644 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997990511 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=3,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997843766 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998312537 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=3,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998043654 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.998348215 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997796103 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 0.997843366 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;31mFAIL[0m
+[MUL_MAT] ERR = 1.000165119 > 0.000500000   MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;31mFAIL[0m
+== SM52=0 perf m=5120,k=17408
+== SM52=0 perf m=17408,k=5120
+== SM52=1 perf m=5120,k=17408
+== SM52=1 perf m=17408,k=5120
+== SM52=0 perf m=5120,k=17408
+== SM52=0 perf m=17408,k=5120
+== SM52=1 perf m=5120,k=17408
+== SM52=1 perf m=17408,k=5120

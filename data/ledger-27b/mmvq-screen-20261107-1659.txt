@@ -1,0 +1,30 @@
+
+==========
+== CUDA ==
+==========
+tr: misaligned [:upper:] and/or [:lower:] construct
+
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+p4n1 n=1 147.62
+p4n1 n=2 166.94
+p4n1 n=3 216.56
+p4n1 n=4 283.86
+p4n1 n=5 340.54
+q31 n=1 144.37
+q31 n=2 166.13
+q31 n=3 220.72
+q31 n=4 279.89
+q31 n=5 340.11
+q34 n=1 143.89
+q34 n=2 165.87
+q34 n=3 217.27
+q34 n=4 280.02
+q34 n=5 342.29

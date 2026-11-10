@@ -1,0 +1,264 @@
+{
+ "base": {
+  "model": "/m2/qwen38-27b/Qwen3.8-27B-Q4_0-head4.gguf",
+  "np": 2,
+  "c": 262144,
+  "kv": "q4_0",
+  "unified": false,
+  "ub": 1024,
+  "b": 2048,
+  "draftn": 2,
+  "ctkd": null,
+  "mmproj": null,
+  "md": null,
+  "env": {
+   "GGML_CUDA_SGEMM_NN": "1",
+   "GGML_CUDA_FA_GEMM": "1"
+  },
+  "extra": [],
+  "so": "/media/avg-usr/Storage/m6000-llama-cpp/mmvqtune-libs/libggml-cuda-mmvqT-fagemm.so"
+ },
+ "base_m": {
+  "slots": 2,
+  "n_ctx": 131072,
+  "pp4k": 91.3,
+  "pp23k": 83.98,
+  "accept": "152/204",
+  "tg1": 22.72,
+  "tg2agg": 21.4,
+  "probe_outs": [
+   "    if not intervals:\n        return []\n\n    # Sort intervals based on start time\n    intervals.sort(key=lambda x: x[0])\n\n    merged = [intervals[0]]\n    for current in intervals[1:]:\n        last = merged[-1]\n        # Check if the current interval overlaps with the last merged interval\n        if current[0] <= last[1]:\n            # Update the end time of the last merged interval",
+   "\n\nTo determine the arrival time, we need to add the duration of the trip to the departure time.\n\n1.  **Start with the departure time:** 14:35.\n2.  **Add the hours:** The trip takes 2 hours.\n    $14:35 + 2 \\text{ hours} = 16:35$.\n3.  **Add the minutes:** The trip also takes 50 minutes",
+   " Thermal runaway\n2. Cell imbalance\n3. Mechanical damage\n4. Electrolyte leakage\n5. Connector failure\n\nHere are the five failure modes of a lithium-ion battery pack along with a specific mitigation strategy for each:\n\n1. **Thermal Runaway**\n   *   **Mitigation:** Implement a robust **Battery Management System (BMS)** with thermal sensors and active cooling. The BMS should be programmed to immediately disconnect the pack if cell temperatures exceed"
+  ],
+  "vram_peak": 23217,
+  "probe": 1.0
+ },
+ "tried": [
+  "P",
+  "F5-2x128k-q8",
+  "F1-2x128k-q4",
+  "F2-256k-unified-q4",
+  "F4-vision-on-F1-2x128k-q4",
+  "U1-ub1024",
+  "U2-ub2048",
+  "M2-draft2",
+  "M4-draft4",
+  "M6-draft6",
+  "K1-draftkv-q8",
+  "G0-graphs-off",
+  "E-rms_warp1",
+  "E-mmq_compact0",
+  "E-mmq_xmad0",
+  "E-mmq_tail0",
+  "E-q8reuse0",
+  "E-normq8_0",
+  "E-rowpack0",
+  "E-occfa0",
+  "E-occfused0",
+  "E-force_mmq",
+  "E-force_cublas",
+  "Q-IQ4_XS",
+  "Q-Q3_K_XL",
+  "B-rep0",
+  "B-rep1",
+  "B-rep2",
+  "G1-maxwell-graphs",
+  "G2-graph-opt",
+  "X1-maxwell-fusion",
+  "X2-mmvq-pipe",
+  "A1-native-fa-sm52",
+  "A2-fa-vec",
+  "A3-fa-waves2",
+  "A4-fa-waves4",
+  "D1-gdn-dec1",
+  "D4-gdn-dec4",
+  "X0-fusion-off",
+  "M1-draft1",
+  "M3-draft3",
+  "S1-pmin0.6",
+  "S2-pmin0.3",
+  "U3-ub512",
+  "U4-ub768",
+  "U5-ub1536",
+  "B1-b1024",
+  "K2-k8v4",
+  "B6-rep0",
+  "B6-rep1",
+  "G1b-maxwell-graphs",
+  "A2b-fa-vec",
+  "X2b-mmvq-pipe",
+  "X1b-maxwell-fusion",
+  "B8-rep0",
+  "B8-rep1",
+  "B8-rep2",
+  "V1-vision-base",
+  "V2-vision-ub512",
+  "V3-vision-2x96k-q4",
+  "L1-2x96k-q8",
+  "C1-ckpt0",
+  "C2-cacheram0",
+  "T1-threads4",
+  "T2-prio2",
+  "B7-rep0",
+  "B7-rep1",
+  "B7-rep2",
+  "K-mmvq-base",
+  "K-mmvq-w2",
+  "K-mmvq-w4",
+  "K-mmvq-r1",
+  "K-mmvq-w4r1",
+  "K-mmvq-up",
+  "B9-rep0",
+  "B9-rep1",
+  "Q-head4",
+  "K-mmvq-n3w4",
+  "K-mmvq-n58w4",
+  "K-mmvq-n24w4",
+  "B10-rep0",
+  "K-mmvq-p4n1",
+  "K-mmvq-p4",
+  "K-mmvq-p4n4",
+  "B11-rep0",
+  "M3b-draft3-p4n1",
+  "M4b-draft4-p4n1",
+  "Q-head4-p4n1",
+  "B12-rep0",
+  "Q-head4-adopt",
+  "B13-rep0",
+  "B13-rep1",
+  "M1b-draft1-head4",
+  "B14-rep0",
+  "K-fp32mv",
+  "K-fp32mv-draft3",
+  "B15-rep0",
+  "P-sgemmnn",
+  "B16-rep0",
+  "P-sgemmnn-adopt",
+  "B17-rep0",
+  "P-dqT2",
+  "B18-rep0",
+  "P-nnsplit4",
+  "P-nnsplit2",
+  "B19-rep0",
+  "C1b-ckpt0-now",
+  "P-fagemm-adopt",
+  "CLK1152-rep0",
+  "CLK1152-rep1",
+  "BASE-rep0",
+  "BASE-rep1"
+ ],
+ "notes": {
+  "P": {
+   "pp4k": 72.3,
+   "tg1": 16.18,
+   "vram_peak": 21526
+  },
+  "P_outs": [
+   "    if not intervals:\n        return []\n\n    # Sort intervals by start time\n    intervals.sort(key=lambda x: x[0])\n\n    merged = [intervals[0]]\n    for current in intervals[1:]:\n        last = merged[-1]\n        # Check if the current interval overlaps with the last merged interval\n        if current[0] <= last[1]:\n            # Update the end time of the last merged interval if",
+   "\n\nTo find the arrival time, we need to add the duration of the trip to the departure time.\n\n1.  **Start with the departure time:** 14:35.\n2.  **Add the hours:** The trip takes 2 hours.\n    $14:35 + 2 \\text{ hours} = 16:35$.\n3.  **Add the minutes:** The trip also takes 50 minutes",
+   " Thermal runaway\n2. Cell imbalance\n3. Mechanical damage\n4. Electrolyte leakage\n5. Connector failure\n\nHere are five failure modes of a lithium-ion battery pack along with a specific mitigation strategy for each:\n\n1.  **Thermal Runaway**\n    *   **Mitigation:** Implement a robust **Battery Management System (BMS)** with precise temperature monitoring and active cooling. The BMS should be programmed to immediately disconnect the pack from the load"
+  ],
+  "layout": "F1-2x128k-q4",
+  "vision_fit": {
+   "fits": false,
+   "vram_peak": 24188,
+   "tg1": null
+  },
+  "kept": [
+   "U1-ub1024",
+   "M2-draft2",
+   "K-mmvq-p4n1",
+   "Q-head4-kld",
+   "P-sgemmnn-kld",
+   "P-dqT2",
+   "P-fagemm"
+  ],
+  "best_reps": [
+   [
+    17.42,
+    78.5
+   ],
+   [
+    17.4,
+    78.3
+   ],
+   [
+    17.39,
+    78.0
+   ]
+  ],
+  "best_reps6": [
+   [
+    17.38,
+    78.3
+   ],
+   [
+    17.32,
+    78.0
+   ]
+  ],
+  "best_reps8": [
+   [
+    17.36,
+    78.1
+   ],
+   [
+    17.36,
+    78.0
+   ],
+   [
+    17.38,
+    78.1
+   ]
+  ],
+  "best_reps7": [
+   [
+    17.35,
+    78.1
+   ],
+   [
+    17.36,
+    78.0
+   ],
+   [
+    17.35,
+    78.1
+   ]
+  ],
+  "best_reps9": [
+   [
+    17.36,
+    78.1
+   ],
+   [
+    17.36,
+    78.0
+   ]
+  ],
+  "r10": {
+   "Q-head4": [
+    125.5,
+    128.2
+   ],
+   "K-mmvq-n3w4": [
+    129.0,
+    128.2
+   ],
+   "K-mmvq-n58w4": [
+    127.9,
+    128.2
+   ],
+   "K-mmvq-n24w4": [
+    135.8,
+    128.2
+   ]
+  },
+  "r12": {
+   "Q-head4-p4n1": [
+    110.8,
+    113.2
+   ]
+  }
+ }
+}

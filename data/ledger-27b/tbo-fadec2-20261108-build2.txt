@@ -1,0 +1,52 @@
+== FA_DEC=0 MINQ=3 FADEC2_CASES=0 09:39:03
+  3993/3993 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=3 FADEC2_CASES=0 09:40:15
+  3993/3993 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=1 FADEC2_CASES=0 09:41:27
+  3993/3993 tests passed
+2/2 backends passed
+== FA_DEC=0 MINQ=3 FADEC2_CASES=1 09:42:39
+  4281/4281 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=3 FADEC2_CASES=1 09:44:22
+ggml_cuda: fa_dec2 call=1 G=4 NR=3 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=2 G=4 NR=3 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=3 G=4 NR=4 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 total calls=120
+  4281/4281 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=1 FADEC2_CASES=1 09:46:06
+ggml_cuda: fa_dec2 call=1 G=4 NR=1 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=2 G=4 NR=1 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=3 G=4 NR=2 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 total calls=264
+  4281/4281 tests passed
+2/2 backends passed
+== FA_DEC=0 MINQ=3 FADEC2_CASES=0 13:04:11
+  3993/3993 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=3 FADEC2_CASES=0 13:05:25
+  3993/3993 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=1 FADEC2_CASES=0 13:06:37
+  3993/3993 tests passed
+2/2 backends passed
+== FA_DEC=0 MINQ=3 FADEC2_CASES=1 13:07:50
+  4281/4281 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=3 FADEC2_CASES=1 13:09:32
+ggml_cuda: fa_dec2 call=1 G=4 NR=3 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=2 G=4 NR=3 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=3 G=4 NR=4 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 total calls=120
+  4281/4281 tests passed
+2/2 backends passed
+== FA_DEC=2 MINQ=1 FADEC2_CASES=1 13:11:15
+ggml_cuda: fa_dec2 call=1 G=4 NR=1 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=2 G=4 NR=1 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 call=3 G=4 NR=2 nkvh=4 ns=1 n_kv=256 nsplit=2
+ggml_cuda: fa_dec2 total calls=264
+  4281/4281 tests passed
+2/2 backends passed

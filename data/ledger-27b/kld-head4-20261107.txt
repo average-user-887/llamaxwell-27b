@@ -1,0 +1,24 @@
+== head4 vs head6
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.764799 ±   0.040631
+Mean PPL(base)                :   1.763486 ±   0.040621
+Cor(ln(PPL(Q)), ln(PPL(base))):  99.89%
+Mean ln(PPL(Q)/PPL(base))     :   0.000744 ±   0.001078
+Mean PPL(Q)/PPL(base)         :   1.000744 ±   0.001078
+Mean PPL(Q)-PPL(base)         :   0.001313 ±   0.001901
+Mean    KLD:   0.002245 ±   0.000075
+Maximum KLD:   0.084020
+99.9%   KLD:   0.041973
+99.0%   KLD:   0.023165
+95.0%   KLD:   0.011388
+90.0%   KLD:   0.007354
+Median  KLD:   0.000178
+10.0%   KLD:   0.000001
+ 5.0%   KLD:   0.000000
+ 1.0%   KLD:  -0.000001
+ 0.1%   KLD:  -0.000003
+Minimum KLD:  -0.000017
+Mean    Δp: -0.052 ± 0.028 %
+Same top p: 98.627 ± 0.182 %
+
+[exited with code 0]

@@ -1,0 +1,1547 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24463 MiB):
+  Device 0: Quadro M6000 24GB, compute capability 5.2, VMM: yes, VRAM: 24463 MiB
+load_backend: loaded CUDA backend from /b/libggml-cuda.so
+load_backend: loaded CPU backend from /b/libggml-cpu-haswell.so
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+Testing 2 devices
+
+Backend 1/2: CUDA0
+  Device description: Quadro M6000 24GB
+  Device memory: 24463 MB (24348 MB free)
+
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f16,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=nvfp4,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq1_0,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=4,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=6,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=7,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=16,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=1,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=2,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=3,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=4,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=4,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=5,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=6,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=6,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=7,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=7,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1023,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=1,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=1,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=2,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=3,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=4,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=4,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=5,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=6,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=6,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=7,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=7,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1023,n=8,k=4096,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=6271,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=6272,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=6273,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=2880,n=32,k=2880,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=2880,n=32,k=2880,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=2880,n=32,k=2880,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=1,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=7,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=8,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=9,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=16,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=127,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=128,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=511,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1,n=512,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1,n=512,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f16,m=1,n=512,k=2048,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1,n=509,k=2051,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f16,m=1,n=509,k=2051,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=31,n=509,k=2051,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=32,n=509,k=2112,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=32,n=509,k=2112,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=2,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=2,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=2,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=100,n=2,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=48,n=2,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=3000,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4100,n=2,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=64,n=2,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=8192,n=2,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=2,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=3,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=3,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=3,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=100,n=3,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=48,n=3,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=3000,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4100,n=3,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=64,n=3,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=8192,n=3,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=3,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=5,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=5,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=5,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f16,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=100,n=5,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=48,n=5,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=3000,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4100,n=5,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=64,n=5,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=8192,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=8192,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=8192,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=8192,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=8192,n=5,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=5,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=8,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=8,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=8,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=bf16,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=100,n=8,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=48,n=8,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=3000,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4100,n=8,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=64,n=8,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=8192,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=8192,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=8192,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=8192,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=8192,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=8,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0,src1=[0,1]): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=40,n=9,k=32,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=9,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=3000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=6144,n=9,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=17408,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f32,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=bf16,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=bf16,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_1,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_0,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_1,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q1_0,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_0,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=mxfp4,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q2_K,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q3_K,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q5_K,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q6_K,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=tq2_0,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): not supported [CUDA0] 
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=100,n=9,k=96,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=48,n=9,k=2560,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=3000,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4100,n=9,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=64,n=9,k=256,bs=[3,2],nr=[2,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=f16,type_b=f32,m=8192,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+  MUL_MAT(type_a=f16,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=8192,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=8192,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q8_0,type_b=f32,m=1000,n=9,k=1024,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=1280,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+  MUL_MAT(type_a=q4_K,type_b=f32,m=8192,n=9,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1,src_overlap=0,m_v=0,pad=0): [1;32mOK[0m
+/w/src-b11552-mmvqtune-20261107/ggml/src/ggml-cuda/ggml-cuda.cu:1560: GGML_ASSERT(convert_func != nullptr) failed
+/b/libggml-base.so.0(+0x1c4f6)[0x724b0a7424f6]
+/b/libggml-base.so.0(ggml_print_backtrace+0x21a)[0x724b0a74297a]
+/b/libggml-base.so.0(ggml_abort+0x15b)[0x724b0a742b5b]
+/b/libggml-cuda.so(+0x32a82b)[0x724b0812a82b]
+/b/libggml-cuda.so(+0x33333f)[0x724b0813333f]
+/b/libggml-cuda.so(+0x33dac5)[0x724b0813dac5]
+/b/libggml-base.so.0(ggml_backend_graph_compute+0x12)[0x724b0a75c0b2]
+/b/libggml-base.so.0(ggml_backend_compare_graph_backend+0x211)[0x724b0a762291]
+/b/test-backend-ops(+0x1138be)[0x5a0d11d0b8be]
+/b/test-backend-ops(+0x76cd4)[0x5a0d11c6ecd4]
+/b/test-backend-ops(+0x26dda)[0x5a0d11c1edda]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x724b0a1a01ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x724b0a1a028b]
+/b/test-backend-ops(+0x27bc5)[0x5a0d11c1fbc5]

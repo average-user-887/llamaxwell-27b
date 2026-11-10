@@ -1,0 +1,67 @@
+Card F2: design 2 (GGML_CUDA_FA_DEC=2) KLD outlier token, 8 Nov 2026. Model Qwen3.8-27B-Q4_0-head4, -c 512 -b 3 -ub 3, ctk/ctv q4_0.
+Evidence: /media/avg-usr/Models/kld-f2-20261108 (per-token *-tok.txt, dumps, summary.txt); scripts $O/f2.
+
+VERDICT: amplification of rounding-level differences, not a DEC=2 kernel bug shown. No fix built. Gate NOT relaxed: DEC=2 still fails gate 2 as written; owner decides.
+Not proven: that removing q8_1 rounding removes this outlier (no-q8 run only finished chunk 0; see Q5).
+
+Q1 TOKEN
+Chunk 10 pos 416, next token [52796 ".catch"], context "...alaw2lin(data, 2)\n\n    def _ulaw2lin(self, data):\n        with warnings".
+Base: .catch .397, .append .145, .simple .139, .warn .0409, .ignore .0292, .cast .0142, .clear .0127, .compile .0109.
+DEC=0 kld .0636: .catch .294, .append .208, .simple .118, .warn .038, 7191 .026, 33930 .022, 46988 .016, 9874 .015.
+DEC=2 kld 6.679: .catch .99995, .simple 2.59e-5, .warn 1.18e-5, 2213 4.65e-6, .append 4.28e-8.
+Cause: no NaN/inf (nonfinite 0), base prob not near zero, top token not flipped. Over-confident on the same top token with alternatives crushed. Logits DEC=2 vs DEC=0: diff rms 2.42, max 11.01, .catch 17.02 to 27.99.
+
+Q2 SAME-INPUT STOCK vs DEC=2 (real stock kernel, in-process, env-gated, same Q/K/V/mask)
+Whole run, 43520 calls (NR=3), nonfinite 0: worst-row rel median 4.70e-4, p99 9.9e-4, p99.9 1.25e-3, max 1.73e-3; rms median 1.75e-4, max 5.02e-4; abs max .0109. No outliers.
+Same comparison on stock trajectory: median 4.73e-4, p99 9.96e-4, max 1.59e-3, rms max 5.09e-4. Same distribution.
+Eval 1848 per layer rel, l0..l15: 3.14e-4 4.34e-4 3.78e-4 5.47e-4 4.35e-4 4.39e-4 6.20e-4 4.88e-4 6.05e-4 5.23e-4 4.83e-4 6.49e-4 4.88e-4 3.99e-4 4.43e-4 3.22e-4. Ordinary eval; no first-diverging layer stands out.
+Size note: DEC=2 vs stock ~1e-4 rms is the size of stock's own f16 K/V rounding (DEC=2 vs f32 CPU ref 8e-6).
+Mapping: mask identical in all layers. Stock with its own K/V handling agrees to 1.7e-3 on every call, which excludes a wrong mask/row/slice using stock rather than the CPU ref.
+Single-eval logits on identical prior state: stock trajectory with DEC=2 only at 1848: logit rms .1685, max 1.009, .catch .294 to .445, kld .062. DEC=2 trajectory with stock only at 1848: logit rms .163, max .842 against the full DEC=2 run, .catch stays .99995, kld 6.680. This eval's FA does not cause the outlier.
+
+Q3 CARRY-FORWARD: YES
+DEC=2 vs DEC=0 runs at eval 1848: layer 0 Q/K/V identical, Q rel l1 .0188, l5 .0373, l9 .144, l10 .692, l11 .745, l12 .704, l15 .390. K rel .075 to .160, V rel .086 to .207 over 417 rows; nibbles differ K 14.8-35.5%, V 19.1-46.6%.
+The jump is in carried state, at l9 to l10: run-to-run FA output rel l9 .266, l10 .991, l11 1.101, with worst row 416, the target position (rel 2.99 at l10). Stock + 1e-7 shows the same shape against DEC=0: Q rel l10 .668, l11 .731; output rel l10 .975; worst row 416 (2.91).
+Bounded by chunk: DEC=2 on chunk 10 only reproduces 6.679251 exactly; chunks 0-9 unchanged.
+Partial DEC=2 in chunk 10 (kld at 10:416): evals 0-85 1.023, 86-137 .055, 120-137 .139, 132-137 .246. No single eval responsible. Recurrent GDN state itself not measured.
+
+Q4 OUTLIER RATE, PAIRED (64 chunks, 16320 tokens; head4.kld has only 16, so new base head4-64.kld was generated)
+Base check: first 16 chunks' tokens and all 4080 records byte-identical to head4.kld.
+         mean      max    >1  >3  same top
+DEC=0  .011873   1.498    5   0   97.794
+DEC=2  .012500   6.679    6   1   97.641
+Paired difference mean +.000627, se .000568, t 1.11. Excluding 10:416: +.000222, se .000397, t .56. Not distinguishable from noise on the mean.
+Tokens >1: DEC=0 only 3, DEC=2 only 4, both 2. DEC=0 counterparts: 12:422 1.498, 56:395 1.220, 57:403 1.133, 61:312 1.129, 28:424 1.017. DEC=2: 10:416 6.679, 57:403 1.969, 39:472 1.784, 12:422 1.253, 35:301 1.197, 32:381 1.023.
+Unperturbed DEC=0 has NO counterpart above 3 in 64 chunks. The >3 class has only one event, too few to compare rates.
+
+STOCK + NOISE CONTROL (16 chunks, stock kernel, output noise on all calls; kld at 10:416, run max)
+1e-7: 4.500, max 4.500, one >3, p(.catch) .99873, K/V and Q divergence same shape as the DEC=2 run (Q3). So the stock kernel reaches the same outlier.
+1e-6 three seeds: .089 .196 .194, max 1.476 .831 .624. 3e-4 three seeds: .115 .134 .164, max 1.292 .618 1.491.
+DEC=2 + 1e-6 three seeds: 1.177 .052 .937, max 1.696 .319 1.511.
+Counts at 10:416 >3: stock 1 of 8 (incl. unperturbed), DEC=2 3 of 11 (a2 default, SPLIT=3, SPLIT=3 + noise). Small sample; no rate difference can be claimed either way.
+
+SPLIT CONFLICT RESOLVED
+SPLIT is not a causal factor; it selects a different chaotic realization. SPLIT=1 + 2e-6: .596, .276. SPLIT=3 + 2e-6: .334 (outlier gone, p .768) and 6.300 (outlier present). No-noise SPLIT=1 .417, =2 .462, =3 6.831. Same SPLIT, different seed, outlier comes and goes. 2e-6 per-call agreement is consistent because tiny differences are enough.
+
+Q5 AMPLIFIER: q8_1 ACTIVATION ROUNDING IN Q4_0 MMVQ
+Perturbation of FA output response was a step, not linear. At call 29584, l0 output noise only, Q(l1) rel: 1e-7 exactly 0; 1e-6 .0193; 1e-5 .0179; 1e-4 .0187; DEC=2 .0175. Perturbed runs differ from each other by .018-.020, so each is an independent realization.
+At call 1616: 1e-7 and 1e-6 both .01729 (identical to 5 digits: same discrete flip), 1e-4 .02132.
+Mechanism fits: q4_0 x f32 mmvq rounds the f32 activation to q8_1 (amax/127 per block). A change below the rounding step does nothing unless an element crosses a threshold; once one crosses, later rounding decorrelates and the difference saturates at rounding-noise level.
+Test: env-gated GGML_CUDA_FA_DBG_NOQ8=1 routes q x f32 mul_mat to cuBLAS (dequant + F32 GEMM, no q8_1). Call 336, l0 output noise only, Q(l1) rel:
+         q8_1 path   no q8_1
+1e-6     3.29e-3     9.78e-7     (q8_1: 66.7% of elements exactly unchanged)
+1e-4     3.48e-2     5.74e-6
+Gain drops by about 3400x and 6000x, and the no-q8 response is below the input size. q8_1 vs no-q8 unperturbed at the same call: Q(l0) rel 6.83e-2, Q(l1) 8.39e-2, so rounding-level state difference is several percent by eval 20.
+Chunk 0 only (no-q8 ~.8-1.6 s/eval, 300 s cap; never reached chunk 10): mean KLD DEC=0 .001418, DEC=2 .001251, max .068, .054; q8_1 path same chunk .002988, .002977.
+This sensitivity is in the DEC=0 path too; it is not specific to DEC=2. q4 K/V rounding in cache is a further discretizing step across evals, not separately isolated.
+
+NOT DETERMINED
+- Whether 10:416 stays below 3 under no-q8 for DEC=2 (estimate 25-50 min per arm at .8-1.6 s/eval; box ran out).
+- Why this position is so sensitive: l10 onward grows on row 416 (Q3), root cause in the weights/prompt not determined. Recurrent state contents not measured.
+- Caveat on the no-q8 test: its 1e-4 response is sublinear against 1e-6, unexplained; q4 K/V rounding still present on that route.
+- A true rate of >3 events: only 1 in 16320 unperturbed DEC=2, 0 in DEC=0, 1 in stock + 1e-7 on 4080.
+
+NOTES
+Builds used 3 of 3. fadec2.so unchanged (md5 28f83e85...). Debug lib in mmvqtune-libs is v2; v3 (NOQ8) at $X/libggml-cuda-fadec2dbg-v3.so and tmp-combo, not installed because dbg.so is root-owned.
+Chain6 z1*/za* runs did not get v3 (install failed): they are q8_1 runs; za0/za2 reproduce a0/a2 exactly (.009094/1.498, .010614/6.679). y1* no-q8 runs reached no dump; ya0/ya2 are chunk 0 only.
+ggml-cuda.cu edited for the gate only, default paths unchanged; backup .bak-20261108-fadec2dbg. All runs maxtemp at most 75 C. NO_RESTORE left; prod stopped.

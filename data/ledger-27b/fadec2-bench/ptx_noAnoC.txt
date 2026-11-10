@@ -1,0 +1,79 @@
+nvcc warning : Support for offline compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+/w/src/ggml/src/ggml-cuda/fattn-dec.cu(115): warning #177-D: variable "Kb" was declared but never referenced
+      const char * Kb = p.K + seq*p.nbk3 + kvh*p.nbk2;
+                   ^
+          detected during instantiation of "void fd_launch_t<G,NR>(const fd_params &, int, float *, cudaStream_t) [with G=6, NR=1]" at line 328
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/w/src/ggml/src/ggml-cuda/fattn-dec.cu(117): warning #177-D: variable "Vb" was declared but never referenced
+      const char * Vb = p.V + seq*p.nbv3 + kvh*p.nbv2 + 18*vb;
+                   ^
+          detected during instantiation of "void fd_launch_t<G,NR>(const fd_params &, int, float *, cudaStream_t) [with G=6, NR=1]" at line 328
+
+/w/src/ggml/src/ggml-cuda/fattn-dec.cu(121): warning #177-D: variable "q0" was declared but never referenced
+      const int q0 = 1 == 2 ? (tid >> 6)*NQH : 0;
+                ^
+          detected during instantiation of "void fd_launch_t<G,NR>(const fd_params &, int, float *, cudaStream_t) [with G=6, NR=1]" at line 328
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_Z9fd_kernelILi8ELi3EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi8ELi3EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 12480 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 7.073 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi8ELi2EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi8ELi2EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 8320 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 5.510 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi8ELi1EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi8ELi1EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 4160 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 5.007 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi4ELi4EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi4ELi4EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 8320 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 5.219 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi4ELi3EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi4ELi3EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 6240 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 5.089 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi4ELi2EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi4ELi2EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 4160 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 4.734 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi4ELi1EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi4ELi1EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 2080 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 4.297 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi6ELi4EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi6ELi4EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 12480 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 5.984 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi6ELi3EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi6ELi3EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 9360 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 5.336 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi6ELi2EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi6ELi2EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 6240 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 4.951 ms
+ptxas info    : Compiling entry function '_Z9fd_kernelILi6ELi1EEv9fd_params' for 'sm_52'
+ptxas info    : Function properties for _Z9fd_kernelILi6ELi1EEv9fd_params
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 3120 bytes smem, 480 bytes cmem[0], 4 bytes cmem[2]
+ptxas info    : Compile time = 4.472 ms
+ptxas info    : Compiling entry function '_Z10fd_combinePKfPK6float2Pfiii' for 'sm_52'
+ptxas info    : Function properties for _Z10fd_combinePKfPK6float2Pfiii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers, 356 bytes cmem[0], 12 bytes cmem[2]
+ptxas info    : Compile time = 12.017 ms

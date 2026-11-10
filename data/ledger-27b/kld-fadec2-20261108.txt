@@ -1,0 +1,114 @@
+== KLD vs head4 base (FA_DEC=0) -c 512 -b 3 -ub 3
+0.20.469.338 I kl_divergence: 17.25 seconds per pass - ETA 4.60 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.762569 ±   0.040386
+Mean    KLD:   0.009094 ±   0.000519
+Maximum KLD:   1.498079
+Same top p: 97.745 ± 0.232 %
+== KLD vs head4 base (FA_DEC=0) -c 512
+0.28.566.736 I kl_divergence: 25.15 seconds per pass - ETA 1.67 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.771410 ±   0.040887
+Mean    KLD:   0.004511 ±   0.000479
+Maximum KLD:   1.740090
+Same top p: 98.309 ± 0.202 %
+== KLD vs head4 base (FA_DEC=2) -c 512 -b 3 -ub 3
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+0.20.794.924 I kl_divergence: 17.46 seconds per pass - ETA    1       1.1926 ±    0.0629       0.00416 ±    0.00629       0.00298 ±    0.00085     2.378 ±  0.521 %    98.824 ±  0.677 %
+Mean PPL(Q)                   :   1.772579 ±   0.040875
+Mean    KLD:   0.010614 ±   0.001704
+Maximum KLD:   6.679251
+Same top p: 97.672 ± 0.236 %
+ggml_cuda: fa_dec2 total calls=43520
+== KLD vs head4 base (FA_DEC=2) -c 512
+0.28.503.925 I kl_divergence: 25.16 seconds per pass - ETA 1.67 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.771410 ±   0.040887
+Mean    KLD:   0.004511 ±   0.000479
+Maximum KLD:   1.740090
+Same top p: 98.309 ± 0.202 %
+== KLD vs head4 base (FA_DEC=2 -e GGML_CUDA_FA_DEC_SPLIT=1) -c 512 -b 3 -ub 3
+0.20.530.290 I kl_divergence: 17.28 seconds per pass - ETA 4.60 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.770490 ±   0.040631
+Mean    KLD:   0.009073 ±   0.000440
+Maximum KLD:   0.593106
+Same top p: 97.672 ± 0.236 %
+ggml_cuda: fa_dec2 total calls=43520
+== KLD vs head4 base (FA_DEC=2 ) -c 512 -b 3 -ub 3
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+0.20.428.301 I kl_divergence: 17.21 seconds per pass - ETA    1       1.1926 ±    0.0629       0.00416 ±    0.00629       0.00298 ±    0.00085     2.378 ±  0.521 %    98.824 ±  0.677 %
+Mean PPL(Q)                   :   1.772579 ±   0.040875
+Mean    KLD:   0.010614 ±   0.001704
+Maximum KLD:   6.679251
+Same top p: 97.672 ± 0.236 %
+ggml_cuda: fa_dec2 total calls=43520
+== KLD vs head4 base (FA_DEC=2 -e GGML_CUDA_FA_DEC_SPLIT=2) -c 512 -b 3 -ub 3
+0.20.866.022 I kl_divergence: 17.52 seconds per pass - ETA 4.67 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.771747 ±   0.040691
+Mean    KLD:   0.009333 ±   0.000481
+Maximum KLD:   0.933186
+Same top p: 97.672 ± 0.236 %
+ggml_cuda: fa_dec2 total calls=43520
+== KLD vs head4 base (FA_DEC=2 -e GGML_CUDA_FA_DEC_VERIFY=1) -c 512 -b 3 -ub 3
+0.20.936.625 I kl_divergence: 17.59 seconds per pass - ETA 4.68 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+ggml_cuda: fa_dec2 verify progress calls=5000 flagged=0 nonfinite=0 worst_rel=1.71e-06
+ggml_cuda: fa_dec2 verify progress calls=10000 flagged=0 nonfinite=0 worst_rel=1.77e-06
+ggml_cuda: fa_dec2 verify progress calls=15000 flagged=0 nonfinite=0 worst_rel=2.09e-06
+ggml_cuda: fa_dec2 verify progress calls=20000 flagged=0 nonfinite=0 worst_rel=2.09e-06
+ggml_cuda: fa_dec2 verify progress calls=25000 flagged=0 nonfinite=0 worst_rel=2.09e-06
+ggml_cuda: fa_dec2 verify progress calls=30000 flagged=0 nonfinite=0 worst_rel=2.09e-06
+ggml_cuda: fa_dec2 verify progress calls=35000 flagged=0 nonfinite=0 worst_rel=2.09e-06
+ggml_cuda: fa_dec2 verify progress calls=40000 flagged=0 nonfinite=0 worst_rel=2.09e-06
+Mean PPL(Q)                   :   1.772579 ±   0.040875
+Mean    KLD:   0.010614 ±   0.001704
+Maximum KLD:   6.679251
+Same top p: 97.672 ± 0.236 %
+ggml_cuda: fa_dec2 total calls=43520
+== KLD vs head4 base (FA_DEC=2 -e GGML_CUDA_FA_DEC_SPLIT=3) -c 512 -b 3 -ub 3
+0.20.797.058 I kl_divergence: 17.41 seconds per pass - ETA 4.63 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.773735 ±   0.040893
+Mean    KLD:   0.010577 ±   0.001739
+Maximum KLD:   6.831045
+Same top p: 97.770 ± 0.231 %
+ggml_cuda: fa_dec2 total calls=43520
+== KLD vs head4 base (FA_DEC=0 -e GGML_CUDA_FA_GEMM_MINQ=1) -c 512 -b 3 -ub 3
+0.20.666.616 I kl_divergence: 17.40 seconds per pass - ETA 4.63 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.770013 ±   0.040882
+Mean    KLD:   0.009538 ±   0.000513
+Maximum KLD:   0.856880
+Same top p: 97.917 ± 0.224 %
+== KLD vs head4 base (FA_DEC=1 ) -c 512 -b 3 -ub 3
+0.20.996.536 I kl_divergence: 17.71 seconds per pass - ETA 4.72 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.763937 ±   0.040195
+Mean    KLD:   0.009345 ±   0.000522
+Maximum KLD:   1.197098
+Same top p: 97.598 ± 0.240 %
+== KLD vs head4 base (FA_DEC=0 -e GGML_CUDA_OCCAMY_FA=1) -c 512 -b 3 -ub 3
+0.20.845.001 I kl_divergence: 17.49 seconds per pass - ETA 4.65 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.762569 ±   0.040386
+Mean    KLD:   0.009094 ±   0.000519
+Maximum KLD:   1.498079
+Same top p: 97.745 ± 0.232 %
+== KLD vs head4 base (FA_DEC=2 -e GGML_CUDA_FA_DEC_VERIFY=2) -c 512 -b 3 -ub 3
+0.35.576.029 I kl_divergence: 32.39 seconds per pass - ETA 8.63 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+ggml_cuda: fa_dec2 verify cpu calls=5000 flagged=0 worst_rel=7.36e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=10000 flagged=0 worst_rel=7.36e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=15000 flagged=0 worst_rel=7.5e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=20000 flagged=0 worst_rel=7.5e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=25000 flagged=0 worst_rel=7.86e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=30000 flagged=0 worst_rel=7.86e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=35000 flagged=0 worst_rel=7.86e-06 worst_abs=7.02e-05
+ggml_cuda: fa_dec2 verify cpu calls=40000 flagged=0 worst_rel=8.33e-06 worst_abs=7.02e-05
+Mean PPL(Q)                   :   1.772579 ±   0.040875
+Mean    KLD:   0.010614 ±   0.001704
+Maximum KLD:   6.679251
+Same top p: 97.672 ± 0.236 %
+ggml_cuda: fa_dec2 total calls=43520

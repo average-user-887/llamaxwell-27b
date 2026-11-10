@@ -1,0 +1,12 @@
+{"flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.66, "tg": 19.03, "accept": "69/115"}
+{"flag": "0", "reps": 2600, "prompt_n": 51927, "pp": 76.45, "tg": 11.6, "accept": "79/95"}
+{"flag": "0", "reps": 4900, "prompt_n": 100227, "pp": 65.34, "tg": 8.07, "accept": "80/94"}
+{"flag": "1", "reps": 0, "prompt_n": 26, "pp": 13.84, "tg": 18.65, "accept": "69/114"}
+{"flag": "1", "reps": 2600, "prompt_n": 51927, "pp": 76.29, "tg": 8.14, "accept": "80/94"}
+{"flag": "1", "reps": 4900, "prompt_n": 100227, "pp": 65.27, "tg": 5.05, "accept": "80/94"}
+{"flag": "0", "reps": 0, "prompt_n": 26, "pp": 13.95, "tg": 18.95, "accept": "69/115"}
+{"flag": "0", "reps": 2600, "prompt_n": 51927, "pp": 76.34, "tg": 11.59, "accept": "79/95"}
+{"flag": "0", "reps": 4900, "prompt_n": 100227, "pp": 65.29, "tg": 8.06, "accept": "80/94"}
+{"flag": "1", "reps": 0, "prompt_n": 26, "pp": 13.9, "tg": 18.61, "accept": "69/114"}
+{"flag": "1", "reps": 2600, "prompt_n": 51927, "pp": 76.32, "tg": 8.13, "accept": "80/94"}
+{"flag": "1", "reps": 4900, "prompt_n": 100227, "pp": 65.32, "tg": 5.04, "accept": "80/94"}

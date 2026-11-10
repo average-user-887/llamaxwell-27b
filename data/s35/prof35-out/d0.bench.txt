@@ -1,0 +1,10 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24463 MiB):
+  Device 0: Quadro M6000 24GB, compute capability 5.2, VMM: yes, VRAM: 24463 MiB
+load_backend: loaded CUDA backend from /app/libggml-cuda.so
+load_backend: loaded CPU backend from /app/libggml-cpu-haswell.so
+ggml_cuda: occamy FA decode kernel mode 1
+| model                          |       size |     params | backend    | ngl | n_batch | n_ubatch |  fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | -------: | --: | --------------: | -------------------: |
+| qwen35moe 35B.A3B Q4_0         |  18.23 GiB |    34.66 B | CUDA       | 999 |    4096 |     4096 |   1 |             tg6 |         75.56 ± 0.00 |
+
+build: unknown (0)

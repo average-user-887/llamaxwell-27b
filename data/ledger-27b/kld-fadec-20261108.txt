@@ -1,0 +1,14 @@
+== KLD vs head4 base (FA_DEC=1) -c 512
+0.28.517.349 I kl_divergence: 25.14 seconds per pass - ETA 1.67 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.764798 ±   0.040631
+Mean    KLD:   0.000000 ±   0.000000
+Maximum KLD:   0.000053
+Same top p: 100.000 ± 0.000 %
+== KLD vs head4 base (FA_DEC=1) -c 512 -b 3 -ub 3
+0.20.724.222 I kl_divergence: 17.40 seconds per pass - ETA 4.63 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.764227 ±   0.040683
+Mean    KLD:   0.007056 ±   0.001641
+Maximum KLD:   6.564505
+Same top p: 98.137 ± 0.212 %

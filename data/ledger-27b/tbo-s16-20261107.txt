@@ -1,0 +1,8 @@
+== S16=0
+  3993/3993 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed
+== S16=1
+  3993/3993 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed

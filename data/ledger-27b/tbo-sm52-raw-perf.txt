@@ -1,0 +1,15 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24463 MiB):
+  Device 0: Quadro M6000 24GB, compute capability 5.2, VMM: yes, VRAM: 24463 MiB
+load_backend: loaded CUDA backend from /b/libggml-cuda.so
+load_backend: loaded CPU backend from /b/libggml-cpu-haswell.so
+Testing 2 devices
+
+Backend 1/2: CUDA0
+  Device description: Quadro M6000 24GB
+  Device memory: 24463 MB (24348 MB free)
+
+  Backend CUDA0: [1;32mOK[0m
+Backend 2/2: CPU
+  Skipping
+2/2 backends passed
+[1;32mOK[0m

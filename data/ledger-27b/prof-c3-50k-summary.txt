@@ -1,0 +1,51 @@
+C3 base nvprof GPU summary. ACTUAL CONTEXT: 22730 prompt tokens (REPS=1200), NOT 50k (50k attempt lost its nvprof logs to a shutdown bug; filename kept for other cards). -np 2 -c 262144 q4_0 ub1024 MTP draft 2, lib mmvqT-fagemm.so, SGEMM_NN=1 FA_GEMM=1.
+Timings under nvprof (slower than real): prefill prompt_per_second=85.12 (pf run), 85.03 (dec run); predicted_per_second=18.13 (256 tok ignore_eos, draft acc 100%).
+Bucket notes: FA prefill = maxwell_sgemm_fp16_* + fag_smax; dense = maxwell_sgemm_128x64_nn (+k_dequant_q4_0_T2 under dequant). Decode-only = dec minus pf per kernel; small negative/zero-call rows are run-to-run noise.
+
+== PREFILL (n_predict=1, 22730 prompt tok)  total GPU 268163.1 ms
+ buckets:
+  dense mmq/mmvq/sgemm                                        212676.1 ms  79.3%
+  FA prefill gemm/smax/norm (fa_gemm, mma, other)              25716.9 ms   9.6%
+  dequant/convert/copy                                         15008.0 ms   5.6%
+  GDN/ssm scan                                                  7137.4 ms   2.7%
+  other                                                         6040.8 ms   2.3%
+  other (memcpy/memset)                                         1546.1 ms   0.6%
+  FA decode/tile                                                  35.4 ms   0.0%
+  FA decode vec                                                    2.3 ms   0.0%
+ top 12 kernels:
+      212484.0 ms  79.2% calls= 11592 [dense mmq/mmvq/sgemm] maxwell_sgemm_128x64_nn
+       14202.7 ms   5.3% calls= 11592 [dequant/convert/copy] k_dequant_q4_0_T2(block_q4_0 const *, float*, int, int, int)
+       10903.0 ms   4.1% calls=  4488 [FA prefill gemm/smax/norm (fa_gemm, mma, other)] maxwell_sgemm_fp16_128x128_tn
+       10237.6 ms   3.8% calls=  5304 [FA prefill gemm/smax/norm (fa_gemm, mma, other)] maxwell_sgemm_fp16_128x64_nn
+        6565.6 ms   2.4% calls=  1200 [GDN/ssm scan] void gated_delta_net_cuda<int=128, bool=0, bool=1, int=4>(float const *, float const *, float const *, float c
+        3678.2 ms   1.4% calls=  5304 [FA prefill gemm/smax/norm (fa_gemm, mma, other)] fag_smax(float const *, __half*, __half const *, unsigned long, float*, float2*, int, int, int, int, int, int,
+        1574.1 ms   0.6% calls=  2825 [other] void unary_gated_op_kernel<__operator_&__(_INTERNAL_ef2c5208_8_unary_cu_eb6d5366::op_silu(float)), float>(floa
+        1420.4 ms   0.5% calls=  1293 [other (memcpy/memset)] [CUDA memcpy HtoD]
+        1368.9 ms   0.5% calls=  2050 [other] void rms_norm_f32<int=256, bool=1, bool=0, bool=0>(float const *, float*, int, int, int, long, long, long, flo
+         811.1 ms   0.3% calls=  3348 [other] void rms_norm_f32<int=1024, bool=1, bool=0, bool=0>(float const *, float*, int, int, int, long, long, long, fl
+         749.6 ms   0.3% calls=  2400 [other] void rms_norm_f32<int=256, bool=0, bool=0, bool=1>(float const *, float*, int, int, int, long, long, long, flo
+         738.4 ms   0.3% calls=   816 [FA prefill gemm/smax/norm (fa_gemm, mma, other)] maxwell_sgemm_fp16_128x64_tn
+
+== DECODE-ONLY (dec minus pf, 256 tok ignore_eos)  total GPU 13983.4 ms
+ buckets:
+  dense mmq/mmvq/sgemm                                          8223.2 ms  58.8%
+  FA decode/tile                                                3148.4 ms  22.5%
+  dequant/convert/copy                                          1574.7 ms  11.3%
+  other                                                          592.9 ms   4.2%
+  GDN/ssm scan                                                   391.2 ms   2.8%
+  FA prefill gemm/smax/norm (fa_gemm, mma, other)                 31.4 ms   0.2%
+  other (memcpy/memset)                                           21.5 ms   0.2%
+ top 12 kernels:
+        7351.5 ms  52.6% calls= 42925 [dense mmq/mmvq/sgemm] void mul_mat_vec_q<ggml_type=2, int=3, bool=0, bool=0, bool=0, bool=0>(void const *, void const *, int const *
+        3009.8 ms  21.5% calls=  1445 [FA decode/tile] void flash_attn_tile<int=256, int=256, int=4, int=2, bool=0, int=0>(char const *, char const *, char const *, 
+        1226.7 ms   8.8% calls=  2720 [dequant/convert/copy] void dequantize_block_q4_0<__half>(void const *, __half*, int)
+         625.5 ms   4.5% calls=  1530 [dense mmq/mmvq/sgemm] void mul_mat_vec_q<ggml_type=2, int=1, bool=0, bool=0, bool=0, bool=0>(void const *, void const *, int const *
+         363.6 ms   2.6% calls=  4080 [GDN/ssm scan] void gated_delta_net_cuda<int=128, bool=0, bool=1, int=4>(float const *, float const *, float const *, float c
+         246.0 ms   1.8% calls=     0 [dense mmq/mmvq/sgemm] maxwell_sgemm_128x64_nn
+         223.3 ms   1.6% calls=  4080 [other] void concat_non_cont<unsigned int, int=0>(char const *, char const *, char*, long, long, long, long, unsigned 
+         138.6 ms   1.0% calls=   170 [FA decode/tile] void flash_attn_tile<int=256, int=256, int=1, int=2, bool=0, int=0>(char const *, char const *, char const *, 
+         108.6 ms   0.8% calls= 13855 [dequant/convert/copy] void cpy_scalar<__operator_&__(void _INTERNAL_28de29f6_6_cpy_cu_bfba63e2::cpy_1_scalar<float, float>(char cons
+          99.1 ms   0.7% calls=  4080 [dequant/convert/copy] void k_get_rows_float_vec<float>(float const *, int const *, float*, long, long, uint3, unsigned long, unsigne
+          85.5 ms   0.6% calls= 11390 [other] void rms_norm_f32<int=1024, bool=1, bool=0, bool=0>(float const *, float*, int, int, int, long, long, long, fl
+          78.4 ms   0.6% calls= 22950 [dequant/convert/copy] quantize_q8_1(float const *, void*, long, long, long, long, long, unsigned int, uint3)
+

@@ -1,0 +1,49 @@
+Stage 1 ckpt flags A/B, 8 Nov 2026. lib mmvqT-fagemm-fadec2.so, FA_DEC=2, SGEMM_NN=1 FA_GEMM=1, C3 layout (np2, 2x128k, q4_0 KV, MTP draft 2), exp 11448, -lv 4.
+Both flags present in this build's llama-server --help (-ctxcp/--ctx-checkpoints, -cms/--checkpoint-min-step).
+Workload: SYNTHETIC (no usable Hermes session: only 2 single-request dumps on disk). Random-token prompts, 16k start, 8 turns after the first, tool tails 2-4k, 300-token replies (ignore_eos), temp 0, cache_prompt true, 1 active slot.
+Mismatch mix: 40% of turns client truncates prior reply to 10-250 tokens (mismatch at reply); 60% a 30-token span rewritten d tokens before prior prompt end, d lognormal median 400 (clip 50-6000) (mismatch earlier). Mutations persist in client history. Scaled down from 20 turns/30k for the time box (rows ~12 min each).
+reproc tokens = max(0, min(prompt_n, prevE - cache_n)), prevE = prev prompt len + prev generated; minutes = share of that eval's prompt_ms. restore_fail column counts regex 'restore fail|erased invalidated': all of it is 'erased invalidated' (erased==restore_fail), i.e. 0 real failures.
+Seed 1 only: order base1 A1 B1 C1. Seed-2 runs (C2 B2 A2 base2) and quick.py rows NOT run: GPU lock taken by another job (f2/chain1.sh) when the first chain was interrupted; queued jobs cancelled.
+Validity: base share of prefill minutes 22.1% (Stage 0 16-35%), 8 restores: PASS.
+
+{"turn": 0, "mut": null, "len": 16000, "prompt_n": 16000, "cache_n": 0, "pp_ms": 183273, "pred_n": 300, "wall": 196.3}
+{"turn": 1, "mut": "earlier-50", "len": 18858, "prompt_n": 3886, "cache_n": 14972, "pp_ms": 48332, "pred_n": 300, "wall": 61.3, "reproc": 1328, "reproc_min": 0.275}
+{"turn": 2, "mut": "earlier-1774", "len": 21399, "prompt_n": 6427, "cache_n": 14972, "pp_ms": 80843, "pred_n": 300, "wall": 93.9, "reproc": 4186, "reproc_min": 0.878}
+{"turn": 3, "mut": "earlier-152", "len": 25271, "prompt_n": 4900, "cache_n": 20371, "pp_ms": 63709, "pred_n": 300, "wall": 77.0, "reproc": 1328, "reproc_min": 0.288}
+{"turn": 4, "mut": "earlier-235", "len": 27636, "prompt_n": 3393, "cache_n": 24243, "pp_ms": 45463, "pred_n": 300, "wall": 59.1, "reproc": 1328, "reproc_min": 0.297}
+{"turn": 5, "mut": "reply", "len": 31437, "prompt_n": 3805, "cache_n": 27632, "pp_ms": 51932, "pred_n": 300, "wall": 65.6, "reproc": 304, "reproc_min": 0.069}
+{"turn": 6, "mut": "reply", "len": 33796, "prompt_n": 2363, "cache_n": 31433, "pp_ms": 33573, "pred_n": 300, "wall": 47.4, "reproc": 304, "reproc_min": 0.072}
+{"turn": 7, "mut": "earlier-373", "len": 37484, "prompt_n": 4716, "cache_n": 32768, "pp_ms": 66916, "pred_n": 300, "wall": 81.0, "reproc": 1328, "reproc_min": 0.314}
+{"turn": 8, "mut": "reply", "len": 40267, "prompt_n": 2787, "cache_n": 37480, "pp_ms": 40776, "pred_n": 300, "wall": 55.1, "reproc": 304, "reproc_min": 0.074}
+RESULT {"label": "base1", "arm": "base", "seed": 1, "wall_s": 736.6, "prompt_n": [16000, 3886, 6427, 4900, 3393, 3805, 2363, 4716, 2787], "restores": 8, "erased": 6, "restore_fail": 6, "created": 18, "ckpt_MiB": "307.825", "reproc_tok": 10410, "reproc_min": 2.27, "prefill_min": 10.25, "share": 22.1, "avail_start_gb": 25.0, "avail_min_gb": 22.3, "rss_growth_gb": 3.8, "container_mem": "3.381GiB / 31.24GiB", "tempmax": 75, "aborted": false}
+{"turn": 0, "mut": null, "len": 16000, "prompt_n": 16000, "cache_n": 0, "pp_ms": 183652, "pred_n": 300, "wall": 196.7}
+{"turn": 1, "mut": "earlier-50", "len": 18858, "prompt_n": 3886, "cache_n": 14972, "pp_ms": 48349, "pred_n": 300, "wall": 61.3, "reproc": 1328, "reproc_min": 0.275}
+{"turn": 2, "mut": "earlier-1774", "len": 21399, "prompt_n": 6427, "cache_n": 14972, "pp_ms": 80907, "pred_n": 300, "wall": 93.9, "reproc": 4186, "reproc_min": 0.878}
+{"turn": 3, "mut": "earlier-152", "len": 25271, "prompt_n": 4900, "cache_n": 20371, "pp_ms": 63682, "pred_n": 300, "wall": 76.9, "reproc": 1328, "reproc_min": 0.288}
+{"turn": 4, "mut": "earlier-235", "len": 27636, "prompt_n": 3393, "cache_n": 24243, "pp_ms": 45430, "pred_n": 300, "wall": 59.0, "reproc": 1328, "reproc_min": 0.296}
+{"turn": 5, "mut": "reply", "len": 31437, "prompt_n": 3805, "cache_n": 27632, "pp_ms": 51982, "pred_n": 300, "wall": 65.7, "reproc": 304, "reproc_min": 0.069}
+{"turn": 6, "mut": "reply", "len": 33796, "prompt_n": 2363, "cache_n": 31433, "pp_ms": 33548, "pred_n": 300, "wall": 47.4, "reproc": 304, "reproc_min": 0.072}
+{"turn": 7, "mut": "earlier-373", "len": 37484, "prompt_n": 4716, "cache_n": 32768, "pp_ms": 66784, "pred_n": 300, "wall": 80.9, "reproc": 1328, "reproc_min": 0.313}
+{"turn": 8, "mut": "reply", "len": 40267, "prompt_n": 2787, "cache_n": 37480, "pp_ms": 40824, "pred_n": 300, "wall": 55.1, "reproc": 304, "reproc_min": 0.074}
+RESULT {"label": "A1", "arm": "A", "seed": 1, "wall_s": 736.9, "prompt_n": [16000, 3886, 6427, 4900, 3393, 3805, 2363, 4716, 2787], "restores": 8, "erased": 6, "restore_fail": 6, "created": 18, "ckpt_MiB": "307.825", "reproc_tok": 10410, "reproc_min": 2.27, "prefill_min": 10.25, "share": 22.1, "avail_start_gb": 24.6, "avail_min_gb": 21.6, "rss_growth_gb": 4.2, "container_mem": "4.513GiB / 31.24GiB", "tempmax": 75, "aborted": false}
+{"turn": 0, "mut": null, "len": 16000, "prompt_n": 16000, "cache_n": 0, "pp_ms": 183549, "pred_n": 300, "wall": 196.6}
+{"turn": 1, "mut": "earlier-50", "len": 18858, "prompt_n": 3886, "cache_n": 14972, "pp_ms": 48379, "pred_n": 300, "wall": 61.3, "reproc": 1328, "reproc_min": 0.276}
+{"turn": 2, "mut": "earlier-1774", "len": 21399, "prompt_n": 6427, "cache_n": 14972, "pp_ms": 80867, "pred_n": 300, "wall": 93.9, "reproc": 4186, "reproc_min": 0.878}
+{"turn": 3, "mut": "earlier-152", "len": 25271, "prompt_n": 4900, "cache_n": 20371, "pp_ms": 63696, "pred_n": 300, "wall": 76.9, "reproc": 1328, "reproc_min": 0.288}
+{"turn": 4, "mut": "earlier-235", "len": 27636, "prompt_n": 3393, "cache_n": 24243, "pp_ms": 45440, "pred_n": 300, "wall": 59.0, "reproc": 1328, "reproc_min": 0.296}
+{"turn": 5, "mut": "reply", "len": 31437, "prompt_n": 3805, "cache_n": 27632, "pp_ms": 51997, "pred_n": 300, "wall": 65.7, "reproc": 304, "reproc_min": 0.069}
+{"turn": 6, "mut": "reply", "len": 33796, "prompt_n": 2363, "cache_n": 31433, "pp_ms": 33544, "pred_n": 300, "wall": 47.4, "reproc": 304, "reproc_min": 0.072}
+{"turn": 7, "mut": "earlier-373", "len": 37484, "prompt_n": 4716, "cache_n": 32768, "pp_ms": 66837, "pred_n": 300, "wall": 80.9, "reproc": 1328, "reproc_min": 0.314}
+{"turn": 8, "mut": "reply", "len": 40267, "prompt_n": 2787, "cache_n": 37480, "pp_ms": 40762, "pred_n": 300, "wall": 55.1, "reproc": 304, "reproc_min": 0.074}
+RESULT {"label": "B1", "arm": "B", "seed": 1, "wall_s": 736.9, "prompt_n": [16000, 3886, 6427, 4900, 3393, 3805, 2363, 4716, 2787], "restores": 8, "erased": 6, "restore_fail": 6, "created": 18, "ckpt_MiB": "307.825", "reproc_tok": 10410, "reproc_min": 2.27, "prefill_min": 10.25, "share": 22.1, "avail_start_gb": 25.0, "avail_min_gb": 21.6, "rss_growth_gb": 4.6, "container_mem": "4.4GiB / 31.24GiB", "tempmax": 75, "aborted": false}
+{"turn": 0, "mut": null, "len": 16000, "prompt_n": 16000, "cache_n": 0, "pp_ms": 183606, "pred_n": 300, "wall": 196.7}
+{"turn": 1, "mut": "earlier-50", "len": 18858, "prompt_n": 3886, "cache_n": 14972, "pp_ms": 48354, "pred_n": 300, "wall": 61.3, "reproc": 1328, "reproc_min": 0.275}
+{"turn": 2, "mut": "earlier-1774", "len": 21399, "prompt_n": 6427, "cache_n": 14972, "pp_ms": 80772, "pred_n": 300, "wall": 93.8, "reproc": 4186, "reproc_min": 0.877}
+{"turn": 3, "mut": "earlier-152", "len": 25271, "prompt_n": 4900, "cache_n": 20371, "pp_ms": 63652, "pred_n": 300, "wall": 76.9, "reproc": 1328, "reproc_min": 0.288}
+{"turn": 4, "mut": "earlier-235", "len": 27636, "prompt_n": 3393, "cache_n": 24243, "pp_ms": 45475, "pred_n": 300, "wall": 59.1, "reproc": 1328, "reproc_min": 0.297}
+{"turn": 5, "mut": "reply", "len": 31437, "prompt_n": 3805, "cache_n": 27632, "pp_ms": 51948, "pred_n": 300, "wall": 65.7, "reproc": 304, "reproc_min": 0.069}
+{"turn": 6, "mut": "reply", "len": 33796, "prompt_n": 2363, "cache_n": 31433, "pp_ms": 33515, "pred_n": 300, "wall": 47.4, "reproc": 304, "reproc_min": 0.072}
+{"turn": 7, "mut": "earlier-373", "len": 37484, "prompt_n": 4716, "cache_n": 32768, "pp_ms": 66857, "pred_n": 300, "wall": 80.9, "reproc": 1328, "reproc_min": 0.314}
+{"turn": 8, "mut": "reply", "len": 40267, "prompt_n": 2787, "cache_n": 37480, "pp_ms": 40776, "pred_n": 300, "wall": 55.1, "reproc": 304, "reproc_min": 0.074}
+RESULT {"label": "C1", "arm": "C", "seed": 1, "wall_s": 736.8, "prompt_n": [16000, 3886, 6427, 4900, 3393, 3805, 2363, 4716, 2787], "restores": 8, "erased": 6, "restore_fail": 6, "created": 18, "ckpt_MiB": "307.825", "reproc_tok": 10410, "reproc_min": 2.27, "prefill_min": 10.25, "share": 22.1, "avail_start_gb": 25.1, "avail_min_gb": 21.6, "rss_growth_gb": 4.5, "container_mem": "4.488GiB / 31.24GiB", "tempmax": 75, "aborted": false}
+NOTE: trailing turn lines after C1's RESULT are a partial C2 run that I killed (not a result).

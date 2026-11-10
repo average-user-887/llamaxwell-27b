@@ -1,0 +1,18 @@
+== test-backend-ops FLASH_ATTN_EXT (FA_GEMM=1 MINQ=1)
+hsk256 OK: 149
+  3993/3993 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed
+== KLD vs head4 base (FA_GEMM=1, c=512)
+0.49.651.473 I kl_divergence: 25.05 seconds per pass - ETA 1.67 minutes
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :   1.764798 ±   0.040631
+Mean    KLD:   0.000000 ±   0.000000
+Maximum KLD:   0.000053
+Same top p: 100.000 ± 0.000 %
+== server pp A/B
+{"fa_gemm": "0", "prompt_n": 2213, "pp": 86.9, "out": " word130"}
+{"fa_gemm": "0", "prompt_n": 22730, "pp": 77.98, "out": " word120"}
+{"fa_gemm": "1", "prompt_n": 2213, "pp": 86.64, "out": " word130"}
+{"fa_gemm": "1", "prompt_n": 22730, "pp": 83.73, "out": " word120"}
+prod-ok

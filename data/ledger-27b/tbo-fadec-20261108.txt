@@ -1,0 +1,12 @@
+== FA_DEC=0 GEMM_MINQ1=0
+  3993/3993 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed
+== FA_DEC=1 GEMM_MINQ1=0
+  3993/3993 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed
+== FA_DEC=1 GEMM_MINQ1=1
+  3993/3993 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed

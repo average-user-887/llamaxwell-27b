@@ -1,0 +1,34 @@
+9 Nov FP32MV screen. Fixed before results (F vs C): d mean <= +.0005; same-top >= -.3 pt; F mean <= C mean - .0030; no nonfinite; no new token > 3. Start 11:31:36
+28f83e8501965631c130c9c4e2c12c97  /media/avg-usr/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-fadec2-20261109.so
+== p0 GGML_CUDA_CONCAT_T=1 GGML_CUDA_GATE_COPY=1 GGML_CUDA_GDN_COLS=2,4 GGML_CUDA_MMQ_COMPACT_SM52=1 GGML_CUDA_MMQ_TAIL_SM52=1 GGML_CUDA_MMQ_XMAD_SM52=1 GGML_CUDA_NORM_Q8=1 GGML_CUDA_OCCAMY_FA=1 GGML_CUDA_OCCAMY_FUSED=1 GGML_CUDA_OCCAMY_GDN=1 GGML_CUDA_OCCAMY_GDN_STATE_DIRECT=1 GGML_CUDA_Q8_REUSE=1 GGML_CUDA_RMS_WARP=0 KLDSHIM_RAWTHR=99 GGML_CUDA_FA_DEC=0 chunks=16 base=/w/head4.kld 11:31:37
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.009094 n=4080
+Mean    KLD:   0.009094 ±   0.000519
+Maximum KLD:   1.498079
+Same top p: 97.745 ± 0.232 %
+rc=0 secs=286 maxtemp=74
+== p2 GGML_CUDA_CONCAT_T=1 GGML_CUDA_GATE_COPY=1 GGML_CUDA_GDN_COLS=2,4 GGML_CUDA_MMQ_COMPACT_SM52=1 GGML_CUDA_MMQ_TAIL_SM52=1 GGML_CUDA_MMQ_XMAD_SM52=1 GGML_CUDA_NORM_Q8=1 GGML_CUDA_OCCAMY_FA=1 GGML_CUDA_OCCAMY_FUSED=1 GGML_CUDA_OCCAMY_GDN=1 GGML_CUDA_OCCAMY_GDN_STATE_DIRECT=1 GGML_CUDA_Q8_REUSE=1 GGML_CUDA_RMS_WARP=0 KLDSHIM_RAWTHR=99 GGML_CUDA_FA_DEC=2 chunks=16 base=/w/head4.kld 11:36:24
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.010614 n=4080
+Mean    KLD:   0.010614 ±   0.001704
+Maximum KLD:   6.679251
+Same top p: 97.672 ± 0.236 %
+rc=0 secs=286 maxtemp=74
+== pf GGML_CUDA_CONCAT_T=1 GGML_CUDA_GATE_COPY=1 GGML_CUDA_GDN_COLS=2,4 GGML_CUDA_MMQ_COMPACT_SM52=1 GGML_CUDA_MMQ_TAIL_SM52=1 GGML_CUDA_MMQ_XMAD_SM52=1 GGML_CUDA_NORM_Q8=1 GGML_CUDA_OCCAMY_FA=1 GGML_CUDA_OCCAMY_FUSED=1 GGML_CUDA_OCCAMY_GDN=1 GGML_CUDA_OCCAMY_GDN_STATE_DIRECT=1 GGML_CUDA_Q8_REUSE=1 GGML_CUDA_RMS_WARP=0 KLDSHIM_RAWTHR=99 GGML_CUDA_FA_DEC=2 GGML_CUDA_FP32MV=1 chunks=16 base=/w/head4.kld 11:41:11
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.004376 n=4080
+Mean    KLD:   0.004376 ±   0.000464
+Maximum KLD:   1.731536
+Same top p: 98.480 ± 0.192 %
+rc=0 secs=279 maxtemp=74
+== design 2 cost on prod env: p0 vs p2
+n=4080 (a 4080, b 4080) mean 0.009094 -> 0.010614 d=+0.001519 se=0.001662 t=0.91 top 97.745 -> 97.672 d=-0.074
+max 1.498 -> 6.679; >1 1 -> 2; >3 0 -> 1
+10:416 0.064 -> 6.679
+GATE FAIL
+== FP32MV screen: p2 (C) vs pf (F)
+n=4080 (a 4080, b 4080) mean 0.010614 -> 0.004376 d=-0.006238 se=0.001663 t=-3.75 top 97.672 -> 98.480 d=+0.809
+max 6.679 -> 1.732; >1 2 -> 1; >3 1 -> 0
+10:416 6.679 -> 0.034
+GATE FAIL
+prod start 11:45:51

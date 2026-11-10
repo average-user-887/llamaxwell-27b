@@ -1,0 +1,85 @@
+Stage 0 log replay (read-only docker logs; no GPU, no container changes)
+Conversion: re-processed ms = re-processed tokens x (that eval's prompt_eval_ms / its N_eval tokens).
+n_past = first 'cached n_tokens' line of the task (restore n_past equals it in samples).
+Prior end E = 'stop processing n_tokens' of previous task on same slot; prior prompt P = its 'task.n_tokens'.
+Re-processed = min(max(0, E - n_past), N_eval). Older-prompt part = portion below prior prompt P.
+Unrelated-conversation flag: n_past < X AND prior P >= Y.  A: X=512, Y=2048.  B: X=2048, Y=4096.
+
+== llamacpp-m6000: records=3524 new_prompt=3524 restored_lines=1887 cached_lines=10265 prompt_eval_lines=3522 release_lines=3524 docker_rc=0
+== llamacpp-m6000-RETIRED-card16-20261027: records=1867 new_prompt=1867 restored_lines=1703 cached_lines=4866 prompt_eval_lines=1851 release_lines=1867 docker_rc=0
+== POOLED: records=5391
+
+[llamacpp-m6000] threshold A (n_past<512 & prior_P>=2048)
+  tasks=3524 (attributable 3256)  restores=1887 in_slot_reuse=1141 full_reprocess(cached 0, no restore)=496
+  prefill minutes: all=311.86  attributable=285.46
+  re-processed tokens: all=1326967  attributable=788319 (reply part 281998, older-prompt part 506321)
+  re-processed minutes: all=72.37  attributable=46.93 (reply 19.47, older-prompt 27.46)
+  SHARE of prefill minutes: all-tasks=23.2%  attributable (primary)=16.4%
+  reply vs older-prompt split of re-processed tokens (attributable): reply=35.8% older=64.2%
+  evals with mismatch BEFORE prior reply start (older-prompt part>0, attributable): count=1863 minutes=27.46 (58.5% of attributable re-processed minutes)
+  unattributable: no_prior=2 no_prior_end=0 unrelated=266
+[llamacpp-m6000] threshold B (n_past<2048 & prior_P>=4096)
+  tasks=3524 (attributable 3199)  restores=1887 in_slot_reuse=1141 full_reprocess(cached 0, no restore)=496
+  prefill minutes: all=311.86  attributable=287.67
+  re-processed tokens: all=1326967  attributable=846430 (reply part 282564, older-prompt part 563866)
+  re-processed minutes: all=72.37  attributable=48.90 (reply 19.49, older-prompt 29.41)
+  SHARE of prefill minutes: all-tasks=23.2%  attributable (primary)=17.0%
+  reply vs older-prompt split of re-processed tokens (attributable): reply=33.4% older=66.6%
+  evals with mismatch BEFORE prior reply start (older-prompt part>0, attributable): count=1806 minutes=29.41 (60.1% of attributable re-processed minutes)
+  unattributable: no_prior=2 no_prior_end=0 unrelated=323
+  [llamacpp-m6000] no unrelated exclusion (raw): share all-tasks = 23.2%
+  [llamacpp-m6000] restore n_past depth (all restores): <4k=813, 4k-16k=863, 16k-32k=149, 32k-64k=62, >=64k=0
+
+[llamacpp-m6000-RETIRED-card16-20261027] threshold A (n_past<512 & prior_P>=2048)
+  tasks=1867 (attributable 1805)  restores=1703 in_slot_reuse=94 full_reprocess(cached 0, no restore)=70
+  prefill minutes: all=425.41  attributable=376.22
+  re-processed tokens: all=2788944  attributable=1958187 (reply part 609337, older-prompt part 1348850)
+  re-processed minutes: all=175.88  attributable=133.03 (reply 56.30, older-prompt 76.74)
+  SHARE of prefill minutes: all-tasks=41.3%  attributable (primary)=35.4%
+  reply vs older-prompt split of re-processed tokens (attributable): reply=31.1% older=68.9%
+  evals with mismatch BEFORE prior reply start (older-prompt part>0, attributable): count=1645 minutes=76.74 (57.7% of attributable re-processed minutes)
+  unattributable: no_prior=2 no_prior_end=0 unrelated=60
+[llamacpp-m6000-RETIRED-card16-20261027] threshold B (n_past<2048 & prior_P>=4096)
+  tasks=1867 (attributable 1804)  restores=1703 in_slot_reuse=94 full_reprocess(cached 0, no restore)=70
+  prefill minutes: all=425.41  attributable=376.03
+  re-processed tokens: all=2788944  attributable=1952062 (reply part 609337, older-prompt part 1342725)
+  re-processed minutes: all=175.88  attributable=132.85 (reply 56.30, older-prompt 76.55)
+  SHARE of prefill minutes: all-tasks=41.3%  attributable (primary)=35.3%
+  reply vs older-prompt split of re-processed tokens (attributable): reply=31.2% older=68.8%
+  evals with mismatch BEFORE prior reply start (older-prompt part>0, attributable): count=1644 minutes=76.55 (57.6% of attributable re-processed minutes)
+  unattributable: no_prior=2 no_prior_end=0 unrelated=61
+  [llamacpp-m6000-RETIRED-card16-20261027] no unrelated exclusion (raw): share all-tasks = 41.3%
+  [llamacpp-m6000-RETIRED-card16-20261027] restore n_past depth (all restores): <4k=0, 4k-16k=297, 16k-32k=637, 32k-64k=769, >=64k=0
+
+[POOLED] threshold A (n_past<512 & prior_P>=2048)
+  tasks=5391 (attributable 5061)  restores=3590 in_slot_reuse=1235 full_reprocess(cached 0, no restore)=566
+  prefill minutes: all=737.27  attributable=661.68
+  re-processed tokens: all=4115911  attributable=2746506 (reply part 891335, older-prompt part 1855171)
+  re-processed minutes: all=248.25  attributable=179.96 (reply 75.76, older-prompt 104.20)
+  SHARE of prefill minutes: all-tasks=33.7%  attributable (primary)=27.2%
+  reply vs older-prompt split of re-processed tokens (attributable): reply=32.5% older=67.5%
+  evals with mismatch BEFORE prior reply start (older-prompt part>0, attributable): count=3508 minutes=104.20 (57.9% of attributable re-processed minutes)
+  unattributable: no_prior=4 no_prior_end=0 unrelated=326
+[POOLED] threshold B (n_past<2048 & prior_P>=4096)
+  tasks=5391 (attributable 5003)  restores=3590 in_slot_reuse=1235 full_reprocess(cached 0, no restore)=566
+  prefill minutes: all=737.27  attributable=663.71
+  re-processed tokens: all=4115911  attributable=2798492 (reply part 891901, older-prompt part 1906591)
+  re-processed minutes: all=248.25  attributable=181.75 (reply 75.79, older-prompt 105.96)
+  SHARE of prefill minutes: all-tasks=33.7%  attributable (primary)=27.4%
+  reply vs older-prompt split of re-processed tokens (attributable): reply=31.9% older=68.1%
+  evals with mismatch BEFORE prior reply start (older-prompt part>0, attributable): count=3450 minutes=105.96 (58.3% of attributable re-processed minutes)
+  unattributable: no_prior=4 no_prior_end=0 unrelated=384
+  [POOLED] no unrelated exclusion (raw): share all-tasks = 33.7%
+  [POOLED] restore n_past depth (all restores): <4k=813, 4k-16k=1160, 16k-32k=786, 32k-64k=831, >=64k=0
+
+VERDICT (Stage 0 gate: re-processed >= 25% of prefill minutes)
+  POOLED (both containers): GO at both thresholds: 27.2% (A) and 27.4% (B); raw without exclusion 33.7%.
+  llamacpp-m6000 (the live container): NO-GO: 16.4% (A) and 17.0% (B); raw 23.2%.
+  llamacpp-m6000-RETIRED-card16-20261027: 35.4% (A) and 35.3% (B); raw 41.3%.
+  The pooled GO is carried by the retired container. Its evals are 1.9x the live container's prefill minutes.
+  The live-container figure is below 25% at both thresholds and in its raw count.
+  Stage 0 therefore does not clearly pass for the live container; the decision on which container counts is the lead's.
+Caveats: "full reprocess" here = cached 0 and no restore (70 in the RETIRED container). S2-real-wall ledger row counted 45.
+  Restore depth is reported by n_past. No restores at 64k or deeper in either container.
+  Sample of 2 "prompt eval" lines missing in llamacpp-m6000 and 16 in RETIRED: those evals count as 0 ms.
+Parser: $O/stage0_replay.py (run: python3 -I stage0_replay.py > results; reads docker logs via pipe; no copy kept).

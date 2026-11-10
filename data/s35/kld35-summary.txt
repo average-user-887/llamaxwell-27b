@@ -1,0 +1,2 @@
+dep b=2 rc=0 98s chunk PPL ln(PPL(Q)/PPL(base)) KL Divergence Δp RMS Same top p;Mean KLD: 0.016649 ± 0.000487;Maximum KLD: 0.655275;Same top p: 94.379 ± 0.360 %;
+xmad1 b=2 rc=0 97s chunk PPL ln(PPL(Q)/PPL(base)) KL Divergence Δp RMS Same top p;Mean KLD: 0.016649 ± 0.000487;Maximum KLD: 0.655275;Same top p: 94.379 ± 0.360 %;

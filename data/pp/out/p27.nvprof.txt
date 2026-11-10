@@ -1,0 +1,39 @@
+==59== NVPROF is profiling process 59, command: /app/llama bench -m /m/qwen38-27b/Qwen3.8-27B-Q4_0-head4.gguf -p 4096 -n 0 -b 2048 -ub 1024 -ctk q4_0 -ctv q4_0 -ngl 999 -fa 1 -r 1 --no-warmup -o jsonl
+==59== Profiling application: /app/llama bench -m /m/qwen38-27b/Qwen3.8-27B-Q4_0-head4.gguf -p 4096 -n 0 -b 2048 -ub 1024 -ctk q4_0 -ctv q4_0 -ngl 999 -fa 1 -r 1 --no-warmup -o jsonl
+==59== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   84.14%  36.9624s      1972  18.744ms  585.26us  37.674ms  maxwell_sgemm_128x64_nn
+                    5.45%  2.39612s      1972  1.2151ms  14.209us  2.2732ms  k_dequant_q4_0_T2(block_q4_0 const *, float*, int, int, int)
+                    2.78%  1.21919s       896  1.3607ms     320ns  72.318ms  [CUDA memcpy HtoD]
+                    2.52%  1.10872s       192  5.7746ms  5.0119ms  6.3431ms  void gated_delta_net_cuda<int=128, bool=0, bool=0, int=4>(float const *, float const *, float const *, float const *, float const *, float const *, float*, float*, long, long, long, long, long, long, long, long, long, long, long, long, uint3, uint3, float, long, int)
+                    0.87%  383.99ms       256  1.4999ms  571.53us  2.8031ms  maxwell_sgemm_fp16_128x64_nn
+                    0.70%  306.87ms       128  2.3974ms  1.9370ms  3.1886ms  maxwell_sgemm_fp16_128x128_tn
+                    0.62%  273.27ms       446  612.72us  4.1920us  1.2531ms  void unary_gated_op_kernel<__operator_&__(_INTERNAL_2d438a40_8_unary_cu_eb6d5366::op_silu(float)), float>(float const *, float const *, float*, long, long, long, long)
+                    0.55%  241.50ms       320  754.69us  102.31us  1.4320ms  void rms_norm_f32<int=256, bool=1, bool=0, bool=0>(float const *, float*, int, int, int, long, long, long, float, float const *, long, long, long, uint3, uint3, uint3, uint3, float const *, long, long, long, uint3, uint3, uint3, uint3, float)
+                    0.31%  135.52ms       509  266.25us  9.0560us  526.03us  void rms_norm_f32<int=1024, bool=1, bool=0, bool=0>(float const *, float*, int, int, int, long, long, long, float, float const *, long, long, long, uint3, uint3, uint3, uint3, float const *, long, long, long, uint3, uint3, uint3, uint3, float)
+                    0.31%  135.52ms       256  529.37us  329.99us  841.33us  void fag_smax<float>(float const *, __half*, __half const *, unsigned long, float*, float2*, int, int, int, int, int, int, int)
+                    0.30%  133.84ms       384  348.54us  308.90us  703.12us  void rms_norm_f32<int=256, bool=0, bool=0, bool=1>(float const *, float*, int, int, int, long, long, long, float, float const *, long, long, long, uint3, uint3, uint3, uint3, float const *, long, long, long, uint3, uint3, uint3, uint3, float)
+                    0.30%  130.87ms       128  1.0225ms  656.36us  1.7191ms  maxwell_sgemm_fp16_128x64_tn
+                    0.28%  122.28ms       700  174.69us  3.1680us  537.67us  _Z11k_bin_bcastIXadL_ZN42_INTERNAL_dee15d3c_11_binbcast_cu_6840010b6op_addEffEEfffJPKfEEvPKT0_PKT1_PT2_jjj5uint3SB_SB_SB_SB_jjjjjjjjjjjDpT3_
+                    0.23%  101.66ms       192  529.49us  509.35us  739.05us  void ssm_conv_long_token_f32<bool=1, unsigned long=128, unsigned long=4, long=32>(float const *, float const *, float const *, int, int, int, int, float*, int, int, int, long)
+                    0.18%  78.081ms       256  305.00us  8.2250us  1.6121ms  void cpy_scalar<__operator_&__(void _INTERNAL_b2949ac1_6_cpy_cu_bfba63e2::cpy_1_scalar<float, float>(char const *, char*))>(char const , char const *, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long)
+                    0.16%  69.694ms       192  362.99us  355.65us  617.36us  void concat_dim0_transposed<unsigned int>(char const *, char const *, char*, int, int, int, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
+                    0.04%  18.704ms        64  292.25us  275.43us  644.97us  void unary_gated_op_kernel<__operator_&__(_INTERNAL_2d438a40_8_unary_cu_eb6d5366::op_sigmoid(float)), float>(float const *, float const *, float*, long, long, long, long)
+                    0.04%  17.032ms       128  133.06us  39.905us  234.25us  void rope_multi<bool=1, bool=0, float>(float const *, float*, int, int, int, int, int, int, int, int, int, int, int, int const *, float, float, float, rope_corr_dims, float, float const *, mrope_sections, bool, bool)
+                    0.03%  14.442ms       256  56.413us  52.129us  101.09us  fag_norm(float*, float2 const *, int, int, int)
+                    0.03%  14.166ms       128  110.67us  30.209us  193.51us  void fwht_cuda<int=256, float>(float const *, float*, long, float)
+                    0.03%  13.723ms       128  107.21us  28.129us  186.47us  void fwht_cuda<int=64, float>(float const *, float*, long, float)
+                    0.03%  11.472ms       128  89.626us  76.066us  172.00us  void k_set_rows_quant<long, block_q4_0, int=32, __operator_&__(_INTERNAL_f102d664_11_set_rows_cu_7ddb16fd::quantize_f32_q4_0_block(float const *, block_q4_0*))>(float const *, long const *, block_q4_0*, long, long, long, long, long, long, long, long, long, long, long, long, long, long, uint3, uint3, uint3, uint3, uint3)
+                    0.03%  11.400ms        64  178.12us  172.26us  185.16us  fag_q2h(char const *, __half*, int, unsigned long, unsigned long)
+                    0.02%  7.5229ms       128  58.772us  22.944us  206.98us  void dequantize_block_q4_0<__half>(void const *, __half*, int)
+                    0.02%  6.6557ms         8  831.96us  199.14us  2.7270ms  void mul_mat_vec_q<ggml_type=2, int=1, bool=0, bool=0, bool=0, bool=0, bool=1>(void const *, void const *, int const *, ggml_cuda_mm_fusion_args_device, float*, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.01%  5.2017ms       192  27.092us  25.344us  51.809us  void k_get_rows_float_vec<float>(float const *, int const *, float*, long, long, uint3, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
+                    0.00%  2.1511ms        96  22.406us  3.5840us  83.746us  void scale_f32<float>(float const *, float*, float, float, long)
+                    0.00%  2.0263ms       192  10.553us  9.0880us  13.344us  _Z11k_bin_bcastIXadL_ZN42_INTERNAL_dee15d3c_11_binbcast_cu_6840010b6op_mulEffEEfffJPKfEEvPKT0_PKT1_PT2_jjj5uint3SB_SB_SB_SB_jjjjjjjjjjjDpT3_
+                    0.00%  1.3967ms       196  7.1260us  3.0400us  12.449us  void k_get_rows_float<float, float>(float const *, int const *, float*, long, long, uint3, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
+                    0.00%  806.67us         2  403.34us  263.08us  543.59us  [CUDA memset]
+                    0.00%  589.96us       192  3.0720us  2.7520us  5.3440us  void unary_op_kernel<__operator_&__(_INTERNAL_2d438a40_8_unary_cu_eb6d5366::op_sigmoid(float)), float>(float const *, float*, int)
+                    0.00%  573.58us       192  2.9870us  2.6880us  5.2800us  void unary_op_kernel<__operator_&__(_INTERNAL_2d438a40_8_unary_cu_eb6d5366::op_softplus(float)), float>(float const *, float*, int)
+                    0.00%  155.88us         2  77.937us  77.633us  78.242us  [CUDA memcpy DtoH]
+                    0.00%  29.154us         3  9.7180us  8.3840us  10.401us  void rms_norm_mul_q8_1_row<int=1024>(float const *, float const *, float*, block_q8_1*, int, float)
+                    0.00%  11.808us         3  3.9360us  3.0080us  4.4800us  quantize_q8_1(float const *, void*, long, long, long, long, long, unsigned int, uint3)

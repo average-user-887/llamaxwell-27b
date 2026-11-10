@@ -1,0 +1,54 @@
+9 Nov no-q8 + 64-chunk re-gate. Gate fixed before results: |dmean|<=.0005, same-top within .3 pt. Start 06:49:19
+28f83e8501965631c130c9c4e2c12c97  /media/avg-usr/Storage/m6000-llama-cpp/mmvqtune-libs/libggml-cuda-mmvqT-fagemm-fadec2.so
+== nq0 GGML_CUDA_FA_DBG=1 GGML_CUDA_FA_DEC=0 KLDSHIM_RAWTHR=99 GGML_CUDA_FA_DBG_NOQ8=1 GGML_CUDA_FA_DBG_AUTH=0 chunks=11 base=/w/head4.kld 06:49:20
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.004384 n=4080
+Mean    KLD:   0.004384 ±   0.000453
+Maximum KLD:   1.675888
+Same top p: 98.382 ± 0.198 %
+rc=0 secs=3612 maxtemp=69
+== nq2 GGML_CUDA_FA_DBG=1 GGML_CUDA_FA_DEC=0 KLDSHIM_RAWTHR=99 GGML_CUDA_FA_DBG_NOQ8=1 GGML_CUDA_FA_DBG_AUTH=2 chunks=11 base=/w/head4.kld 08:19:20
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.004487 n=4080
+Mean    KLD:   0.004487 ±   0.000451
+Maximum KLD:   1.640614
+Same top p: 98.309 ± 0.202 %
+rc=0 secs=3607 maxtemp=69
+== NO-Q8 chunks 0-10: stock vs DEC=2
+n=4080 (a 4080, b 4080) mean 0.004384 -> 0.004487 d=+0.000103 se=0.000136 t=0.76 top 98.382 -> 98.309 d=-0.074
+max 1.676 -> 1.641; >1 1 -> 1; >3 0 -> 0
+10:416 0.062 -> 0.387
+GATE PASS
+== g0 GGML_CUDA_FA_DEC=0 KLDSHIM_RAWTHR=99 chunks=64 base=/x/head4-64.kld 09:49:21
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.009094 n=4080
+kldshim chunk=63 mean=0.011873 n=16320
+Mean    KLD:   0.011873 ±   0.000396
+Maximum KLD:   1.498079
+Same top p: 97.794 ± 0.115 %
+rc=0 secs=1153 maxtemp=74
+== g2 GGML_CUDA_FA_DEC=2 KLDSHIM_RAWTHR=99 chunks=64 base=/x/head4-64.kld 10:21:23
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top
+kldshim chunk=15 mean=0.010614 n=4080
+kldshim chunk=63 mean=0.012500 n=16320
+Mean    KLD:   0.012500 ±   0.000577
+Maximum KLD:   6.679251
+Same top p: 97.641 ± 0.119 %
+rc=0 secs=1160 maxtemp=74
+== 64-CHUNK GATE real lib: DEC=0 vs DEC=2
+n=16320 (a 16320, b 16320) mean 0.011873 -> 0.012500 d=+0.000627 se=0.000568 t=1.11 top 97.794 -> 97.641 d=-0.153
+max 1.498 -> 6.679; >1 5 -> 6; >3 0 -> 1
+10:416 0.064 -> 6.679
+GATE FAIL
+== real vs debug lib (F2 a064/a264)
+Traceback (most recent call last):
+  File "/media/avg-usr/Storage/m6000-llama-cpp/opt27b-20261113/f2/gate64.py", line 15, in <module>
+    print(f"n={n} (a {len(a)}, b {len(b)}) mean {ma:.6f} -> {mb:.6f} d={mb-ma:+.6f} se={s:.6f} t={m/s:.2f} top {top(a):.3f} -> {top(b):.3f} d={dt:+.3f}")
+                                                                                                  ~^~
+ZeroDivisionError: float division by zero
+Traceback (most recent call last):
+  File "/media/avg-usr/Storage/m6000-llama-cpp/opt27b-20261113/f2/gate64.py", line 15, in <module>
+    print(f"n={n} (a {len(a)}, b {len(b)}) mean {ma:.6f} -> {mb:.6f} d={mb-ma:+.6f} se={s:.6f} t={m/s:.2f} top {top(a):.3f} -> {top(b):.3f} d={dt:+.3f}")
+                                                                                                  ~^~
+ZeroDivisionError: float division by zero
+prod start 11:17:18
