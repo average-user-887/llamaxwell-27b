@@ -38,3 +38,9 @@ Prod stays deck-main. granite42-8b failed to load. qwen38-9b-distill worth a BFC
 - ledger-27b/: full 27B optimisation ledger (LEDGER.md, ledger.jsonl, HANDOFF.md, per-experiment txt/py/sh). .bak files and binaries excluded.
 - s35/: 35B profile, KLD and A/B logs from 2026-11-10.
 - pp/: prefill probe scripts and results.
+
+## Update (later 2026-11-10)
+- moe_v2 / gdn_fused bandwidth PoC (branch moebw-exp 07d749a, not merged): no gain. moe_v2 phases (us): router GEMV 13.8, gate/up 52.1 (~204 GB/s), down prologue 15.2, down GEMV 36.3 (~147 GB/s), barriers ~7; total ~126. All MOE_BW/GDN_BW variants flat or slower (128-137 / 137-158 us). Needs a different down-phase layout to reach 190 GB/s.
+- 35B ubatch 1024 ADOPTED in prod (container llamacpp-m6000; previous kept as llamacpp-m6000-ub512-prev): KLD identical to ub512 (mean 0.008959, same-top 96.408, 4 chunks); 2 concurrent 31k/36k prompts no OOM, VRAM 22.97 GB; pp +13% (164/318 vs 145/281 t/s per slot). Script run-35b-xmad-ub1024-20261110.sh.
+- Smoke test via llama-swap: new 27B and 35B containers (xmad libs) start and answer.
+- Exp1 n=3 mmvq XPF prefetch: local WIP only (branch n3bound 4c51f4f), +2% at n=3, worse at n=2/4.
