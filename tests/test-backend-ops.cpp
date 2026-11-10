@@ -9580,9 +9580,55 @@ static const ggml_type other_types[] = {
 #endif
 
 // Test cases for evaluation: should try to cover edge cases while using small input sizes to keep the runtime low
+// P3: dim-0 concat with a transposed src1 (the GDN conv input shape), exercised by GGML_CUDA_CONCAT_T.
+struct test_concat_transposed_b : public test_case {
+    const std::array<int64_t, 4> ne_a; // [ne00, ne1, ne2, 1]
+    const int64_t ne10;                // src1 columns after the transpose
+
+    std::string vars() override {
+        return VARS_TO_STR2(ne_a, ne10);
+    }
+
+    test_concat_transposed_b(std::array<int64_t, 4> ne_a = {3, 8192, 1, 1}, int64_t ne10 = 4096)
+        : ne_a(ne_a), ne10(ne10) {}
+
+    ggml_tensor * build_graph(ggml_context * ctx) override {
+        ggml_tensor * a = ggml_new_tensor(ctx, GGML_TYPE_F32, 4, ne_a.data());
+        ggml_set_name(a, "a");
+        ggml_tensor * b0 = ggml_new_tensor_3d(ctx, GGML_TYPE_F32, ne_a[1], ne10, ne_a[2]);
+        ggml_set_name(b0, "b0");
+        ggml_tensor * b = ggml_transpose(ctx, b0);
+        ggml_set_name(b, "b_t");
+        ggml_tensor * out = ggml_concat(ctx, a, b, 0);
+        ggml_set_name(out, "out");
+        return out;
+    }
+};
+
 static std::vector<std::unique_ptr<test_case>> make_test_cases_eval() {
     std::vector<std::unique_ptr<test_case>> test_cases;
     std::default_random_engine rng(0);
+
+    // P3 (13 Oct 2026): model-shaped cases for the env-gated prefill paths; P3_ONLY=1 runs just these.
+    test_cases.emplace_back(new test_rms_norm(GGML_TYPE_F32, {128, 16, 4096, 1}, false, 1e-6f));
+    test_cases.emplace_back(new test_rms_norm(GGML_TYPE_F32, {128, 32, 4096, 1}, false, 1e-6f));
+    test_cases.emplace_back(new test_rms_norm(GGML_TYPE_F32, {2048, 4096, 1, 1}, false, 1e-6f));
+    test_cases.emplace_back(new test_rms_norm(GGML_TYPE_F32, {128, 16, 4096, 1}, true, 1e-6f)); // view: odd strides
+    test_cases.emplace_back(new test_rms_norm_mul_add(GGML_TYPE_F32, {128, 32, 4096, 1}, 1e-6f, false, false));
+    test_cases.emplace_back(new test_rms_norm_mul_add(GGML_TYPE_F32, {2048, 4096, 1, 1}, 1e-6f, false, false));
+    test_cases.emplace_back(new test_rms_norm_mul_add(GGML_TYPE_F32, {128, 4, 128, 1}, 1e-6f, true, false)); // broadcast (small: a is 2x3x3x4 ne)
+    test_cases.emplace_back(new test_rms_norm_mul_add(GGML_TYPE_F32, {128, 32, 4096, 1}, 1e-6f, false, false, false, false, true)); // 1-D weight, model-shaped
+    test_cases.emplace_back(new test_rms_norm_mul_add(GGML_TYPE_F32, {2048, 4096, 1, 1}, 1e-6f, false, false, false, false, true));
+    test_cases.emplace_back(new test_rms_norm_mul_add(GGML_TYPE_F32, {128, 2, 4096, 1}, 1e-6f, false, false));
+    test_cases.emplace_back(new test_concat_transposed_b({3, 8192, 1, 1}, 4096));
+    test_cases.emplace_back(new test_concat_transposed_b({3, 8192, 2, 1}, 4093));
+    test_cases.emplace_back(new test_concat_transposed_b({3, 100, 1, 1}, 37));
+    test_cases.emplace_back(new test_mul_mat_id(GGML_TYPE_Q4_0, GGML_TYPE_F32, 256, 8, false, 512, 4096, 1024));
+    test_cases.emplace_back(new test_mul_mat_id(GGML_TYPE_Q4_0, GGML_TYPE_F32, 256, 8, false, 512, 1000, 1024));
+    test_cases.emplace_back(new test_mul_mat_id(GGML_TYPE_Q4_0, GGML_TYPE_F32, 64, 8, false, 256, 4096, 512));
+    if (getenv("P3_ONLY") != nullptr) {
+        return test_cases;
+    }
 
     // unary ops
     for (ggml_type type : {GGML_TYPE_F16, GGML_TYPE_F32, GGML_TYPE_BF16}) {

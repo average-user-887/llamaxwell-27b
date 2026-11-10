@@ -2,6 +2,8 @@
 #include "ggml-impl.h"
 #include "ggml-backend-impl.h"
 
+#include "ggml-cuda/occamy-fused.cuh"
+#include "ggml-cuda/occamy-gdn.cuh"
 #include "ggml-cuda/allreduce.cuh"
 #include "ggml-cuda/common.cuh"
 #include "ggml-cuda/acc.cuh"
@@ -3614,6 +3616,189 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph 
     }
 
     ggml_tensor * node = cgraph->nodes[i];
+    static thread_local bool inside_state_direct=false;
+
+    // native-occamy Track G: whole qwen35moe GDN layer segment (attn_norm .. attention residual add) as one fused decode kernel
+    if (!inside_state_direct && node->op == GGML_OP_RMS_NORM && ggml_cuda_occamy_gdn_enabled() && cuda_ctx->stream_context().concurrent_events.empty()) {
+        ggml_cuda_occamy_gdn_match m;
+        if (ggml_cuda_occamy_gdn_match_window(*cuda_ctx, cgraph, i, m)) {
+            if(m.n_seqs==2) {
+                struct Guard {bool&v;Guard(bool&x):v(x){v=true;}~Guard(){v=false;}} guard(inside_state_direct);
+                static int checks=getenv("GGML_CUDA_STATE_DIRECT_CHECK")?atoi(getenv("GGML_CUDA_STATE_DIRECT_CHECK")):0;
+                const bool checking=checks>0;if(checking)--checks;
+                for(int j=i;j<i+m.n_nodes;++j){
+                    ggml_tensor*t=cgraph->nodes[j];
+                    if(ggml_cuda_is_view_or_noop(t) || ggml_is_empty(t) || (t->flags&GGML_TENSOR_FLAG_COMPUTE)==0)continue;
+                    cuda_ctx->q8r_invalidate_if_overlaps(t);
+                    if(t==m.gr_ssm && !checking)continue;
+                    if(t==m.cpy_ssm)continue;
+                    if(t==m.gdn){
+                        if(checking){
+                            const int64_t NA=2*32*128,NS=2*32*128*128;
+                            ggml_cuda_pool_alloc<float> ta(cuda_ctx->pool(),NA),ts(cuda_ctx->pool(),NS);
+                            ggml_cuda_gdn_direct_pair(*cuda_ctx,t,m.ssm_base,(const int32_t*)m.s_copy->data,m.ssm_stride,ts.get(),ta.get());
+                            ggml_cuda_gated_delta_net_fused_cache cache{m.state_out,0};
+                            ggml_cuda_op_gated_delta_net_fused_cache(*cuda_ctx,t,cache);
+                            std::vector<float>a(NA),b(NA),c(NS),d(NS);
+                            CUDA_CHECK(cudaMemcpyAsync(a.data(),ta.get(),NA*sizeof(float),cudaMemcpyDeviceToHost,cuda_ctx->stream()));
+                            CUDA_CHECK(cudaMemcpyAsync(b.data(),t->data,NA*sizeof(float),cudaMemcpyDeviceToHost,cuda_ctx->stream()));
+                            CUDA_CHECK(cudaMemcpyAsync(c.data(),ts.get(),NS*sizeof(float),cudaMemcpyDeviceToHost,cuda_ctx->stream()));
+                            CUDA_CHECK(cudaMemcpyAsync(d.data(),m.state_out,NS*sizeof(float),cudaMemcpyDeviceToHost,cuda_ctx->stream()));
+                            CUDA_CHECK(cudaStreamSynchronize(cuda_ctx->stream()));
+                            size_t ba=0,bs=0;bool finite=true;
+                            for(int64_t z=0;z<NA;++z){ba+=memcmp(&a[z],&b[z],4)!=0;finite&=std::isfinite(a[z])&&std::isfinite(b[z]);}
+                            for(int64_t z=0;z<NS;++z){bs+=memcmp(&c[z],&d[z],4)!=0;finite&=std::isfinite(c[z])&&std::isfinite(d[z]);}
+                            fprintf(stderr,"occamy-state-direct CHECK %s: attention_bits=%zu state_bits=%zu finite=%d\n",t->name,ba,bs,(int)finite);
+                            GGML_ASSERT(ba==0 && bs==0 && finite);
+                        }else{
+                            ggml_cuda_gdn_direct_pair(*cuda_ctx,t,m.ssm_base,(const int32_t*)m.s_copy->data,m.ssm_stride,m.state_out,nullptr);
+                        }
+                        continue;
+                    }
+                    const int skip=ggml_cuda_try_fuse(cuda_ctx,cgraph,j);
+                    if(skip){
+                        GGML_ASSERT(j+skip<i+m.n_nodes);
+                        for(int z=1;z<=skip;++z){
+                            const ggml_tensor*u=cgraph->nodes[j+z];
+                            GGML_ASSERT(u!=m.gr_ssm && u!=m.gdn && u!=m.cpy_ssm);
+                            cuda_ctx->q8r_invalidate_if_overlaps(u);
+                        }
+                        if(cuda_ctx->q8r_pend){cuda_ctx->q8r_pend=false;cuda_ctx->q8r_valid=true;}
+                        j+=skip;
+                    }else{const bool ok=ggml_cuda_compute_forward(*cuda_ctx,t);GGML_ASSERT(ok);}
+                }
+                cuda_ctx->q8r_valid=false;cuda_ctx->q8r_pend=false;
+                return m.n_nodes-1;
+            }
+            if (ggml_cuda_occamy_gdn_check_budget() > 0) {
+                // fused into tmp (states to their real destinations), snapshot the source state rows, restore, run stock, compare
+                const int64_t n = ggml_nelements(m.out);
+                const int64_t NC = 3 * 8192, NS = 32 * 128 * 128;
+                cudaStream_t st = cuda_ctx->stream();
+                int32_t row = 0;
+                CUDA_CHECK(cudaMemcpyAsync(&row, m.s_copy->data, sizeof(int32_t), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaStreamSynchronize(st));
+                const float * conv_src = m.conv_base + (size_t) row * m.conv_stride;
+                const float * ssm_src  = m.ssm_base  + (size_t) row * m.ssm_stride;
+                std::vector<float> snap_c(NC), snap_s(NS);
+                std::vector<float> hh(2048);   // residual input: read now, the in-place residual ADD may overwrite its buffer later
+                if (m.h->type == GGML_TYPE_F32 && ggml_is_contiguous(m.h)) {
+                    CUDA_CHECK(cudaMemcpyAsync(hh.data(), m.h->data, 2048 * sizeof(float), cudaMemcpyDeviceToHost, st));
+                }
+                CUDA_CHECK(cudaMemcpyAsync(snap_c.data(), conv_src, NC * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaMemcpyAsync(snap_s.data(), ssm_src,  NS * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaStreamSynchronize(st));
+                ggml_cuda_pool_alloc<float> tmp(cuda_ctx->pool(), n);
+                ggml_cuda_occamy_gdn_launch(*cuda_ctx, m, tmp.get());
+                std::vector<float> a(n), b(n), fc(NC), sc(NC), fs(NS), ss(NS);
+                CUDA_CHECK(cudaMemcpyAsync(a.data(),  tmp.get(),   n  * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaMemcpyAsync(fc.data(), m.conv_out,  NC * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaMemcpyAsync(fs.data(), m.state_out, NS * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaStreamSynchronize(st));
+                CUDA_CHECK(cudaMemcpyAsync((void *) conv_src, snap_c.data(), NC * sizeof(float), cudaMemcpyHostToDevice, st));
+                CUDA_CHECK(cudaMemcpyAsync((void *) ssm_src,  snap_s.data(), NS * sizeof(float), cudaMemcpyHostToDevice, st));
+                CUDA_CHECK(cudaStreamSynchronize(st));
+                cuda_ctx->q8r_valid = false;
+                cuda_ctx->q8r_pend  = false;
+                for (int j = i; j < i + m.n_nodes; ++j) {
+                    ggml_tensor * t = cgraph->nodes[j];
+                    if (ggml_is_empty(t) || ggml_cuda_is_view_or_noop(t) || (t->flags & GGML_TENSOR_FLAG_COMPUTE) == 0) { continue; }
+                    cuda_ctx->q8r_valid = false;
+                    cuda_ctx->q8r_pend  = false;
+                    ggml_cuda_compute_forward(*cuda_ctx, t);
+                }
+                cuda_ctx->q8r_valid = false;
+                cuda_ctx->q8r_pend  = false;
+                CUDA_CHECK(cudaMemcpyAsync(b.data(),  m.out->data, n  * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaMemcpyAsync(sc.data(), m.conv_out,  NC * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaMemcpyAsync(ss.data(), m.state_out, NS * sizeof(float), cudaMemcpyDeviceToHost, st));
+                CUDA_CHECK(cudaStreamSynchronize(st));
+                auto cmp = [](const std::vector<float> & x, const std::vector<float> & y, double & ma, double & mb, double & mr) {
+                    ma = 0; mb = 0;
+                    for (size_t k = 0; k < x.size(); ++k) { ma = std::max(ma, (double) fabsf(x[k] - y[k])); mb = std::max(mb, (double) fabsf(y[k])); }
+                    mr = mb > 0 ? ma / mb : 0;
+                };
+                double oa, ob, orr, sa, sb, sr, ca, cb, cr;
+                cmp(a, b, oa, ob, orr); cmp(fs, ss, sa, sb, sr); cmp(fc, sc, ca, cb, cr);
+                fprintf(stderr, "occamy-gdn CHECK %s: out max_abs %.3e max|ref| %.3e rel %.3e | state max_abs %.3e rel %.3e | conv max_abs %.3e rel %.3e\n",
+                        m.out->name, oa, ob, orr, sa, sr, ca, cr);
+                // attribution: double-precision host reference of the qkv GEMV (newest conv tap = Wqkv . rmsnorm(h)*w), fused vs stock
+                if (m.wqkv->type == GGML_TYPE_Q4_0 && m.h->type == GGML_TYPE_F32 && m.norm_w->type == GGML_TYPE_F32 && ggml_is_contiguous(m.h)) {
+                    const int64_t HH = 2048, NQ = 8192;
+                    std::vector<float> ww(HH);
+                    std::vector<uint8_t> wq(ggml_nbytes(m.wqkv));
+                    CUDA_CHECK(cudaMemcpyAsync(ww.data(), m.norm_w->data, HH * sizeof(float), cudaMemcpyDeviceToHost, st));
+                    CUDA_CHECK(cudaMemcpyAsync(wq.data(), m.wqkv->data,   wq.size(),          cudaMemcpyDeviceToHost, st));
+                    CUDA_CHECK(cudaStreamSynchronize(st));
+                    double ss2 = 0; for (int64_t k = 0; k < HH; ++k) { ss2 += (double) hh[k] * hh[k]; }
+                    const double scl = 1.0 / sqrt(ss2 / HH + (double) m.eps_attn);
+                    std::vector<double> xn(HH); for (int64_t k = 0; k < HH; ++k) { xn[k] = hh[k] * scl * ww[k]; }
+                    double rf = 0, rs = 0, rm = 0;
+                    for (int64_t c = 0; c < NQ; ++c) {
+                        const uint8_t * rowp = wq.data() + c * m.wqkv->nb[1];
+                        double acc = 0;
+                        for (int64_t blk = 0; blk < HH / 32; ++blk) {
+                            const block_q4_0 * q = (const block_q4_0 *) (rowp + blk * sizeof(block_q4_0));
+                            const double d = __half2float(q->d);   // ggml_half is `half` in CUDA TUs; ggml_fp16_to_fp32 would truncate the value to 0
+                            for (int j = 0; j < 16; ++j) {
+                                acc += d * ((int) (q->qs[j] & 0xF) - 8) * xn[blk * 32 + j];
+                                acc += d * ((int) (q->qs[j] >> 4)  - 8) * xn[blk * 32 + j + 16];
+                            }
+                        }
+                        rm = std::max(rm, fabs(acc));
+                        rf = std::max(rf, fabs(fc[2 + 3 * c] - acc));
+                        rs = std::max(rs, fabs(sc[2 + 3 * c] - acc));
+                    }
+                    fprintf(stderr, "occamy-gdn QKVREF %s: max|ref| %.3e | fused max_abs %.3e rel %.3e | stock max_abs %.3e rel %.3e\n",
+                            m.out->name, rm, rf, rm > 0 ? rf / rm : 0, rs, rm > 0 ? rs / rm : 0);
+                }
+                return m.n_nodes - 1;
+            }
+            ggml_cuda_occamy_gdn_launch(*cuda_ctx, m, nullptr);
+            cuda_ctx->q8r_valid = false;
+            cuda_ctx->q8r_pend  = false;
+            return m.n_nodes - 1;
+        }
+    }
+
+    // native-occamy: whole qwen35moe MoE block (rms_norm .. residual add) as one fused decode kernel
+    if (node->op == GGML_OP_RMS_NORM && ggml_cuda_occamy_enabled() && cuda_ctx->stream_context().concurrent_events.empty()) {
+        ggml_cuda_occamy_moe_match m;
+        if (ggml_cuda_occamy_moe_match_window(*cuda_ctx, cgraph, i, m)) {
+            if (ggml_cuda_occamy_check_budget() > 0) {
+                const int64_t n = ggml_nelements(m.out);
+                ggml_cuda_pool_alloc<float> tmp(cuda_ctx->pool(), n);
+                ggml_cuda_occamy_moe_launch(*cuda_ctx, m, tmp.get());
+                std::vector<float> a(n), b(n);
+                CUDA_CHECK(cudaMemcpyAsync(a.data(), tmp.get(), n * sizeof(float), cudaMemcpyDeviceToHost, cuda_ctx->stream()));
+                cuda_ctx->q8r_valid = false;
+                cuda_ctx->q8r_pend  = false;
+                for (int j = i; j < i + m.n_nodes; ++j) {
+                    ggml_tensor * t = cgraph->nodes[j];
+                    if (ggml_cuda_is_view_or_noop(t) || (t->flags & GGML_TENSOR_FLAG_COMPUTE) == 0) { continue; }
+                    cuda_ctx->q8r_valid = false;
+                    cuda_ctx->q8r_pend  = false;
+                    ggml_cuda_compute_forward(*cuda_ctx, t);
+                }
+                cuda_ctx->q8r_valid = false;
+                cuda_ctx->q8r_pend  = false;
+                CUDA_CHECK(cudaMemcpyAsync(b.data(), m.out->data, n * sizeof(float), cudaMemcpyDeviceToHost, cuda_ctx->stream()));
+                CUDA_CHECK(cudaStreamSynchronize(cuda_ctx->stream()));
+                double ma = 0, mr = 0, mb = 0;
+                for (int64_t k = 0; k < n; ++k) {
+                    ma = std::max(ma, (double) fabsf(a[k] - b[k]));
+                    mb = std::max(mb, (double) fabsf(b[k]));
+                }
+                mr = mb > 0 ? ma / mb : 0;
+                fprintf(stderr, "occamy-fused CHECK %s: max_abs %.3e max|ref| %.3e rel %.3e\n", m.out->name, ma, mb, mr);
+                return m.n_nodes - 1;
+            }
+            ggml_cuda_occamy_moe_launch(*cuda_ctx, m, nullptr);
+            cuda_ctx->q8r_valid = false;
+            cuda_ctx->q8r_pend  = false;
+            return m.n_nodes - 1;
+        }
+    }
 
     if (node->op == GGML_OP_MUL_MAT_ID && cuda_ctx->stream_context().concurrent_events.empty() &&
             ggml_cuda_match_shared_expert(cgraph, i, i + 3) &&

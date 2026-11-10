@@ -4,7 +4,9 @@
 #include "vecdotq.cuh"
 
 #include <cstdint>
+#include <cstdlib>
 #include <type_traits>
+#include <atomic>
 
 // only enabled on DGX Spark, where it is a gain on every type below. On the higher-bandwidth parts the kernel
 // has little exposed latency left to hide and the extra requests cost more than they save.
@@ -597,8 +599,53 @@ static constexpr __host__ __device__ int calc_rows_per_block(int ncols_dst, int 
     return 1;
 }
 
-template <ggml_type type, int ncols_dst, bool has_fusion, bool small_k = false, bool halve_iters = false>
-__launch_bounds__(calc_nwarps(type, ncols_dst, get_device_table_id(), small_k, halve_iters)*ggml_cuda_get_physical_warp_size(), 1)
+// sm52 experiment 12 Oct 2026 (mmvqpipe): software-pipelined Q4_0 single-column path, opt-in via GGML_CUDA_MMVQ_PIPE=1.
+// The loop is unrolled by two with explicit fragments: the loads for the next block are issued before the current
+// block's dot product, and two independent accumulators break the add chain. On Maxwell (no native dp4a, byte-extract
+// emulation) each dot is long enough that the extra loads in flight per warp should hide more DRAM latency.
+// Only mul_mat_vec_q<Q4_0, ncols_dst=1> is affected (the MUL_MAT_ID experts of a 1-token decode go through it as well);
+// mul_mat_vec_q_moe (multi-token MUL_MAT_ID) is untouched.
+struct mmvq_pipe_q4_0_frag {
+    int  v[VDR_Q4_0_Q8_1_MMVQ];
+    half d;
+};
+
+struct mmvq_pipe_q8_1_frag {
+    int   u[2*VDR_Q4_0_Q8_1_MMVQ];
+    half2 ds;
+};
+
+static __device__ __forceinline__ void mmvq_pipe_load_x(const void * __restrict__ vbq, const int kbx, const int iqs, mmvq_pipe_q4_0_frag & f) {
+    const block_q4_0 * bq4_0 = (const block_q4_0 *) vbq + kbx;
+#pragma unroll
+    for (int i = 0; i < VDR_Q4_0_Q8_1_MMVQ; ++i) {
+        f.v[i] = get_int_b2(bq4_0->qs, iqs + i);
+    }
+    f.d = bq4_0->d;
+}
+
+static __device__ __forceinline__ void mmvq_pipe_load_y(const block_q8_1 * __restrict__ bq8_1, const int iqs, mmvq_pipe_q8_1_frag & f) {
+#pragma unroll
+    for (int i = 0; i < VDR_Q4_0_Q8_1_MMVQ; ++i) {
+        f.u[2*i+0] = get_int_b4(bq8_1->qs, iqs + i);
+        f.u[2*i+1] = get_int_b4(bq8_1->qs, iqs + i + QI4_0);
+    }
+    f.ds = bq8_1->ds;
+}
+
+static __device__ __forceinline__ float mmvq_pipe_dot(const mmvq_pipe_q4_0_frag & x, const mmvq_pipe_q8_1_frag & y) {
+    return vec_dot_q4_0_q8_1_impl<VDR_Q4_0_Q8_1_MMVQ>(x.v, y.u, x.d, y.ds);
+}
+
+// Register cap for the pipelined kernel, expressed as the minimum number of resident one-warp blocks per SM (Maxwell
+// allows 32): 32 -> 64 regs, 24 -> 85 regs, 1 -> no cap. ptxas sm_52 12 Oct 2026: uncapped 72/92 regs (unfused/fused), 32 -> 64/64 with
+// 0 spills, so 32 is the default; rebuild with another value to test the trade-off.
+#ifndef GGML_CUDA_MMVQ_PIPE_MIN_BLOCKS
+#define GGML_CUDA_MMVQ_PIPE_MIN_BLOCKS 32
+#endif
+
+template <ggml_type type, int ncols_dst, bool has_fusion, bool small_k = false, bool halve_iters = false, bool pipe = false>
+__launch_bounds__(calc_nwarps(type, ncols_dst, get_device_table_id(), small_k, halve_iters)*ggml_cuda_get_physical_warp_size(), pipe ? GGML_CUDA_MMVQ_PIPE_MIN_BLOCKS : 1)
 static __global__ void mul_mat_vec_q(
         const void * vx_ptr, const void * vy_ptr, const int32_t * ids_ptr, const ggml_cuda_mm_fusion_args_device fusion, float * dst_ptr,
         const uint32_t ncols_x, const uint3 nchannels_y, const uint32_t stride_row_x, const uint32_t stride_col_y,
@@ -719,6 +766,103 @@ static __global__ void mul_mat_vec_q(
     const block_q8_1 * y = ((const block_q8_1 *) vy) + sample_y*stride_sample_y + channel_y*stride_channel_y;
     const int kbx_offset = sample_x*stride_sample_x + channel_x*stride_channel_x + row0*stride_row_x;
 
+    if constexpr (pipe && type == GGML_TYPE_Q4_0 && ncols_dst == 1) {
+        static_assert(qk == QK8_1, "Q4_0 and Q8_1 blocks must align one to one for the pipelined path");
+        const int kqs  = vdr * (tid % (qi/vdr));
+        const int kbx0 = tid / (qi/vdr);
+
+        float acc0[rows_per_cuda_block] = {0.0f};
+        float acc1[rows_per_cuda_block] = {0.0f};
+        float gacc0[rows_per_cuda_block] = {0.0f};
+        float gacc1[rows_per_cuda_block] = {0.0f};
+
+        mmvq_pipe_q4_0_frag xa[rows_per_cuda_block], xb[rows_per_cuda_block];
+        mmvq_pipe_q4_0_frag ga[rows_per_cuda_block], gb[rows_per_cuda_block];
+        mmvq_pipe_q8_1_frag ya, yb;
+
+        [[maybe_unused]] bool gate_on = false;
+        if constexpr (has_fusion) {
+            gate_on = use_gate;
+        }
+
+        // stage A is primed before the loop; inside the loop the loads for stage B are issued before the dot of
+        // stage A, and the loads for the next stage A before the dot of stage B
+        if (kbx0 < blocks_per_row_x) {
+            mmvq_pipe_load_y(&y[kbx0], kqs, ya);
+#pragma unroll
+            for (int i = 0; i < rows_per_cuda_block; ++i) {
+                mmvq_pipe_load_x(vx, kbx_offset + i*stride_row_x + kbx0, kqs, xa[i]);
+                if constexpr (has_fusion) {
+                    if (gate_on) {
+                        mmvq_pipe_load_x(vgate, kbx_offset + i*stride_row_x + kbx0, kqs, ga[i]);
+                    }
+                }
+            }
+        }
+
+        for (int kbx = kbx0; kbx < blocks_per_row_x; kbx += 2*blocks_per_iter) {
+            const int  kbx_b   = kbx + blocks_per_iter;
+            const int  kbx_a2  = kbx + 2*blocks_per_iter;
+            const bool have_b  = kbx_b  < blocks_per_row_x;
+            const bool have_a2 = kbx_a2 < blocks_per_row_x;
+
+            if (have_b) {
+                mmvq_pipe_load_y(&y[kbx_b], kqs, yb);
+#pragma unroll
+                for (int i = 0; i < rows_per_cuda_block; ++i) {
+                    mmvq_pipe_load_x(vx, kbx_offset + i*stride_row_x + kbx_b, kqs, xb[i]);
+                    if constexpr (has_fusion) {
+                        if (gate_on) {
+                            mmvq_pipe_load_x(vgate, kbx_offset + i*stride_row_x + kbx_b, kqs, gb[i]);
+                        }
+                    }
+                }
+            }
+
+#pragma unroll
+            for (int i = 0; i < rows_per_cuda_block; ++i) {
+                acc0[i] += mmvq_pipe_dot(xa[i], ya);
+                if constexpr (has_fusion) {
+                    if (gate_on) {
+                        gacc0[i] += mmvq_pipe_dot(ga[i], ya);
+                    }
+                }
+            }
+
+            if (have_a2) {
+                mmvq_pipe_load_y(&y[kbx_a2], kqs, ya);
+#pragma unroll
+                for (int i = 0; i < rows_per_cuda_block; ++i) {
+                    mmvq_pipe_load_x(vx, kbx_offset + i*stride_row_x + kbx_a2, kqs, xa[i]);
+                    if constexpr (has_fusion) {
+                        if (gate_on) {
+                            mmvq_pipe_load_x(vgate, kbx_offset + i*stride_row_x + kbx_a2, kqs, ga[i]);
+                        }
+                    }
+                }
+            }
+
+            if (have_b) {
+#pragma unroll
+                for (int i = 0; i < rows_per_cuda_block; ++i) {
+                    acc1[i] += mmvq_pipe_dot(xb[i], yb);
+                    if constexpr (has_fusion) {
+                        if (gate_on) {
+                            gacc1[i] += mmvq_pipe_dot(gb[i], yb);
+                        }
+                    }
+                }
+            }
+        }
+
+#pragma unroll
+        for (int i = 0; i < rows_per_cuda_block; ++i) {
+            tmp[0][i] = acc0[i] + acc1[i];
+            if constexpr (has_fusion) {
+                tmp_gate[0][i] = gacc0[i] + gacc1[i];
+            }
+        }
+    } else
     for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
         const int kby = kbx * (qk/QK8_1); // y block index that aligns with kbx
 
@@ -1021,6 +1165,15 @@ static std::pair<dim3, dim3> calc_launch_params(
     return {block_nums, block_dims};
 }
 
+// GGML_CUDA_MMVQ_PIPE=1 selects the pipelined Q4_0 single-column kernel (see mmvq_pipe_* above). Read once.
+static bool mmvq_pipe_enabled() {
+    static const bool enabled = [] {
+        const char * e = getenv("GGML_CUDA_MMVQ_PIPE");
+        return e != nullptr && e[0] != '\0' && e[0] != '0';
+    }();
+    return enabled;
+}
+
 template<ggml_type type, int c_ncols_dst, bool small_k = false, bool halve_iters = false>
 static void mul_mat_vec_q_switch_fusion(
         const void * vx, const void * vy, const int32_t * ids, const ggml_cuda_mm_fusion_args_device fusion, float * dst,
@@ -1033,6 +1186,23 @@ static void mul_mat_vec_q_switch_fusion(
 
     const bool has_fusion = fusion.gate != nullptr || fusion.x_bias != nullptr || fusion.gate_bias != nullptr ||
                             fusion.x_scale != nullptr || fusion.gate_scale != nullptr;
+    if constexpr (c_ncols_dst == 1 && type == GGML_TYPE_Q4_0) {
+        if (mmvq_pipe_enabled()) {
+            const ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
+            if (has_fusion) {
+                ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, true, small_k, halve_iters, true>, launch_params,
+                     vx, vy, ids, fusion, dst, ncols_x, nchannels_y, stride_row_x, stride_col_y, stride_col_dst,
+                     channel_ratio, stride_channel_x, stride_channel_y, stride_channel_dst,
+                     sample_ratio, stride_sample_x, stride_sample_y, stride_sample_dst, ids_stride);
+            } else {
+                ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, false, small_k, halve_iters, true>, launch_params,
+                     vx, vy, ids, fusion, dst, ncols_x, nchannels_y, stride_row_x, stride_col_y, stride_col_dst,
+                     channel_ratio, stride_channel_x, stride_channel_y, stride_channel_dst,
+                     sample_ratio, stride_sample_x, stride_sample_y, stride_sample_dst, ids_stride);
+            }
+            return;
+        }
+    }
     if constexpr (c_ncols_dst == 1) {
         if (has_fusion) {
             const ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
@@ -1086,6 +1256,29 @@ static void mul_mat_vec_q_moe_launch(
     }
 }
 
+// Maxwell output head: four independent one-warp rows per block.
+// Preserves stock Q4_0/Q8_1 dot arithmetic and reduction order; default off.
+static __global__ void head_rowpack_sm52(const void * __restrict__ w,
+        const block_q8_1 * __restrict__ x, float * __restrict__ y, const int nrows) {
+    const int lane = threadIdx.x & 31;
+    const int row = blockIdx.x * 4 + threadIdx.x / 32;
+    if (row >= nrows) { return; }
+    float acc = 0.0f;
+    for (int kb = lane / 2; kb < 64; kb += 16) {
+        acc += vec_dot_q4_0_q8_1(w, x + kb, row * 64 + kb, 2 * (lane % 2));
+    }
+    acc = warp_reduce_sum<32>(acc);
+    if (lane == 0) { y[row] = acc; }
+}
+
+static bool head_rowpack_enabled() {
+    static const bool enabled = [] {
+        const char * e = getenv("GGML_CUDA_HEAD_ROWPACK_SM52");
+        return e && e[0] && e[0] != '0';
+    }();
+    return enabled;
+}
+
 template <ggml_type type>
 static void mul_mat_vec_q_switch_ncols_dst(
         const void * vx, const void * vy, const int32_t * ids, const ggml_cuda_mm_fusion_args_device fusion, float * dst,
@@ -1109,6 +1302,26 @@ static void mul_mat_vec_q_switch_ncols_dst(
     const mmvq_parameter_table_id table_id  = get_device_table_id(cc);
 
     const bool has_ids = ids != nullptr;
+
+    if constexpr (type == GGML_TYPE_Q4_0) {
+        const bool no_fusion = !fusion.gate && !fusion.x_bias && !fusion.gate_bias &&
+                               !fusion.x_scale && !fusion.gate_scale && !fusion.shared_up;
+        if (head_rowpack_enabled() && cc == 520 && warp_size == 32 && !ids && no_fusion &&
+                ncols_x == 2048 && nrows_x == 248320 && ncols_dst == 1 &&
+                stride_row_x == 64 && stride_col_dst == nrows_x &&
+                nchannels_x == 1 && nchannels_y == 1 && nchannels_dst == 1 &&
+                nsamples_x == 1 && nsamples_dst == 1) {
+            static std::atomic<bool> reported{false};
+            if (getenv("GGML_CUDA_OCCAMY_DEBUG") && !reported.exchange(true)) {
+                fprintf(stderr, "head-rowpack: engaged sm52 Q4_0 K2048 rows248320 columns1 rows_per_block4\n");
+            }
+            const ggml_cuda_kernel_launch_params params(dim3((nrows_x + 3)/4), dim3(128), 0, stream);
+            ggml_cuda_kernel_launch(head_rowpack_sm52, params, vx,
+                    static_cast<const block_q8_1 *>(vy), dst, nrows_x);
+            return;
+        }
+    }
+
 
     // How the K loop divides up at the baseline block width, both decisions below use these.
     constexpr int qk                    = ggml_cuda_type_traits<type>::qk;

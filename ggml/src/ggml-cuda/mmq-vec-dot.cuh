@@ -1,6 +1,9 @@
 #pragma once
 
 #include "vecdotq.cuh"
+#if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+#include "sm52-xmad.cuh"
+#endif
 #include "mma.cuh"
 
 using namespace ggml_cuda_mma;
@@ -137,6 +140,91 @@ template <ggml_type type, int J, bool fallback> static __device__ __forceinline_
             }
         }
     }
+}
+
+
+// Opt-in register microtile: expand one K word per row/column, reuse across
+// I/32 rows and J/8 columns. At J=64 this is the requested 2 x 8 tile.
+// Q4_0 actually uses packed nibbles here, not the Q8_0 shared-memory layout.
+template <ggml_type type, int J, bool fallback>
+static __device__ __forceinline__ void ggml_cuda_mmq_vec_dot_xmad_sm52(
+        const int * __restrict__ x, const int * __restrict__ y, float * __restrict__ sum, const int k00) {
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 520 && !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+    static_assert(type == GGML_TYPE_Q4_0 || type == GGML_TYPE_Q8_0, "XMAD type");
+    constexpr int W = 32;
+    constexpr int NW = ggml_cuda_mmq_get_nthreads(type, J, fallback, GGML_PREC_Q8) / W;
+    constexpr int I = ggml_cuda_mmq_get_I(type, J, fallback, GGML_PREC_Q8);
+    constexpr int NR = I/W, NC = J/NW;
+    constexpr bool Q4 = type == GGML_TYPE_Q4_0;
+    constexpr int VDR = Q4 ? VDR_Q4_0_Q8_1_MMQ : VDR_Q8_0_Q8_1_MMQ;
+    constexpr int QR = Q4 ? QR4_0 : 1;
+    constexpr tile_x_sizes txs = mmq_get_dp4a_tile_x_sizes(type, I);
+    const float * xd = reinterpret_cast<const float *>(x + txs.qs);
+    const int * yq = y + 4;
+    const float * yd = reinterpret_cast<const float *>(y);
+    const half2 * ys = reinterpret_cast<const half2 *>(y);
+    for (int k01 = 0; k01 < MMQ_TILE_NE_K; k01 += QR*VDR) {
+        const int k0 = k00 + k01;
+        int acc[NC][NR] = {};
+#pragma unroll
+        for (int l = 0; l < VDR; ++l) {
+            // Keep only the current word expanded, not the whole K fragment.
+            ggml_cuda_sm52_i16x4 ax[NR], ah[NR];
+#pragma unroll
+            for (int r = 0; r < NR; ++r) {
+                const int i = r*W + threadIdx.x;
+                if constexpr (Q4) {
+                    const uint32_t v = x[i*(MMQ_TILE_NE_K+1) + k0/QR4_0 + l];
+                    ax[r] = ggml_cuda_sm52_expand(v & 0x0f0f0f0f);
+                    ah[r] = ggml_cuda_sm52_expand((v >> 4) & 0x0f0f0f0f);
+                } else {
+                    ax[r] = ggml_cuda_sm52_expand(x[i*(2*MMQ_TILE_NE_K+1) + k0 + l]);
+                }
+            }
+#pragma unroll
+            for (int c = 0; c < NC; ++c) {
+                const int j = c*NW + threadIdx.y;
+                const int ky = Q4 ? QI8_1*((k01/2)/(QI8_1/2)) + (k01/2)%(QI8_1/2) + l
+                                  : k0%MMQ_TILE_NE_K + l;
+                const auto by = ggml_cuda_sm52_expand(yq[j*MMQ_TILE_Y_K + ky]);
+                ggml_cuda_sm52_i16x4 bh;
+                if constexpr (Q4) {
+                    bh = ggml_cuda_sm52_expand(yq[j*MMQ_TILE_Y_K + ky + QI4_0]);
+                }
+#pragma unroll
+                for (int r = 0; r < NR; ++r) {
+                    acc[c][r] = ggml_cuda_sm52_dot4(ax[r], by, acc[c][r]);
+                    if constexpr (Q4) {
+                        acc[c][r] = ggml_cuda_sm52_dot4(ah[r], bh, acc[c][r]);
+                    }
+                }
+            }
+        }
+#pragma unroll
+        for (int c = 0; c < NC; ++c) {
+            const int j = c*NW + threadIdx.y;
+#pragma unroll
+            for (int r = 0; r < NR; ++r) {
+                const int i = r*W + threadIdx.x;
+                if constexpr (Q4) {
+                    const float d4 = xd[i*(MMQ_TILE_NE_K/QI4_0) + i/QI4_0 + k0/(QR4_0*QI4_0)];
+                    const float2 ds = __half22float2(ys[j*MMQ_TILE_Y_K + k01/QI8_1]);
+                    sum[c*NR+r] += d4*(acc[c][r]*ds.x - (8*VDR/QI4_0)*ds.y);
+                } else {
+                    const float d0 = xd[i*(2*MMQ_TILE_NE_K/QI8_0) + i/(QI8_0/2) + k0/QI8_0];
+                    const float d1 = yd[j*MMQ_TILE_Y_K + (k0/QI8_1)%(MMQ_TILE_NE_K/QI8_1)];
+                    sum[c*NR+r] += d0*d1*float(acc[c][r]);
+                }
+            }
+        }
+    }
+#else
+    if constexpr (type == GGML_TYPE_Q4_0) {
+        ggml_cuda_mmq_vec_dot_q4_0_q8_1_dp4a<type, J, fallback>(x, y, sum, k00);
+    } else {
+        ggml_cuda_mmq_vec_dot_q8_0_q8_1_dp4a<type, J, fallback>(x, y, sum, k00);
+    }
+#endif
 }
 
 template <ggml_type type, int J, bool fallback, mmq_q8_1_ds_layout ds_layout>

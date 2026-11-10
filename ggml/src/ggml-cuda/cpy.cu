@@ -1,9 +1,19 @@
 #include "cpy.cuh"
+#include <atomic>
+#include <vector>
+#include <cstdint>
 #include "dequantize.cuh"
 #include "cpy-utils.cuh"
 #if defined(GGML_USE_MUSA) && defined(GGML_MUSA_MUDNN_COPY)
 #include "ggml-musa/mudnn.cuh"
 #endif // GGML_USE_MUSA && GGML_MUSA_MUDNN_COPY
+
+// Copy sixteen 256-float gate rows from alternating Q/gate rows.
+// src already points at the first gate; vector copies preserve all bits.
+static __global__ void gate_copy_sm52(const uint4 * src, uint4 * dst, const int vectors) {
+    const int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < vectors) dst[i] = src[((i >> 6) << 7) + (i & 63)];
+}
 
 typedef void (*cpy_kernel_t)(const char * cx, char * cdst);
 
@@ -456,6 +466,37 @@ void ggml_cuda_cpy(ggml_backend_cuda_context & ctx, const ggml_tensor * src0, gg
 
     char * src0_ddc = (char *) src0->data;
     char * src1_ddc = (char *) src1->data;
+
+    static const bool gate_copy_enabled = getenv("GGML_CUDA_GATE_COPY") && atoi(getenv("GGML_CUDA_GATE_COPY"));
+    const auto src_begin = reinterpret_cast<uintptr_t>(src0_ddc);
+    const auto dst_begin = reinterpret_cast<uintptr_t>(src1_ddc);
+    if (gate_copy_enabled && ggml_cuda_info().devices[ggml_cuda_get_device()].cc == 520 &&
+        src0->type == GGML_TYPE_F32 && src1->type == GGML_TYPE_F32 &&
+        ne00 == 256 && ne01 == 16 && ne02 >= 1 && ne02 <= 2 && src0->ne[3] == 1 &&
+        nb00 == 4 && nb01 == 2048 && nb02 == 32768 && nb03 == 32768*ne02 &&
+        ne10 == 4096 && ne11 == ne02 && ne12 == 1 && src1->ne[3] == 1 &&
+        ggml_is_contiguous(src1) && src_begin%16 == 0 && dst_begin%16 == 0 &&
+        (src_begin + ggml_nbytes(src0) <= dst_begin || dst_begin + ggml_nbytes(src1) <= src_begin)) {
+        static std::atomic<bool> announced{false};
+        if (!announced.exchange(true)) GGML_LOG_INFO("gate-copy: engaged sm52 packed gate extraction\n");
+        const ggml_cuda_kernel_launch_params params(dim3(32*ne02), dim3(32), 0, main_stream);
+        ggml_cuda_kernel_launch(gate_copy_sm52, params, reinterpret_cast<const uint4 *>(src0_ddc),
+                                reinterpret_cast<uint4 *>(src1_ddc), int(1024*ne02));
+        static std::atomic<int> checks{getenv("GGML_CUDA_GATE_COPY_CHECK") ? atoi(getenv("GGML_CUDA_GATE_COPY_CHECK")) : 0};
+        if (checks.load() > 0 && checks.fetch_sub(1) > 0) {
+            ggml_cuda_pool_alloc<uint32_t> reference(ctx.pool(), ne);
+            ggml_cpy_scalar_cuda<float,float>(src0_ddc, reinterpret_cast<char *>(reference.get()), ne,
+                ne00,ne01,ne02,nb00,nb01,nb02,nb03,ne10,ne11,ne12,nb10,nb11,nb12,nb13,main_stream);
+            std::vector<uint32_t> a(ne),b(ne);
+            CUDA_CHECK(cudaMemcpyAsync(a.data(),reference.get(),ne*sizeof(uint32_t),cudaMemcpyDeviceToHost,main_stream));
+            CUDA_CHECK(cudaMemcpyAsync(b.data(),src1_ddc,ne*sizeof(uint32_t),cudaMemcpyDeviceToHost,main_stream));
+            CUDA_CHECK(cudaStreamSynchronize(main_stream));
+            size_t bad=0;for(size_t j=0;j<a.size();++j)bad+=a[j]!=b[j];
+            fprintf(stderr,"gate-copy CHECK %s: n=%lld bits=%zu\n",src1->name,(long long)ne02,bad);
+            GGML_ASSERT(bad==0);
+        }
+        return;
+    }
 
     const bool contiguous_srcs = ggml_is_contiguous(src0) && ggml_is_contiguous(src1);
     const bool can_be_transposed = nb01 == (int64_t)ggml_element_size(src0) &&
