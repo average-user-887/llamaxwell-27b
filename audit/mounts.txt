@@ -1,0 +1,4 @@
+/media/avg-usr/Models/gguf -> /m2
+/media/avg-usr/Storage/llama-slots-m6000 -> /slots
+/media/avg-usr/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-fadec2-20261109.so -> /app/libggml-cuda.so
+

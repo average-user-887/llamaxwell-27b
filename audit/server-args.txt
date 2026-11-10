@@ -1,0 +1,1 @@
+-m /m2/qwen38-27b/Qwen3.8-27B-Q4_0-head4.gguf --alias solo-27b -ngl 999 --fit off -np 2 -no-kvu -c 262144 -ctk q4_0 -ctv q4_0 -b 2048 -ub 1024 --cache-ram 4096 --ctx-checkpoints 8 --checkpoint-min-step 2048 -fa on --host 0.0.0.0 --port 8080 --spec-type draft-mtp --spec-draft-n-max 2 --no-mmproj --jinja --metrics --slot-save-path /slots -lv 4 
