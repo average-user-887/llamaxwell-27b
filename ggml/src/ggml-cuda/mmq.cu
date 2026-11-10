@@ -413,7 +413,7 @@ bool ggml_cuda_should_use_mmq(enum ggml_type type, int cc, int64_t ne11, int64_t
     if (ggml_cuda_highest_compiled_arch(cc) < GGML_CUDA_CC_DP4A) {
         // for MoE, mmq is faster even without native dp4a
         // TODO: check if cards older than pascal might benefit from this as well
-        return cc >= GGML_CUDA_CC_PASCAL && n_experts > 0;
+        return n_experts > 0; // local patch 20261012: admit Maxwell (sm52) to MoE MMQ
     }
 
 #ifdef GGML_CUDA_FORCE_MMQ

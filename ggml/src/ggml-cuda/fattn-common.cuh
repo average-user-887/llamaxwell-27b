@@ -5,6 +5,8 @@
 #include "vecdotq.cuh"
 
 #include <cstdint>
+#include <cstdlib> // local patch 20261012 fattn
+#include <cstring> // local patch 20261012 fattn
 
 #define FATTN_KQ_STRIDE       256
 #define HALF_MAX_HALF         __float2half(65504.0f/2) // Use neg. of this instead of -INFINITY to initialize KQ max vals to avoid NaN upon subtraction.
@@ -17,6 +19,44 @@
 // Still, the value range should be shifted as much as necessary but as little as possible.
 // The macro on the following line shifts it by a factor of 2**3=8, as was needed to fix https://github.com/ggml-org/llama.cpp/issues/18606 .
 #define FATTN_KQ_MAX_OFFSET (3.0f*0.6931f)
+
+// local patch 20261012 fattn: runtime knobs for A/B testing FlashAttention on cc < 6.0 (Maxwell, no fast fp16).
+// Every knob is read from the environment once and cached. With no variable set, behaviour is identical to upstream.
+//   GGML_CUDA_FA_PARALLEL_BLOCKS=N      force parallel_blocks (KV split factor) for the non-stream-k path, clamped to [1, ntiles_KV]
+//   GGML_CUDA_FA_PARALLEL_BLOCKS_MULT=N multiply the heuristic's parallel_blocks by N (ignored if _PARALLEL_BLOCKS is set)
+//   GGML_CUDA_FA_MAXWELL_TUNE=N         pick tuned tile-kernel config N (see fattn-tile.cuh), only on NVIDIA cc < 6.0
+//   GGML_CUDA_FA_KERNEL=vec|tile        force the generic (no tensor core) kernel choice, see fattn.cu
+//   GGML_CUDA_FA_DEBUG=1                log the launch geometry of the first 32 launches
+static int ggml_cuda_fattn_env_int(const char * name) {
+    const char * s = getenv(name);
+    return (s == nullptr || *s == '\0') ? 0 : atoi(s);
+}
+static int ggml_cuda_fattn_env_parallel_blocks() {
+    static const int v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_PARALLEL_BLOCKS");
+    return v;
+}
+static int ggml_cuda_fattn_env_parallel_blocks_mult() {
+    static const int v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_PARALLEL_BLOCKS_MULT");
+    return v;
+}
+static bool ggml_cuda_fattn_env_debug() {
+    static const bool v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_DEBUG") != 0;
+    return v;
+}
+static int ggml_cuda_fattn_env_maxwell_tune(const int cc) {
+    static const int v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_MAXWELL_TUNE");
+    return (GGML_CUDA_CC_IS_NVIDIA(cc) && !fast_fp16_available(cc)) ? v : 0;
+}
+static int ggml_cuda_fattn_env_kernel() { // 0 = upstream heuristic, 1 = vec, 2 = tile
+    static const int v = []() {
+        const char * s = getenv("GGML_CUDA_FA_KERNEL");
+        if (s == nullptr)             return 0;
+        if (strcmp(s, "vec")  == 0)   return 1;
+        if (strcmp(s, "tile") == 0)   return 2;
+        return 0;
+    }();
+    return v;
+}
 
 typedef void (* fattn_kernel_t)(
         const char * __restrict__ Q,
@@ -1214,6 +1254,17 @@ void launch_fattn(
             }
         }
 
+        { // local patch 20261012 fattn: env overrides of the parallel_blocks heuristic (A/B testing only).
+            const int pb_force = ggml_cuda_fattn_env_parallel_blocks();
+            const int pb_mult  = ggml_cuda_fattn_env_parallel_blocks_mult();
+            if (pb_force > 0) {
+                parallel_blocks = std::min(pb_force, ntiles_KV);
+            } else if (pb_mult > 1) {
+                parallel_blocks = std::min(parallel_blocks*pb_mult, ntiles_KV);
+            }
+            parallel_blocks = std::max(parallel_blocks, 1);
+        }
+
         blocks_num.x = ntiles_x;
         blocks_num.y = parallel_blocks;
         blocks_num.z = ntiles_z_gqa*K->ne[2]*Q->ne[3];
@@ -1221,6 +1272,20 @@ void launch_fattn(
         if (parallel_blocks > 1) {
             dst_tmp.alloc(parallel_blocks*ggml_nelements(KQV));
             dst_tmp_meta.alloc(parallel_blocks*ggml_nrows(KQV));
+        }
+    }
+
+    if (ggml_cuda_fattn_env_debug()) { // local patch 20261012 fattn
+        static int n_logged = 0;
+        if (n_logged < 32) {
+            ++n_logged;
+            GGML_LOG_INFO("%s: cc=%d DV=%d ncols1=%d ncols2=%d nwarps=%d nbatch_fa=%d smem=%zu | Q=[%ld,%ld,%ld,%ld] K=[%ld,%ld,%ld,%ld] n_kv=%ld "
+                "ntiles_dst=%d ntiles_KV=%d max_blocks_per_sm=%d stream_k=%d parallel_blocks=%d grid=(%u,%u,%u) block=(%u,%u)\n",
+                __func__, cc, DV, ncols1, ncols2, nwarps, nbatch_fa, nbytes_shared,
+                (long) Q->ne[0], (long) Q->ne[1], (long) Q->ne[2], (long) Q->ne[3],
+                (long) K->ne[0], (long) K->ne[1], (long) K->ne[2], (long) K->ne[3], (long) n_kv,
+                ntiles_dst, ntiles_KV, max_blocks_per_sm, (int) stream_k, parallel_blocks,
+                blocks_num.x, blocks_num.y, blocks_num.z, block_dim.x, block_dim.y);
         }
     }
 

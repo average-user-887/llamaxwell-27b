@@ -356,6 +356,33 @@ static void rms_norm_f32_cuda(
     }
 }
 
+
+// rms_norm * weight for a single row, also writing the q8_1 copy of the result (same arithmetic as quantize_q8_1).
+// Used with GGML_CUDA_NORM_Q8=1 + GGML_CUDA_Q8_REUSE=1: the q8_1 copy lands in the MMVQ q8 reuse buffer.
+template <int block_size>
+static __global__ void rms_norm_mul_q8_1_row(const float * x, const float * mul, float * dst, block_q8_1 * q8,
+                                             const int ncols, const float eps) {
+    extern __shared__ float s_sum[];
+    const int tid = threadIdx.x;
+    float tmp = 0.0f;
+    for (int col = tid; col < ncols; col += block_size) {
+        tmp += x[col] * x[col];
+    }
+    tmp = block_reduce<block_reduce_method::SUM, block_size>(tmp, s_sum);
+    const float scale = rsqrtf(tmp / ncols + eps);
+    for (int col = tid; col < ncols; col += block_size) { // ncols % 32 == 0: whole warps take each iteration
+        const float xi   = scale * x[col] * mul[col];
+        dst[col]         = xi;
+        const float amax = warp_reduce_max<QK8_1>(fabsf(xi));
+        const float sum  = warp_reduce_sum<QK8_1>(xi);
+        const float d    = amax / 127.0f;
+        q8[col / QK8_1].qs[col % QK8_1] = amax == 0.0f ? 0 : roundf(xi / d);
+        if (col % QK8_1 == 0) {
+            q8[col / QK8_1].ds = make_half2(d, sum);
+        }
+    }
+}
+
 static void rms_norm_mul_f32_cuda(const float *  x,
                                   const float *  mul,
                                   const float *  add,
@@ -608,6 +635,32 @@ void ggml_cuda_op_rms_norm_fused(ggml_backend_cuda_context & ctx, ggml_tensor * 
     const int mul_nrows     = mul_src->ne[1];
     const int mul_nchannels = mul_src->ne[2];
     const int mul_nsamples  = mul_src->ne[3];
+
+    static const bool norm_q8 = [] {
+        const char * a = getenv("GGML_CUDA_NORM_Q8");
+        const char * b = getenv("GGML_CUDA_Q8_REUSE");
+        return a != nullptr && atoi(a) != 0 && b != nullptr && atoi(b) != 0;
+    }();
+    const size_t q8_size = ne00 / QK8_1 * sizeof(block_q8_1);
+    if (norm_q8 && ctx.curr_stream_no == 0 && ne01*ne02*ne03 == 1 && ne00 % MATRIX_ROW_PADDING == 0 &&
+        mul_ncols == ne00 && (int64_t) mul_nrows*mul_nchannels*mul_nsamples == 1 &&
+        ctx.q8r_buf != nullptr && q8_size <= ctx.q8r_cap) {
+        block_q8_1 * q8 = (block_q8_1 *) ctx.q8r_buf;
+        if (ne00 < 1024) {
+            rms_norm_mul_q8_1_row<256><<<1, 256, 32*sizeof(float), stream>>>(src0_d, mul_d, dst_d, q8, ne00, eps);
+        } else {
+            rms_norm_mul_q8_1_row<1024><<<1, 1024, 32*sizeof(float), stream>>>(src0_d, mul_d, dst_d, q8, ne00, eps);
+        }
+        CUDA_CHECK(cudaGetLastError());
+        // key layout must match ggml_cuda_mul_mat_vec_q for a single row: {ptr, ne10, 1, 1, 1, 0, 0, 0}
+        const int64_t key[8] = {(int64_t) (uintptr_t) dst_d, ne00, 1, 1, 1, 0, 0, 0};
+        memcpy(ctx.q8r_key, key, sizeof(key));
+        ctx.q8r_lo    = (const char *) dst_d;
+        ctx.q8r_hi    = ctx.q8r_lo + ggml_nbytes(mul_tensor);
+        ctx.q8r_valid = false; // committed (q8r_pend) after the fused nodes are checked for overlap
+        ctx.q8r_pend  = true;
+        return;
+    }
 
     rms_norm_mul_f32_cuda(src0_d, mul_d, nullptr, dst_d,
                           ne00, ne01, ne02, ne03,

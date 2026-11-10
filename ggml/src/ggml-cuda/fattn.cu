@@ -702,6 +702,16 @@ static best_fattn_kernel ggml_cuda_get_best_fattn_kernel(const int device, const
         return BEST_FATTN_KERNEL_MMA_F16;
     }
 
+    { // local patch 20261012 fattn: GGML_CUDA_FA_KERNEL=vec|tile forces the generic kernel choice (A/B testing only).
+        const int force = ggml_cuda_fattn_env_kernel();
+        if (force == 1 && can_use_vector_kernel && Q->ne[1] <= 2) {
+            return BEST_FATTN_KERNEL_VEC;
+        }
+        if (force == 2) {
+            return BEST_FATTN_KERNEL_TILE;
+        }
+    }
+
     // If there are no tensor cores available, use the generic tile kernel:
     if (can_use_vector_kernel) {
         if (!ggml_is_quantized(K->type) && !ggml_is_quantized(V->type)) {

@@ -1455,6 +1455,25 @@ struct ggml_backend_cuda_context {
 
     int curr_stream_no = 0;
 
+    // q8_1 activation reuse for MMVQ (sm52 experiment, opt-in via GGML_CUDA_Q8_REUSE=1):
+    // the last q8_1-quantized src1 is kept in a private buffer and reused while its source memory is not rewritten.
+    void *       q8r_buf   = nullptr;
+    size_t       q8r_cap   = 0;
+    bool         q8r_valid = false;
+    const char * q8r_lo    = nullptr; // byte range of the cached src1 tensor
+    const char * q8r_hi    = nullptr;
+    int64_t      q8r_key[8] = {0};
+    bool         q8r_pend  = false; // set by the fused rms_norm+mul+q8_1 kernel (GGML_CUDA_NORM_Q8=1), committed after fused-node invalidation
+    void q8r_invalidate_if_overlaps(const ggml_tensor * t) {
+        if (q8r_valid && t->data != nullptr) {
+            const char * lo = (const char *) t->data;
+            const char * hi = lo + ggml_nbytes(t);
+            if (lo < q8r_hi && q8r_lo < hi) {
+                q8r_valid = false;
+            }
+        }
+    }
+
 #ifdef USE_CUDA_GRAPH
     // Map from first_node_ptr to cuda_graph - allows multiple graphs per context
     // when the computation is split across CPU/GPU (e.g., with --n-cpu-moe)

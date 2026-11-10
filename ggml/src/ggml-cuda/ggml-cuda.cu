@@ -700,6 +700,9 @@ ggml_backend_cuda_context::~ggml_backend_cuda_context() {
     if (copy_event != nullptr) {
         CUDA_CHECK(cudaEventDestroy(copy_event));
     }
+    if (q8r_buf != nullptr) {
+        CUDA_CHECK(cudaFree(q8r_buf));
+    }
     for (int i = 0; i < GGML_CUDA_MAX_DEVICES; ++i) {
         for (int j = 0; j < GGML_CUDA_MAX_STREAMS; ++j) {
             if (streams[i][j] != nullptr) {
@@ -1836,7 +1839,7 @@ static bool ggml_cuda_should_fuse_mul_mat_vec_q(const ggml_tensor * tensor) {
 
     // fusion is not universally faster on Pascal
     const int cc = ggml_cuda_info().devices[ggml_cuda_get_device()].cc;
-    if (cc <= GGML_CUDA_CC_PASCAL) {
+    if (cc <= GGML_CUDA_CC_PASCAL && !(cc == 520 && src0->type == GGML_TYPE_Q4_0 && getenv("GGML_CUDA_MAXWELL_FUSION") != nullptr)) {
         return false;
     }
     //we only support fusion for ncols_dst = 1
@@ -4494,6 +4497,7 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
                 stream_ctx.concurrent_events.clear();
             }
 
+            cuda_ctx->q8r_valid = false; // q8_1 reuse never spans graph evaluations
             for (int i = 0; i < cgraph->n_nodes; i++) {
                 ggml_tensor * node = cgraph->nodes[i];
                 if (is_concurrent_event_active) {
@@ -4536,9 +4540,17 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
                     continue;
                 }
 
+                cuda_ctx->q8r_invalidate_if_overlaps(node);
                 int nodes_to_skip = ggml_cuda_try_fuse(cuda_ctx, cgraph, i);
 
                 if (nodes_to_skip != 0) {
+                    for (int j = 1; j <= nodes_to_skip; ++j) {
+                        cuda_ctx->q8r_invalidate_if_overlaps(cgraph->nodes[i + j]);
+                    }
+                    if (cuda_ctx->q8r_pend) {
+                        cuda_ctx->q8r_pend  = false;
+                        cuda_ctx->q8r_valid = true;
+                    }
 #ifdef GGML_CUDA_DEBUG
                     const int last_fused = i + nodes_to_skip;
                     GGML_LOG_INFO("nodes_fused: %d, first: %s (%s), last: %s (%s)\n",
@@ -4619,7 +4631,7 @@ static bool ggml_cuda_graph_set_enabled(ggml_backend_cuda_context * cuda_ctx, co
     ggml_cuda_graph * graph = cuda_ctx->cuda_graph(graph_key);
 
     if (graph->graph == nullptr) {
-        if (ggml_cuda_info().devices[cuda_ctx->device].cc < GGML_CUDA_CC_VOLTA) {
+        if (ggml_cuda_info().devices[cuda_ctx->device].cc < GGML_CUDA_CC_VOLTA && getenv("GGML_CUDA_MAXWELL_GRAPHS") == nullptr) {
             if (!graph->disable_due_to_gpu_arch) {
                 GGML_LOG_DEBUG("%s: disabling CUDA graphs due to GPU architecture\n", __func__);
             }
