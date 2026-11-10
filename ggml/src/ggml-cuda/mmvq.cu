@@ -6,6 +6,7 @@
 #include "quantize.cuh"
 #include "unary.cuh"
 #include "vecdotq.cuh"
+#include "sm52-xmad.cuh"
 
 #include <cstdint>
 #include <cstdlib>
@@ -876,23 +877,21 @@ static __global__ void mul_mat_vec_q(
             }
         }
     } else
-    if constexpr (sm52 && type == GGML_TYPE_Q4_0 && ncols_dst >= 2 && ncols_dst <= 4 && !has_fusion) {
+    if constexpr (sm52 && type == GGML_TYPE_Q4_0 && ncols_dst <= 4 && !has_fusion) {
+        // 10 Nov: activations expanded to s16x2 once per column, weight nibbles once per row,
+        // one mad.wide.s16 per MAC. Integer sums exact, float order as vec_dot_q4_0_q8_1.
         for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
             const int kby = kbx * (qk/QK8_1);
             const int kqs = vdr * (tid % (qi/vdr));
-            int    pu[ncols_dst][4*vdr];
+            ggml_cuda_sm52_i16x4 pu[ncols_dst][2*vdr];
             float2 dsy[ncols_dst];
 #pragma unroll
             for (int j = 0; j < ncols_dst; ++j) {
                 const block_q8_1 * by = &y[j*stride_col_y + kby];
 #pragma unroll
                 for (int ii = 0; ii < vdr; ++ii) {
-                    const int u0 = get_int_b4(by->qs, kqs + ii);
-                    const int u1 = get_int_b4(by->qs, kqs + ii + QI4_0);
-                    pu[j][4*ii + 0] = mmvq_pk02(u0);
-                    pu[j][4*ii + 1] = mmvq_pk13(u0);
-                    pu[j][4*ii + 2] = mmvq_pk02(u1);
-                    pu[j][4*ii + 3] = mmvq_pk13(u1);
+                    pu[j][2*ii + 0] = ggml_cuda_sm52_expand(get_int_b4(by->qs, kqs + ii));
+                    pu[j][2*ii + 1] = ggml_cuda_sm52_expand(get_int_b4(by->qs, kqs + ii + QI4_0));
                 }
                 dsy[j] = __half22float2(by->ds);
             }
@@ -906,20 +905,18 @@ static __global__ void mul_mat_vec_q(
                 }
 #pragma unroll
                 for (int ii = 0; ii < vdr; ++ii) {
-                    const int v  = get_int_b2(bx->qs, kqs + ii);
-                    const int t  = v >> 4;
-                    const int wl02 = v & 0x000F000F;
-                    const int wl13 = (v >> 8) & 0x000F000F;
-                    const int wh02 = t & 0x000F000F;
-                    const int wh13 = (t >> 8) & 0x000F000F;
+                    const uint32_t v  = get_int_b2(bx->qs, kqs + ii);
+                    const uint32_t lo = v & 0x0F0F0F0F;
+                    const uint32_t hi = (v >> 4) & 0x0F0F0F0F;
+                    ggml_cuda_sm52_i16x4 wl, wh; // nibbles 0..15: zero fill
+                    wl.lo = __byte_perm(lo, 0, 0x4140);
+                    wl.hi = __byte_perm(lo, 0, 0x4342);
+                    wh.lo = __byte_perm(hi, 0, 0x4140);
+                    wh.hi = __byte_perm(hi, 0, 0x4342);
 #pragma unroll
                     for (int j = 0; j < ncols_dst; ++j) {
-                        int s = sumi[j];
-                        s += mmvq_m16lo(wl02, pu[j][4*ii + 0]) + mmvq_m16hi(wl02, pu[j][4*ii + 0]);
-                        s += mmvq_m16lo(wl13, pu[j][4*ii + 1]) + mmvq_m16hi(wl13, pu[j][4*ii + 1]);
-                        s += mmvq_m16lo(wh02, pu[j][4*ii + 2]) + mmvq_m16hi(wh02, pu[j][4*ii + 2]);
-                        s += mmvq_m16lo(wh13, pu[j][4*ii + 3]) + mmvq_m16hi(wh13, pu[j][4*ii + 3]);
-                        sumi[j] = s;
+                        sumi[j] = ggml_cuda_sm52_dot4(wl, pu[j][2*ii + 0], sumi[j]);
+                        sumi[j] = ggml_cuda_sm52_dot4(wh, pu[j][2*ii + 1], sumi[j]);
                     }
                 }
                 const float d4 = bx->d;
@@ -1338,7 +1335,7 @@ static void mul_mat_vec_q_switch_fusion(
 
     GGML_ASSERT(!has_fusion && "fusion only supported for ncols_dst=1");
 
-    if constexpr (type == GGML_TYPE_Q4_0 && c_ncols_dst >= 2 && c_ncols_dst <= 4) {
+    if constexpr (type == GGML_TYPE_Q4_0 && c_ncols_dst <= 4) {
         static const bool sm52_on = [] { const char * e = getenv("GGML_CUDA_MMVQ_SM52"); return e && e[0] == '1'; }();
         if (sm52_on) {
             const ggml_cuda_kernel_launch_params lp52 = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
