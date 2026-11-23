@@ -1,0 +1,5 @@
+card A2 (script only, no build)
+branch claude/27b-opt-20261122
+commit def97a8
+bench/agentic2.py sha256 009ef2dfcffc2586ab77d0587623fd4d3754b0a3c766da10ad52442d9fd44bf3
+check: python3 -I -m py_compile

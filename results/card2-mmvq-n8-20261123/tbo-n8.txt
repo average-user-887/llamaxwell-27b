@@ -1,0 +1,26 @@
+== N8=1
+mmvq-hist: type=q4_0 ncols=1 path=sm52xmad launches=15
+mmvq-hist: type=q4_0 ncols=2 path=sm52xmad launches=11
+mmvq-hist: type=q4_0 ncols=3 path=sm52xmad launches=11
+mmvq-hist: type=q4_0 ncols=4 path=sm52xmad launches=3
+mmvq-hist: type=q4_0 ncols=5 path=sm52xmad launches=11
+mmvq-hist: type=q4_0 ncols=6 path=sm52xmad launches=1
+mmvq-hist: type=q4_0 ncols=7 path=sm52xmad launches=1
+mmvq-hist: type=q4_0 ncols=8 path=sm52xmad launches=17
+  118/118 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed
+q4_0 n5-8 OK lines: 30
+== N8=0
+mmvq-hist: type=q4_0 ncols=1 path=sm52xmad launches=15
+mmvq-hist: type=q4_0 ncols=2 path=sm52xmad launches=11
+mmvq-hist: type=q4_0 ncols=3 path=sm52xmad launches=11
+mmvq-hist: type=q4_0 ncols=4 path=sm52xmad launches=3
+mmvq-hist: type=q4_0 ncols=5 path=generic launches=11
+mmvq-hist: type=q4_0 ncols=6 path=generic launches=1
+mmvq-hist: type=q4_0 ncols=7 path=generic launches=1
+mmvq-hist: type=q4_0 ncols=8 path=generic launches=17
+  118/118 tests passed
+  Backend CUDA0: [1;32mOK[0m
+2/2 backends passed
+q4_0 n5-8 OK lines: 30

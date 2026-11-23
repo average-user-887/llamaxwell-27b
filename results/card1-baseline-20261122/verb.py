@@ -1,5 +1,5 @@
 import sys,threading,copy
-sys.path.insert(0,"/media/avg-usr/Storage/m6000-llama-cpp/opt27b-20261113"); import quick as q
+sys.path.insert(0,"/media/$USER/Storage/m6000-llama-cpp/opt27b-20261113"); import quick as q
 c=copy.deepcopy(q.load()["base"]); c["extra"]=["-lv","4"]
 ok,err=q.start(c)
 try:

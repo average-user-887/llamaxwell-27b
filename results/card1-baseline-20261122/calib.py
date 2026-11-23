@@ -1,5 +1,5 @@
 import sys,json
-sys.path.insert(0,"/media/avg-usr/Storage/m6000-llama-cpp/opt27b-20261113"); import quick as q, agentic2 as a
+sys.path.insert(0,"/media/$USER/Storage/m6000-llama-cpp/opt27b-20261113"); import quick as q, agentic2 as a
 c=q.load()["base"]; ok,err=q.start(c)
 if not ok: print("ERR",err); sys.exit(2)
 try:

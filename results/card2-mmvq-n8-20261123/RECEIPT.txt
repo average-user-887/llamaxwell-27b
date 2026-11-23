@@ -1,0 +1,23 @@
+card2 RECEIPT 2026-11-23
+branch: claude/27b-mmvq-n8-20261123 (repo llamaxwell-27b, base def97a8; ggml from 9a287a6 = xmad27 source)
+commit: 3eeaaed07389c7f44825414d02ed6be1d8b88f77
+build: card2/build.sh -> docker nvidia/cuda:12.8.1-devel-ubuntu24.04 gcc-14, cmake -B build-n8 (GGML_CUDA=ON, CMAKE_CUDA_ARCHITECTURES=52-real, GGML_BACKEND_DL=ON, GGML_CPU_ALL_VARIANTS=ON, Release), cmake --build build-n8 --target ggml-cuda -j10
+built lib:
+5d76c14026820c0bbc4c8672beaa7bb13431c8cb8d83a3bd0970e41f221ce7e5  ../llamaxwell-27b/build-n8/bin/libggml-cuda.so
+5d76c14026820c0bbc4c8672beaa7bb13431c8cb8d83a3bd0970e41f221ce7e5  /media/$USER/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-xmadn8-27-20261123.so
+test-backend-ops (staged, not rebuilt; from b11552 0.26.0 build-alu):
+04a55872e1467a55bfdbea9578904e91cee1d657e8b219db35efacdb2bd1c7fc  tbo/test-backend-ops
+3b0eee14cec96ffb0645db9dea83db1498aefb63d0d4f19143918ac5fccb74f6  tbo/libggml-base.so.0.26.0
+8f90e8297cc428a34a66b422f4ab1c6badad9e6aaab9fe44ad56e6b999d89678  tbo/libggml.so.0.26.0
+backups: card2/mmvq.cu.bak-20261122-n8, opt27b quick.py.bak-20261122-n8
+tests: test-backend-ops MUL_MAT q4_0 CUDA0 vs CPU, N8=1 and N8=0: 118/118 pass each; hist confirms ncols5-8 sm52xmad (N8=1) / generic (N8=0) -> card2/tbo-n8.txt
+A/B r24 ABBA (same lib, hist on): off 21.91/19.47/91.9, on 21.91/20.30/90.7, on 21.51/20.24/90.4, off 21.55/19.42/90.5 (tg1/tg2agg/pp4k) -> ab/ab.jsonl
+r25 diag: xmad27 lib 26.30/22.07/90.9 accept 154/200 probe 1.0; new lib N8=1 no hist 21.86/19.49/90.4 accept 147/216 probe 0.872
+=> new lib differs from xmad27 independent of N8 (numerics/output change); NOT prod-eligible as built.
+quick.py backups: quick.py.bak-20261122-n8 (r24), quick.py.bak-20261123-r25 (r25 added). NO_RESTORE -> NO_RESTORE.done-20261123; prod left stopped.
+--- v2 (coordinator 05:47) ---
+commit d63ca69: mmvq_tune.h restored to bbaf7c3 deployed values (602a131 debug tune RPB1 1/RPB24 2/RPB58 2/NW3 2 caused the v1 drift). Branch now 3eeaaed+d63ca69.
+lib v2: prod-libs/libggml-cuda-xmadn8-v2-20261123.so sha256 38ae66b9df7a282bdbbbf9af310fd665ecee71e90ffe3d890595bec07bbe0062 (incremental build, card2/build.sh)
+ABBA v2 (tg1/tg2agg/pp4k, probe 1.0, accept 154/200 all arms): off 26.35/22.07/91.6, on 26.34/24.37/91.0, on 26.34/24.13/90.9, off 26.27/22.17/89.9 -> ab-v2/
+KLD b6 paired 16 chunks vs head4.kld (card2/kldrun6.sh, env = aluA1): c2A6 xmad27 vs c2B6 v2 N8=1: per-token tok.txt byte-identical, KLD 0.008942 both; c2B6 hist ncols6 sm52xmad 673k launches.
+NO_RESTORE -> NO_RESTORE.done-20261123b; prod stopped as found.

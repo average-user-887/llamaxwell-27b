@@ -1,7 +1,7 @@
 #!/bin/bash
-H=/media/avg-usr/Storage/m6000-llama-cpp/opt27b-20261113; D=$H/card1-20261122; cd $H
+H=/media/$USER/Storage/m6000-llama-cpp/opt27b-20261113; D=$H/card1-20261122; cd $H
 touch $H/NO_RESTORE
-(while true; do T=$(nvidia-smi --id=GPU-684f5e72-ce85-7b4f-e4f6-2dddddd6e60e --query-gpu=temperature.gpu,clocks.sm,power.draw,memory.used --format=csv,noheader,nounits|tr -d ' '); echo "$(date +%T),$T" >> $D/temps.csv; t=${T%%,*}; if [ "$t" -ge 80 ]; then echo "THERMAL ABORT $t" >> $D/chain.log; docker rm -f llamacpp-m6000-27b-exp; pkill -f 'card1-20261122/chain.sh'; fi; sleep 10; done) & W=$!
+(while true; do T=$(nvidia-smi --id=GPU-<m6000-uuid> --query-gpu=temperature.gpu,clocks.sm,power.draw,memory.used --format=csv,noheader,nounits|tr -d ' '); echo "$(date +%T),$T" >> $D/temps.csv; t=${T%%,*}; if [ "$t" -ge 80 ]; then echo "THERMAL ABORT $t" >> $D/chain.log; docker rm -f llamacpp-m6000-27b-exp; pkill -f 'card1-20261122/chain.sh'; fi; sleep 10; done) & W=$!
 trap 'kill $W 2>/dev/null; rm -f $H/NO_RESTORE; docker rm -f llamacpp-m6000-27b-exp >/dev/null 2>&1; echo CHAIN-END >> $D/chain.log' EXIT
 export QUICK_LONG=1
 L(){ echo "== $(date +%T) $*" >> $D/chain.log; }

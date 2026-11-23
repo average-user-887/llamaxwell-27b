@@ -18,7 +18,7 @@
    "GGML_CUDA_FA_GEMM": "1"
   },
   "extra": [],
-  "so": "/media/avg-usr/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-xmad27-20261110.so"
+  "so": "/media/$USER/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-xmad27-20261110.so"
  },
  "base_m": {
   "slots": 2,
@@ -290,7 +290,7 @@
      "GGML_CUDA_FA_GEMM": "1"
     },
     "extra": [],
-    "so": "/media/avg-usr/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-xmad27-20261110.so"
+    "so": "/media/$USER/Storage/m6000-llama-cpp/prod-libs/libggml-cuda-xmad27-20261110.so"
    },
    "base_m": {
     "slots": 2,
