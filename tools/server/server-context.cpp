@@ -3335,9 +3335,22 @@ private:
         std::vector<server_slot *> generating;
         std::vector<server_slot *> drafting;
 
+        // LLAMA_SRV_PREFILL_FIRST=1 (default off): while any slot still has prompt tokens to process, do not decode
+        // (or draft for) the other slots; they resume together once all prefill is done, so decode runs in full
+        // multi-slot batches instead of 1 token-step per prompt chunk. Pending sampled tokens stay in the slot.
+        static const bool srv_prefill_first = [] { const char * e = getenv("LLAMA_SRV_PREFILL_FIRST"); return e && atoi(e) != 0; }();
+        bool defer_generation = false;
+        if (srv_prefill_first) {
+            iterate(slots, [&](server_slot & slot) {
+                if (slot.state == SLOT_STATE_PROCESSING_PROMPT || slot.state == SLOT_STATE_STARTED) {
+                    defer_generation = true;
+                }
+            });
+        }
+
         // determine which slots are generating and drafting
         iterate(slots, [&](server_slot & slot) {
-            if (slot.state != SLOT_STATE_GENERATING) {
+            if (slot.state != SLOT_STATE_GENERATING || defer_generation) {
                 return;
             }
 
@@ -3469,6 +3482,13 @@ private:
 
         auto & alora_scale       = batch.alora_scale;
         auto & alora_disabled_id = batch.alora_disabled_id;
+
+        // LLAMA_SRV_MIXED_CAP=N (default 0 = off): when decode tokens are already in the batch, add prompt tokens only
+        // until the batch holds N tokens in total (e.g. 1024 = one ubatch per step), so decode steps come more often.
+        static const int32_t srv_mixed_cap = [] { const char * e = getenv("LLAMA_SRV_MIXED_CAP"); return e ? atoi(e) : 0; }();
+        if (srv_mixed_cap > 0 && batch.size() > 0 && srv_mixed_cap < n_batch) {
+            n_batch = std::max<int32_t>(srv_mixed_cap, batch.size() + 1);
+        }
 
         // next, batch any pending prompts without exceeding n_batch
         if (params_base.cont_batching || batch.size() == 0) {
