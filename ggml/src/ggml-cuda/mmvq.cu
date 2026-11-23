@@ -877,7 +877,8 @@ static __global__ void mul_mat_vec_q(
             }
         }
     } else
-    if constexpr (sm52 && type == GGML_TYPE_Q4_0 && ncols_dst <= 4 && !has_fusion) {
+    if constexpr (sm52 && type == GGML_TYPE_Q4_0 && ncols_dst <= 8 && !has_fusion) {
+        // 23 Nov: ncols 5..8 (two-slot MTP verify) use the same body, gated by GGML_CUDA_MMVQ_SM52_N8 on the host.
         // 10 Nov: activations expanded to s16x2 once per column, weight nibbles once per row,
         // one mad.wide.s16 per MAC. Integer sums exact, float order as vec_dot_q4_0_q8_1.
         for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
@@ -1293,6 +1294,33 @@ static bool mmvq_pipe_enabled() {
     return enabled;
 }
 
+// 23 Nov 2026 card2: GGML_CUDA_MMVQ_HIST=1 counts dense mmvq launches per (Q4_0 or other, ncols_dst, path) and prints
+// the histogram at exit. path 0 = generic mul_mat_vec_q, 1 = sm52 XMAD Q4_0. Default off: one cached bool test per launch.
+#include <atomic>
+static std::atomic<unsigned long long> g_mmvq_hist[2][9][2];
+static void mmvq_hist_dump() {
+    for (int q = 0; q < 2; ++q) for (int n = 1; n <= 8; ++n) for (int p = 0; p < 2; ++p) {
+        const unsigned long long c = g_mmvq_hist[q][n][p].load();
+        if (c) { fprintf(stderr, "mmvq-hist: type=%s ncols=%d path=%s launches=%llu\n", q ? "q4_0" : "other", n, p ? "sm52xmad" : "generic", c); }
+    }
+}
+static bool mmvq_hist_enabled() {
+    static const bool on = [] {
+        const char * e = getenv("GGML_CUDA_MMVQ_HIST");
+        const bool v = e && e[0] == '1';
+        if (v) { atexit(mmvq_hist_dump); }
+        return v;
+    }();
+    return on;
+}
+static void mmvq_hist_count(ggml_type type, int ncols, int path) {
+    if (mmvq_hist_enabled() && ncols >= 1 && ncols <= 8) {
+        g_mmvq_hist[type == GGML_TYPE_Q4_0][ncols][path].fetch_add(1, std::memory_order_relaxed);
+        static std::atomic<unsigned long long> total{0};
+        if ((total.fetch_add(1, std::memory_order_relaxed) + 1) % 200000 == 0) { mmvq_hist_dump(); } // server may not exit cleanly
+    }
+}
+
 template<ggml_type type, int c_ncols_dst, bool small_k = false, bool halve_iters = false>
 static void mul_mat_vec_q_switch_fusion(
         const void * vx, const void * vy, const int32_t * ids, const ggml_cuda_mm_fusion_args_device fusion, float * dst,
@@ -1335,9 +1363,12 @@ static void mul_mat_vec_q_switch_fusion(
 
     GGML_ASSERT(!has_fusion && "fusion only supported for ncols_dst=1");
 
-    if constexpr (type == GGML_TYPE_Q4_0 && c_ncols_dst <= 4) {
+    if constexpr (type == GGML_TYPE_Q4_0 && c_ncols_dst <= 8) {
         static const bool sm52_on = [] { const char * e = getenv("GGML_CUDA_MMVQ_SM52"); return e && e[0] == '1'; }();
-        if (sm52_on) {
+        // 23 Nov: ncols 5..8 on the XMAD path, default on when GGML_CUDA_MMVQ_SM52=1; GGML_CUDA_MMVQ_SM52_N8=0 disables.
+        static const bool n8_on = [] { const char * e = getenv("GGML_CUDA_MMVQ_SM52_N8"); return !(e && e[0] == '0'); }();
+        if (sm52_on && (c_ncols_dst <= 4 || n8_on)) {
+            mmvq_hist_count(type, c_ncols_dst, 1);
             const ggml_cuda_kernel_launch_params lp52 = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
             ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, false, small_k, halve_iters, false, true>, lp52,
                 vx, vy, ids, fusion, dst, ncols_x, nchannels_y, stride_row_x, stride_col_y, stride_col_dst,
@@ -1347,6 +1378,7 @@ static void mul_mat_vec_q_switch_fusion(
         }
     }
 
+    mmvq_hist_count(type, c_ncols_dst, 0);
     const ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
     ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, false, small_k, halve_iters>, launch_params,
         vx, vy, ids, fusion, dst, ncols_x, nchannels_y, stride_row_x, stride_col_y, stride_col_dst,
