@@ -1,0 +1,10 @@
+Card 9 receipt (23 Nov 2026)
+branch: claude/27b-sched-20261123  base: 117caed  code commit: 828d1b4 (tools/server/server-context.cpp)
+env knobs (default off): LLAMA_SRV_PREFILL_FIRST=1, LLAMA_SRV_MIXED_CAP=N
+sha256 (CPU-only build tree; only libllama-server-impl.so was used on GPU, mounted over /app, with prod C6 cuda lib):
+17b06071a15e76e5b0eaad9085a00f432f78ba861ca874abcea16037db824383  libllama-server-impl.so
+ae13868fc09dcb37791f6eb5864544d69bef39ef6e3a9a3de9d5fc941d0af483  llama-server
+build: container local/m6000-build-tools:20261013 --network none, CC/CXX=gcc-14/g++-14
+ cmake -S /src -B /b -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON -DBUILD_SHARED_LIBS=ON -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF
+ cmake --build /b -j10 --target llama-server
+GPU runs under gpu-bench.lock via labexp, stopped early ~15:32 for Card 10; arm D and quick tg1/pp4k not run.
