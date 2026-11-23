@@ -11,6 +11,9 @@ int ggml_cuda_fa_gemm_mode() { static const int m = fag_env("GGML_CUDA_FA_GEMM",
 static int fag_minq() { static const int m = fag_env("GGML_CUDA_FA_GEMM_MINQ", 64); return m; }
 static int fag_s16() { static const int m = fag_env("GGML_CUDA_FA_GEMM_S16", 0); return m; }
 static int fag_kc()   { static const int m = fag_env("GGML_CUDA_FA_GEMM_KC", 4096); return m; }
+// Card 7 (23 Nov): GGML_CUDA_FA_GEMM_SMAX1=1 -> one softmax block per query handles all G heads of a KV group and
+// reads the mask chunk once (6x less mask traffic). Bit-exact vs fag_smax. Standalone: smax 74.8->60.2 ms/call at 92K, 2x512 q.
+static int fag_smax1() { static const int m = fag_env("GGML_CUDA_FA_GEMM_SMAX1", 0); return m; }
 
 constexpr int FAG_D = 256;
 
@@ -77,6 +80,43 @@ static __global__ void __launch_bounds__(256) fag_smax(const ST * __restrict__ S
     if (!first) O[((size_t) q*H + h0 + hg)*FAG_D + tid] *= alpha;
 }
 
+// SMAX1: one block per query, loops the G heads of the group; mask chunk held in registers (same per-element math as fag_smax)
+template <typename ST>
+static __global__ void __launch_bounds__(256) fag_smax1(const ST * __restrict__ S, half * __restrict__ P, const half * __restrict__ mask,
+        size_t mrow, float * __restrict__ O, float2 * __restrict__ ml, int nq, int H, int h0, int G, int KCs, int kc, int c0, int first) {
+    const int q = blockIdx.x, tid = threadIdx.x;
+    const half * mk = mask ? mask + (size_t) q*mrow + c0 : nullptr;
+    __shared__ float red[2][8];
+    float mv[16];
+#pragma unroll
+    for (int i = 0; i < 16; ++i) { const int k = i*256 + tid; mv[i] = (k < kc && mk) ? __half2float(mk[k]) : 0.0f; }
+    for (int hg = 0; hg < G; ++hg) {
+        const ST * s = S + ((size_t) hg*nq + q)*KCs;
+        half * p = P + ((size_t) hg*nq + q)*KCs;
+        float v[16]; float mx = -INFINITY;
+#pragma unroll
+        for (int i = 0; i < 16; ++i) { const int k = i*256 + tid; float x = -INFINITY;
+            if (k < kc) x = fag_ld(s[k]) + mv[i]; v[i] = x; mx = fmaxf(mx, x); }
+        for (int o = 16; o; o >>= 1) mx = fmaxf(mx, __shfl_xor_sync(0xffffffff, mx, o));
+        if ((tid & 31) == 0) red[0][tid >> 5] = mx; __syncthreads();
+        mx = red[0][0];
+#pragma unroll
+        for (int i = 1; i < 8; ++i) mx = fmaxf(mx, red[0][i]);
+        float2 * mlp = ml + (size_t) hg*nq + q;
+        const float2 mlo = first ? make_float2(-INFINITY, 0.0f) : *mlp;
+        const float mn = fmaxf(mlo.x, mx);
+        const float alpha = mn == -INFINITY ? 1.0f : __expf(mlo.x - mn);
+        float sum = 0.0f;
+#pragma unroll
+        for (int i = 0; i < 16; ++i) { const int k = i*256 + tid; if (k < KCs) { const float e = (k < kc && mn != -INFINITY) ? __expf(v[i] - mn) : 0.0f;
+            sum += e; p[k] = __float2half(e); } }
+        for (int o = 16; o; o >>= 1) sum += __shfl_xor_sync(0xffffffff, sum, o);
+        if ((tid & 31) == 0) red[1][tid >> 5] = sum; __syncthreads();
+        if (tid == 0) { float t = 0; for (int i = 0; i < 8; ++i) t += red[1][i]; *mlp = make_float2(mn, mlo.y*alpha + t); }
+        if (!first) O[((size_t) q*H + h0 + hg)*FAG_D + tid] *= alpha;
+    }
+}
+
 static __global__ void fag_norm(float * O, const float2 * ml, int nq, int H, int h0) {
     const int q = blockIdx.x, hg = blockIdx.y; const float l = ml[(size_t) hg*nq + q].y;
     O[((size_t) q*H + h0 + hg)*FAG_D + threadIdx.x] *= (l > 0.0f ? 1.0f/l : 0.0f);
@@ -123,6 +163,7 @@ void ggml_cuda_fa_gemm(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     ggml_cuda_pool & pool = ctx.pool();
     ggml_cuda_pool_alloc<half>   Qh(pool, (size_t) nq*H*FAG_D);
     const bool s16 = fag_s16() != 0;
+    const bool smax1 = fag_smax1() != 0;
     ggml_cuda_pool_alloc<float>  S (pool);
     ggml_cuda_pool_alloc<half>   S16(pool);
     if (s16) S16.alloc((size_t) G*nq*KC); else S.alloc((size_t) G*nq*KC);
@@ -145,7 +186,10 @@ void ggml_cuda_fa_gemm(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
                     Kb + g*kb[2] + (size_t) c0*kb[1], CUDA_R_16F, kb[1]/2, 0,
                     Qh.get() + (size_t) h0*FAG_D, CUDA_R_16F, H*FAG_D, FAG_D, &zero,
                     s16 ? (void *) S16.get() : (void *) S.get(), s16 ? CUDA_R_16F : CUDA_R_32F, KC, (long long) nq*KC, G, CUBLAS_COMPUTE_32F, CUBLAS_GEMM_DEFAULT));
-                if (s16) fag_smax<half><<<dim3(nq, G), 256, 0, st>>>(S16.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, KC, kc, c0, ci == 0);
+                if (smax1) {
+                    if (s16) fag_smax1<half><<<nq, 256, 0, st>>>(S16.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, G, KC, kc, c0, ci == 0);
+                    else fag_smax1<float><<<nq, 256, 0, st>>>(S.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, G, KC, kc, c0, ci == 0);
+                } else if (s16) fag_smax<half><<<dim3(nq, G), 256, 0, st>>>(S16.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, KC, kc, c0, ci == 0);
                 else fag_smax<float><<<dim3(nq, G), 256, 0, st>>>(S.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, KC, kc, c0, ci == 0);
                 const float beta = ci == 0 ? 0.0f : 1.0f;
                 CUBLAS_CHECK(cublasGemmStridedBatchedEx(hb, CUBLAS_OP_N, CUBLAS_OP_N, FAG_D, nq, kc, &one,
