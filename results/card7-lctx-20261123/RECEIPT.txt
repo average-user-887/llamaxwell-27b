@@ -1,0 +1,17 @@
+Card 7 receipt (23 Nov 2026)
+branch: claude/27b-lctx-20261123   base: 5e70e1b
+lever commit: 930d659  fattn-gemm: GGML_CUDA_FA_GEMM_SMAX1 (default off)
+results commit: this commit (see git log)
+sha256:
+ b0319f5a663304a85233ec2261cc6ea1bd51f2bf09d898f3cdd5e05243f906da  libggml-cuda.so  (= $M/prod-libs/libggml-cuda-lctx-smax1-20261123.so, .sha256 alongside)
+ 3b0eee14cec96ffb0645db9dea83db1498aefb63d0d4f19143918ac5fccb74f6  libggml-base.so
+ 8f90e8297cc428a34a66b422f4ab1c6badad9e6aaab9fe44ad56e6b999d89678  libggml.so
+ 04a55872e1467a55bfdbea9578904e91cee1d657e8b219db35efacdb2bd1c7fc  test-backend-ops
+base (arm P) lib: libggml-cuda-xmadn8-v2-20261123.so (38ae66b9...)
+build (container local/m6000-build-tools:20261013, --network none, CC/CXX/CUDAHOSTCXX=gcc-14/g++-14):
+ cmake -S /src -B /b -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DGGML_CUDA=ON -DGGML_BACKEND_DL=ON \
+  -DGGML_CPU_ALL_VARIANTS=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_CUDA_ARCHITECTURES=52-real -DCMAKE_EXE_LINKER_FLAGS=-Wl,--allow-shlib-undefined \
+  -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=ON "-DGGML_CUDA_FA_QUANTS=q4_0-q4_0;q8_0-q8_0;f16-f16;bf16-bf16" -DGGML_CUDA_COMPRESSION_MODE=size
+ cmake --build /b --config Release -j10 --target ggml-cuda test-backend-ops   (full script: scripts/build.sh)
+GPU runs: labexp-declared, under gpu-bench.lock; prod unloaded/stopped and restored healthy after each (last 14:53). Max GPU temp 73C.
+Scratch left: $MODELS/c7-slots/c7base.bin (2.5 GB slot save, 77.9K tokens) for reruns.

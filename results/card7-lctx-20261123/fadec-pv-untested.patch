@@ -1,0 +1,152 @@
+diff --git a/ggml/src/ggml-cuda/fattn-dec.cu b/ggml/src/ggml-cuda/fattn-dec.cu
+index cbf3a0b..adcad6f 100644
+--- a/ggml/src/ggml-cuda/fattn-dec.cu
++++ b/ggml/src/ggml-cuda/fattn-dec.cu
+@@ -9,6 +9,7 @@
+ // Epilogue: per-block partials (o, m, l) -> combine kernel writes dst.
+ // Env: GGML_CUDA_FA_DEC=2 enables; GGML_CUDA_FA_DEC_MINQ (default 3) min query rows; GGML_CUDA_FA_DEC_SPLIT forces nsplit;
+ //      GGML_CUDA_FA_DEC_DEBUG=1 counts/logs launches (stderr, and the total at exit).
++//      GGML_CUDA_FA_DEC_PV=1 (card7, default 0) selects the 4-dims-per-thread phase C (see fd_kernel).
+ #ifndef FD_STANDALONE
+ #include "common.cuh"
+ #include "fattn-dec.cuh"
+@@ -92,7 +93,10 @@ static __device__ __forceinline__ float fd_dot32(const float * kf, const float4
+     return s;
+ }
+ 
+-template <int G, int NR>
++// PV: phase C layout. 0 = thread owns 1 V byte (2 dims) over all 128 tile tokens (default).
++// 1 (card7, GGML_CUDA_FA_DEC_PV=1) = thread owns 2 V bytes (4 dims) over half the tile (64 tokens); half the LDS/LDG
++//   per FMA, no I2F (magic-number nibble conversion); the two token halves are summed through smem at the end.
++template <int G, int NR, int PV>
+ static __global__ void __launch_bounds__(FD_NT, FD_MINB) fd_kernel(const fd_params p) {
+     constexpr int NQ  = G*NR;
+     constexpr int NQH = FD_AV == 2 ? NQ/2 : NQ;   // queries per thread in phase A
+@@ -124,9 +128,16 @@ static __global__ void __launch_bounds__(FD_NT, FD_MINB) fd_kernel(const fd_para
+     const int q0 = FD_AV == 2 ? (tid >> 6)*NQH : 0;
+     const int tA = FD_AV == 2 ? (tid & 63) : tid;
+ 
+-    float o[NQ][2];
++    constexpr int NO = PV == 1 ? 4 : 2;
++    float o[NQ][NO];
++#pragma unroll
++    for (int q = 0; q < NQ; ++q) {
+ #pragma unroll
+-    for (int q = 0; q < NQ; ++q) { o[q][0] = 0.0f; o[q][1] = 0.0f; }
++        for (int j = 0; j < NO; ++j) o[q][j] = 0.0f;
++    }
++    // PV=1 ownership: token half ch, q4_0 block cb, byte pair cw (bytes 2cw, 2cw+1)
++    const int ch = tid >> 6, cb = (tid >> 3) & 7, cw = tid & 7;
++    const char * Vc = p.V + seq*p.nbv3 + kvh*p.nbv2 + 18*cb;
+     __syncthreads();
+ 
+     for (int tile = split; tile < p.ntiles; tile += p.nsplit) {
+@@ -313,6 +324,42 @@ static __global__ void __launch_bounds__(FD_NT, FD_MINB) fd_kernel(const fd_para
+ 
+         // ---- phase C: O += P V
+ #ifndef FD_SKIP_C
++        if (PV == 1) {
++#pragma unroll
++        for (int q = 0; q < NQ; ++q) {
++            const float a = sA[q];
++#pragma unroll
++            for (int j = 0; j < NO; ++j) o[q][j] *= a;
++        }
++        const char * vt = Vc + (size_t) (t0 + 64*ch)*p.nbv1;
++        const float * sp = &sS[0][64*ch];
++#pragma unroll 2
++        for (int tt = 0; tt < 64; tt += 4) {
++            float v[4][4];
++#pragma unroll
++            for (int u = 0; u < 4; ++u) {
++                const char * vr = vt + (size_t) (tt + u)*p.nbv1;
++                const float d = __half2float(__ldg((const half *) vr));
++                const uint32_t w = __ldg((const unsigned short *) (vr + 2 + 2*cw));
++                const uint32_t lo = w & 0x0F0Fu, hi = (w >> 4) & 0x0F0Fu;
++                v[u][0] = (__int_as_float(__byte_perm(lo, 0x4B000000u, 0x7540)) - 8388616.0f)*d;
++                v[u][1] = (__int_as_float(__byte_perm(lo, 0x4B000000u, 0x7541)) - 8388616.0f)*d;
++                v[u][2] = (__int_as_float(__byte_perm(hi, 0x4B000000u, 0x7540)) - 8388616.0f)*d;
++                v[u][3] = (__int_as_float(__byte_perm(hi, 0x4B000000u, 0x7541)) - 8388616.0f)*d;
++            }
++#pragma unroll
++            for (int q = 0; q < NQ; ++q) {
++                const float4 pr = *(const float4 *) (sp + q*FD_TILE + tt);
++#pragma unroll
++                for (int j = 0; j < 4; ++j) {
++                    o[q][j] = fmaf(pr.x, v[0][j], o[q][j]);
++                    o[q][j] = fmaf(pr.y, v[1][j], o[q][j]);
++                    o[q][j] = fmaf(pr.z, v[2][j], o[q][j]);
++                    o[q][j] = fmaf(pr.w, v[3][j], o[q][j]);
++                }
++            }
++        }
++        } else {
+ #pragma unroll
+         for (int q = 0; q < NQ; ++q) { const float a = sA[q]; o[q][0] *= a; o[q][1] *= a; }
+         const char * vt = Vb + (size_t) t0*p.nbv1;
+@@ -336,15 +383,39 @@ static __global__ void __launch_bounds__(FD_NT, FD_MINB) fd_kernel(const fd_para
+                 o[q][0] = fmaf(pr.w, v0[3], o[q][0]); o[q][1] = fmaf(pr.w, v1[3], o[q][1]);
+             }
+         }
++        }
+ #endif
+         __syncthreads();
+     }
+ 
+     const int blk = (seq*p.nkvh + kvh)*p.nsplit + split;
+     float * po = p.part_o + (size_t) blk*NQ*FD_D;
++    if (PV == 1) {
++        // sum the two token halves: half 1 parks its partials in sQ (free after the loop), half 0 adds and writes
++        float * sx = &sQ[0][0];
++        const int e0 = cb*32 + 2*cw;
++        if (ch == 1) {
++#pragma unroll
++            for (int q = 0; q < NQ; ++q) {
++                sx[q*FD_D + e0] = o[q][0]; sx[q*FD_D + e0 + 1] = o[q][1];
++                sx[q*FD_D + e0 + 16] = o[q][2]; sx[q*FD_D + e0 + 17] = o[q][3];
++            }
++        }
++        __syncthreads();
++        if (ch == 0) {
++#pragma unroll
++            for (int q = 0; q < NQ; ++q) {
++                po[q*FD_D + e0]      = o[q][0] + sx[q*FD_D + e0];
++                po[q*FD_D + e0 + 1]  = o[q][1] + sx[q*FD_D + e0 + 1];
++                po[q*FD_D + e0 + 16] = o[q][2] + sx[q*FD_D + e0 + 16];
++                po[q*FD_D + e0 + 17] = o[q][3] + sx[q*FD_D + e0 + 17];
++            }
++        }
++    } else {
+     const int d0 = vb*32 + vj;
+ #pragma unroll
+     for (int q = 0; q < NQ; ++q) { po[q*FD_D + d0] = o[q][0]; po[q*FD_D + d0 + 16] = o[q][1]; }
++    }
+     if (tid < NQ) p.part_ml[(size_t) blk*NQ + tid] = make_float2(sM[tid], sL[tid]);
+ }
+ 
+@@ -368,14 +439,22 @@ static __global__ void __launch_bounds__(FD_D) fd_combine(const float * __restri
+ }
+ 
+ template <int G, int NR>
+-static void fd_launch_t(const fd_params & p, int nseq, float * dst, cudaStream_t stream) {
+-    fd_kernel<G, NR><<<dim3(p.nsplit, p.nkvh, nseq), FD_NT, 0, stream>>>(p);
++static void fd_launch_t(const fd_params & p, int nseq, float * dst, cudaStream_t stream, int pv) {
++    if (pv == 1) {
++        fd_kernel<G, NR, 1><<<dim3(p.nsplit, p.nkvh, nseq), FD_NT, 0, stream>>>(p);
++    } else {
++        fd_kernel<G, NR, 0><<<dim3(p.nsplit, p.nkvh, nseq), FD_NT, 0, stream>>>(p);
++    }
+     fd_combine<<<dim3(G*NR, p.nkvh, nseq), FD_D, 0, stream>>>(p.part_o, p.part_ml, dst, G, NR, p.nsplit);
+ }
+ 
+ // returns false if (G, NR) has no instance
++static int fd_env_int(const char * name, int def);
++static int fd_pv() { static const int v = fd_env_int("GGML_CUDA_FA_DEC_PV", 0); return v; }
++
+ static bool fd_launch(const fd_params & p, int G, int NR, int nseq, float * dst, cudaStream_t stream) {
+-#define FD_CASE(g, nr) if (G == g && NR == nr) { fd_launch_t<g, nr>(p, nseq, dst, stream); return true; }
++    const int pv = fd_pv();
++#define FD_CASE(g, nr) if (G == g && NR == nr) { fd_launch_t<g, nr>(p, nseq, dst, stream, pv); return true; }
+     FD_CASE(6, 1) FD_CASE(6, 2) FD_CASE(6, 3) FD_CASE(6, 4)
+     FD_CASE(4, 1) FD_CASE(4, 2) FD_CASE(4, 3) FD_CASE(4, 4)
+     FD_CASE(8, 1) FD_CASE(8, 2) FD_CASE(8, 3)

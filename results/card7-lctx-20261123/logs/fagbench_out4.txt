@@ -1,0 +1,71 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+algo -1 nk 92416 nq 512 ns 2 KC 4096 mode 5: 214.55 ms/call  5.42 TFMA/s  x16 layers = 3.433 s per ubatch
+algo 99 nk 92416 nq 512 ns 2 KC 4096 mode 5: 214.15 ms/call  5.43 TFMA/s  x16 layers = 3.426 s per ubatch
+algo 0 nk 92416 nq 512 ns 2 KC 4096 mode 5: 262.45 ms/call  4.43 TFMA/s  x16 layers = 4.199 s per ubatch
+algo 1 nk 92416 nq 512 ns 2 KC 4096 mode 5: 220.28 ms/call  5.28 TFMA/s  x16 layers = 3.525 s per ubatch
+algo 2 nk 92416 nq 512 ns 2 KC 4096 mode 5: 259.59 ms/call  4.48 TFMA/s  x16 layers = 4.153 s per ubatch
+algo 3 nk 92416 nq 512 ns 2 KC 4096 mode 5: 212.21 ms/call  5.48 TFMA/s  x16 layers = 3.395 s per ubatch
+algo 4 nk 92416 nq 512 ns 2 KC 4096 mode 5: 214.71 ms/call  5.42 TFMA/s  x16 layers = 3.435 s per ubatch
+algo 5 nk 92416 nq 512 ns 2 KC 4096 mode 5: 262.49 ms/call  4.43 TFMA/s  x16 layers = 4.200 s per ubatch
+algo 6 nk 92416 nq 512 ns 2 KC 4096 mode 5: 220.34 ms/call  5.28 TFMA/s  x16 layers = 3.525 s per ubatch
+algo 7 nk 92416 nq 512 ns 2 KC 4096 mode 5: 259.53 ms/call  4.48 TFMA/s  x16 layers = 4.153 s per ubatch
+algo 8 nk 92416 nq 512 ns 2 KC 4096 mode 5: 212.26 ms/call  5.48 TFMA/s  x16 layers = 3.396 s per ubatch
+algo 9 nk 92416 nq 512 ns 2 KC 4096 mode 5: 214.34 ms/call  5.43 TFMA/s  x16 layers = 3.429 s per ubatch
+algo 100 nk 92416 nq 512 ns 2 KC 4096 mode 5: 214.77 ms/call  5.41 TFMA/s  x16 layers = 3.436 s per ubatch
+algo 101 nk 92416 nq 512 ns 2 KC 4096 mode 5: 214.35 ms/call  5.43 TFMA/s  x16 layers = 3.430 s per ubatch
+algo 102 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.35 ms/call  5.40 TFMA/s  x16 layers = 3.446 s per ubatch
+algo 103 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.43 ms/call  5.40 TFMA/s  x16 layers = 3.447 s per ubatch
+algo 104 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.59 ms/call  5.39 TFMA/s  x16 layers = 3.449 s per ubatch
+algo 105 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.76 ms/call  5.39 TFMA/s  x16 layers = 3.452 s per ubatch
+algo 106 nk 92416 nq 512 ns 2 KC 4096 mode 5: 216.32 ms/call  5.38 TFMA/s  x16 layers = 3.461 s per ubatch
+algo 107 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.61 ms/call  5.39 TFMA/s  x16 layers = 3.450 s per ubatch
+algo 108 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.61 ms/call  5.39 TFMA/s  x16 layers = 3.450 s per ubatch
+algo 109 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.83 ms/call  5.39 TFMA/s  x16 layers = 3.453 s per ubatch
+algo 110 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.86 ms/call  5.39 TFMA/s  x16 layers = 3.454 s per ubatch
+algo 111 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.91 ms/call  5.39 TFMA/s  x16 layers = 3.454 s per ubatch
+algo 112 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.87 ms/call  5.39 TFMA/s  x16 layers = 3.454 s per ubatch
+algo 113 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.99 ms/call  5.38 TFMA/s  x16 layers = 3.456 s per ubatch
+algo 114 nk 92416 nq 512 ns 2 KC 4096 mode 5: 215.90 ms/call  5.39 TFMA/s  x16 layers = 3.454 s per ubatch
+algo 115 nk 92416 nq 512 ns 2 KC 4096 mode 5: 216.53 ms/call  5.37 TFMA/s  x16 layers = 3.464 s per ubatch
+algo -1 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.59 ms/call  6.20 TFMA/s  x16 layers = 3.001 s per ubatch
+algo 99 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.48 ms/call  6.20 TFMA/s  x16 layers = 3.000 s per ubatch
+algo 0 nk 92416 nq 512 ns 2 KC 4096 mode 6: 239.22 ms/call  4.86 TFMA/s  x16 layers = 3.827 s per ubatch
+algo 1 nk 92416 nq 512 ns 2 KC 4096 mode 6: 195.76 ms/call  5.94 TFMA/s  x16 layers = 3.132 s per ubatch
+algo 2 nk 92416 nq 512 ns 2 KC 4096 mode 6: 231.06 ms/call  5.03 TFMA/s  x16 layers = 3.697 s per ubatch
+algo 3 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.65 ms/call  6.20 TFMA/s  x16 layers = 3.002 s per ubatch
+algo 4 nk 92416 nq 512 ns 2 KC 4096 mode 6: 191.38 ms/call  6.08 TFMA/s  x16 layers = 3.062 s per ubatch
+algo 5 nk 92416 nq 512 ns 2 KC 4096 mode 6: 239.23 ms/call  4.86 TFMA/s  x16 layers = 3.828 s per ubatch
+algo 6 nk 92416 nq 512 ns 2 KC 4096 mode 6: 195.66 ms/call  5.94 TFMA/s  x16 layers = 3.131 s per ubatch
+algo 7 nk 92416 nq 512 ns 2 KC 4096 mode 6: 231.05 ms/call  5.03 TFMA/s  x16 layers = 3.697 s per ubatch
+algo 8 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.72 ms/call  6.19 TFMA/s  x16 layers = 3.004 s per ubatch
+algo 9 nk 92416 nq 512 ns 2 KC 4096 mode 6: 191.65 ms/call  6.07 TFMA/s  x16 layers = 3.066 s per ubatch
+algo 100 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.74 ms/call  6.19 TFMA/s  x16 layers = 3.004 s per ubatch
+algo 101 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.75 ms/call  6.19 TFMA/s  x16 layers = 3.004 s per ubatch
+algo 102 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.61 ms/call  6.20 TFMA/s  x16 layers = 3.002 s per ubatch
+algo 103 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.67 ms/call  6.20 TFMA/s  x16 layers = 3.003 s per ubatch
+algo 104 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.57 ms/call  6.20 TFMA/s  x16 layers = 3.001 s per ubatch
+algo 105 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.63 ms/call  6.20 TFMA/s  x16 layers = 3.002 s per ubatch
+algo 106 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.81 ms/call  6.19 TFMA/s  x16 layers = 3.005 s per ubatch
+algo 107 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.78 ms/call  6.19 TFMA/s  x16 layers = 3.005 s per ubatch
+algo 108 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.68 ms/call  6.20 TFMA/s  x16 layers = 3.003 s per ubatch
+algo 109 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.74 ms/call  6.19 TFMA/s  x16 layers = 3.004 s per ubatch
+algo 110 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.74 ms/call  6.19 TFMA/s  x16 layers = 3.004 s per ubatch
+algo 111 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.66 ms/call  6.20 TFMA/s  x16 layers = 3.003 s per ubatch
+algo 112 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.75 ms/call  6.19 TFMA/s  x16 layers = 3.004 s per ubatch
+algo 113 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.69 ms/call  6.20 TFMA/s  x16 layers = 3.003 s per ubatch
+algo 114 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.69 ms/call  6.20 TFMA/s  x16 layers = 3.003 s per ubatch
+algo 115 nk 92416 nq 512 ns 2 KC 4096 mode 6: 187.65 ms/call  6.20 TFMA/s  x16 layers = 3.002 s per ubatch

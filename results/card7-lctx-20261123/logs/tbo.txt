@@ -1,0 +1,9 @@
+== FA_GEMM=1 SMAX1=0 MINQ=1 13:53:17
+  3993/3993 tests passed
+2/2 backends passed
+== FA_GEMM=1 SMAX1=1 MINQ=1 13:54:27
+  3993/3993 tests passed
+2/2 backends passed
+== FA_GEMM=1 SMAX1=1 MINQ=64 13:55:36
+  3993/3993 tests passed
+2/2 backends passed

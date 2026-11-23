@@ -1,0 +1,22 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+nvcc warning : Support for offline compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nk 92416 nq 512 ns 2 KC 4096 mode 0: 479.59 ms/call  2.42 TFMA/s  x16 layers = 7.673 s per ubatch
+nk 92416 nq 512 ns 2 KC 4096 mode 3: 465.29 ms/call  2.50 TFMA/s  x16 layers = 7.445 s per ubatch
+nk 92416 nq 512 ns 2 KC 4096 mode 2: 74.83 ms/call  15.54 TFMA/s  x16 layers = 1.197 s per ubatch
+nk 92416 nq 512 ns 2 KC 4096 mode 4: 60.15 ms/call  19.33 TFMA/s  x16 layers = 0.962 s per ubatch
+nk 92416 nq 1024 ns 1 KC 4096 mode 0: 474.85 ms/call  2.45 TFMA/s  x16 layers = 7.598 s per ubatch
+nk 4096 nq 1024 ns 1 KC 4096 mode 3: 20.08 ms/call  2.57 TFMA/s  x16 layers = 0.321 s per ubatch
