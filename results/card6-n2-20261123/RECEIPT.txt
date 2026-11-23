@@ -1,0 +1,14 @@
+card6 23 Nov: GGML_CUDA_MMVQ_N2SPLIT (default off), 27B Q4_0 head4, M6000 sm52
+branch: claude/27b-n2-20261123 (worktree llamaxwell-27b-n2), base 117caed
+commits: 63e4fd8 (split ncols_dst>c), 3258df5 (only exact multiples unless GGML_CUDA_MMVQ_N2SPLIT_ALL=1), plus results commit
+build: results/card6-n2-20261123/build.sh (card2 build.sh, R=worktree; docker nvidia/cuda:12.8.1-devel-ubuntu24.04 gcc-14,
+  cmake GGML_CUDA=ON 52-real BACKEND_DL CPU_ALL_VARIANTS Release, target ggml-cuda -j10, build dir build-n8 copied from card2 tree)
+libs:
+27e0e1feccd08b01798bccce2ff24fd17ee3a2ca5f43dd7eccbda799f698d671  prod-libs/libggml-cuda-n2split-20261123.so   (r1, 63e4fd8)
+2cad5da259da78361165b956ec3b335ed32d79ccdea1aaaf3407682825538561  prod-libs/libggml-cuda-n2split-v2-20261123.so   (r2/r3, 3258df5)
+test-backend-ops (staged from prod-libs/batch8-20261115, not rebuilt; run in runtime image):
+b75d48964ff65e16380cbb731c7ab42bf3894759006070dbc6698c5ac852fb29  test-backend-ops
+6d3a2b8b700a71b0c8ee83d902a6b8a7201aaec6c222bb985e37aaf369c01a7a  libggml-base.so.0.26.0
+1ad2df73c62eb606aa6943cd3f9fe19d1fabb7461d1d3cc384712b57214376fc  libggml.so.0.26.0
+tests: MUL_MAT q4_0 CUDA0 vs CPU 118/118 pass: r1 N2SPLIT=0/3/2, v2 N2SPLIT=0/3; hist confirms 6->3+3 (r3 server logs: no ncols6 launches when on)
+harness: quick.py round26 added (backup quick.py.bak-20261123-card6), r26 hist logging via QUICK_HIST

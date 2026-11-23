@@ -1,0 +1,58 @@
+
+== burst 1 span 6646.5 ms busy 6300.2 ms; top kernels (ms, %busy, calls, avg us)
+   3528.7  56.0%   26260    134.4  mul_mat_vec_q<ggml_type=2, int=3, bool=0, bool=0, bool=0, bool=0, bool=1>
+    692.6  11.0%     504   1374.2  maxwell_sgemm_128x64_nn
+    608.7   9.7%     504   1207.8  k_dequant_q4_0_T2
+    389.0   6.2%     937    415.1  mul_mat_vec_q<ggml_type=2, int=1, bool=0, bool=0, bool=0, bool=0, bool=1>
+    244.0   3.9%    2592     94.2  gated_delta_net_cuda<int=128, bool=0, bool=1, int=4>
+    147.6   2.3%    2592     56.9  concat_non_cont<unsigned int, int=0>
+     90.5   1.4%     504    179.5  mul_mat_vec_q<ggml_type=2, int=4, bool=0, bool=0, bool=0, bool=0, bool=1>
+     72.5   1.2%    8798      8.2  cpy_scalar
+     67.8   1.1%     832     81.4  fd_kernel<int=6, int=3>
+     65.4   1.0%    2592     25.2  k_get_rows_float_vec<float>
+     57.2   0.9%    7236      7.9  rms_norm_f32<int=1024, bool=1, bool=0, bool=0>
+     51.6   0.8%   14302      3.6  quantize_q8_1
+     42.4   0.7%    9820      4.3  _Z11k_bin_bcastIXadL_ZN42_INTERNAL_dee15d3c_11_binbcast_cu_6840010b6op_addEffEEfffJPKfEEvP
+     33.5   0.5%    7228      4.6  unary_gated_op_kernel
+     30.1   0.5%    4636      6.5  rms_norm_f32<int=256, bool=1, bool=0, bool=0>
+     25.3   0.4%     517     48.9  [CUDA memcpy DtoH]
+     21.5   0.3%    5184      4.2  rms_norm_f32<int=256, bool=0, bool=0, bool=1>
+     19.5   0.3%    2592      7.5  ssm_conv_f32<bool=1, unsigned long=128, unsigned long=4>
+     18.2   0.3%    2853      6.4  k_get_rows_float<float, float>
+     14.0   0.2%    1728      8.1  k_set_rows_quant
+     11.4   0.2%    2592      4.4  _Z11k_bin_bcastIXadL_ZN42_INTERNAL_dee15d3c_11_binbcast_cu_6840010b6op_mulEffEEfffJPKfEEvP
+     10.1   0.2%    5184      1.9  unary_op_kernel
+      8.6   0.1%    2044      4.2  rope_multi<bool=1, bool=0, float>
+      5.8   0.1%    1728      3.4  fwht_cuda<int=256, float>
+      4.6   0.1%     520      8.8  rms_norm_mul_q8_1_row<int=1024>
+      4.5   0.1%     848      5.4  fd_combine
+gaps: total 346.4 ms; >50us: 186 totalling 177.3 ms; >1ms: 6 totalling 145.4 ms
+
+== burst 2 span 11557.9 ms busy 11170.7 ms; top kernels (ms, %busy, calls, avg us)
+   7030.9  62.9%   21936    320.5  mul_mat_vec_q<ggml_type=2, int=6, bool=0, bool=0, bool=0, bool=0, bool=1>
+    674.9   6.0%     456   1480.0  maxwell_sgemm_128x64_nn
+    572.6   5.1%     456   1255.8  k_dequant_q4_0_T2
+    505.2   4.5%    3314    152.4  mul_mat_vec_q<ggml_type=2, int=3, bool=0, bool=0, bool=0, bool=0, bool=1>
+    417.7   3.7%    1370    304.9  mul_mat_vec_q<ggml_type=2, int=2, bool=0, bool=0, bool=0, bool=0, bool=1>
+    414.4   3.7%    2544    162.9  gated_delta_net_cuda<int=128, bool=0, bool=1, int=4>
+    252.7   2.3%    2544     99.4  concat_non_cont<unsigned int, int=0>
+    231.2   2.1%     456    507.0  mul_mat_vec_q<ggml_type=2, int=8, bool=0, bool=0, bool=0, bool=0, bool=1>
+    122.5   1.1%    2592     47.3  k_get_rows_float_vec<float>
+    112.7   1.0%    8796     12.8  cpy_scalar
+     98.5   0.9%      48   2053.0  maxwell_sgemm_128x32_tn
+     82.3   0.7%     559    147.2  mul_mat_vec_q<ggml_type=2, int=1, bool=0, bool=0, bool=0, bool=0, bool=1>
+     77.2   0.7%      48   1608.1  dequantize_block_q4_0<float>
+     65.1   0.6%   14356      4.5  quantize_q8_1
+     61.4   0.5%     800     76.7  fd_kernel<int=6, int=3>
+     61.2   0.5%     931     65.7  [CUDA memcpy DtoH]
+     59.8   0.5%    7582      7.9  rms_norm_f32<int=1024, bool=1, bool=0, bool=0>
+     46.1   0.4%    7272      6.3  unary_gated_op_kernel
+     46.1   0.4%    9816      4.7  _Z11k_bin_bcastIXadL_ZN42_INTERNAL_dee15d3c_11_binbcast_cu_6840010b6op_addEffEEfffJPKfEEvP
+     41.1   0.4%    4632      8.9  rms_norm_f32<int=256, bool=1, bool=0, bool=0>
+     26.0   0.2%    2945      8.8  k_get_rows_float<float, float>
+     23.2   0.2%    2592      8.9  ssm_conv_f32<bool=1, unsigned long=128, unsigned long=4>
+     23.0   0.2%    5184      4.4  rms_norm_f32<int=256, bool=0, bool=0, bool=1>
+     16.7   0.1%    1728      9.7  k_set_rows_quant
+     11.2   0.1%      48    233.4  mul_mat_vec_q<ggml_type=2, int=4, bool=0, bool=0, bool=0, bool=0, bool=1>
+     10.7   0.1%    2544      4.2  _Z11k_bin_bcastIXadL_ZN42_INTERNAL_dee15d3c_11_binbcast_cu_6840010b6op_mulEffEEfffJPKfEEvP
+gaps: total 387.2 ms; >50us: 305 totalling 221.7 ms; >1ms: 7 totalling 172.6 ms
