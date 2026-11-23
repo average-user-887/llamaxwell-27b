@@ -1470,7 +1470,9 @@ static void mul_mat_vec_q_switch_ncols_dst(
         // card6 23 Nov: GGML_CUDA_MMVQ_N2SPLIT=<c> (default 0 = off) runs a dense Q4_0 batch of ncols_dst > c as
         // launches of c columns; on sm52 two 3-column launches beat one 6-column launch (2-slot MTP verify).
         static const int n2split = [] { const char * e = getenv("GGML_CUDA_MMVQ_N2SPLIT"); return e ? atoi(e) : 0; }();
-        if (n2split > 0 && ncols_dst > n2split && !has_ids) {
+        // GGML_CUDA_MMVQ_N2SPLIT_ALL=1: also split non-multiples (default: only ncols_dst % c == 0, e.g. 6 -> 3+3).
+        static const bool n2split_all = [] { const char * e = getenv("GGML_CUDA_MMVQ_N2SPLIT_ALL"); return e && atoi(e) != 0; }();
+        if (n2split > 0 && ncols_dst > n2split && !has_ids && (n2split_all || ncols_dst % n2split == 0)) {
             for (int c0 = 0; c0 < ncols_dst; c0 += n2split) {
                 mul_mat_vec_q_switch_ncols_dst<type>(vx, static_cast<const block_q8_1 *>(vy) + (size_t) c0*stride_col_y, ids, fusion,
                     dst + (size_t) c0*stride_col_dst, ncols_x, nrows_x, std::min(n2split, ncols_dst - c0),
