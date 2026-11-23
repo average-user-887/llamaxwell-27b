@@ -1467,6 +1467,19 @@ static void mul_mat_vec_q_switch_ncols_dst(
     const bool has_ids = ids != nullptr;
 
     if constexpr (type == GGML_TYPE_Q4_0) {
+        // card6 23 Nov: GGML_CUDA_MMVQ_N2SPLIT=<c> (default 0 = off) runs a dense Q4_0 batch of ncols_dst > c as
+        // launches of c columns; on sm52 two 3-column launches beat one 6-column launch (2-slot MTP verify).
+        static const int n2split = [] { const char * e = getenv("GGML_CUDA_MMVQ_N2SPLIT"); return e ? atoi(e) : 0; }();
+        if (n2split > 0 && ncols_dst > n2split && !has_ids) {
+            for (int c0 = 0; c0 < ncols_dst; c0 += n2split) {
+                mul_mat_vec_q_switch_ncols_dst<type>(vx, static_cast<const block_q8_1 *>(vy) + (size_t) c0*stride_col_y, ids, fusion,
+                    dst + (size_t) c0*stride_col_dst, ncols_x, nrows_x, std::min(n2split, ncols_dst - c0),
+                    stride_row_x, stride_col_y, stride_col_dst, nchannels_x, nchannels_y, nchannels_dst,
+                    stride_channel_x, stride_channel_y, stride_channel_dst,
+                    nsamples_x, nsamples_dst, stride_sample_x, stride_sample_y, stride_sample_dst, ids_stride, stream);
+            }
+            return;
+        }
         const bool no_fusion = !fusion.gate && !fusion.x_bias && !fusion.gate_bias &&
                                !fusion.x_scale && !fusion.gate_scale && !fusion.shared_up;
         if (head_rowpack_enabled() && cc == 520 && warp_size == 32 && !ids && no_fusion &&
