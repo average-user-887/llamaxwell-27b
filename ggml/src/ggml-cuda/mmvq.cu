@@ -1115,6 +1115,124 @@ static __global__ void mul_mat_vec_q(
     }
 }
 
+// Two independent groups of three columns use the original two K warps per group.
+__launch_bounds__(128, 1)
+static __global__ void mul_mat_vec_q_n6_cohort_sm52(
+        const void * vx_ptr, const void * vy_ptr, const int32_t *, const ggml_cuda_mm_fusion_args_device, float * dst_ptr,
+        const uint32_t ncols_x, const uint3, const uint32_t stride_row_x, const uint32_t stride_col_y,
+        const uint32_t stride_col_dst, const uint3 channel_ratio, const uint32_t stride_channel_x,
+        const uint32_t stride_channel_y, const uint32_t stride_channel_dst, const uint3 sample_ratio,
+        const uint32_t stride_sample_x, const uint32_t stride_sample_y, const uint32_t stride_sample_dst,
+        const uint32_t) {
+    const void * GGML_CUDA_RESTRICT vx = vx_ptr;
+    const void * GGML_CUDA_RESTRICT vy = vy_ptr;
+    float * GGML_CUDA_RESTRICT dst = dst_ptr;
+
+    constexpr int qk  = ggml_cuda_type_traits<GGML_TYPE_Q4_0>::qk;
+    constexpr int qi  = ggml_cuda_type_traits<GGML_TYPE_Q4_0>::qi;
+    constexpr int vdr = get_vdr_mmvq(GGML_TYPE_Q4_0);
+    constexpr int nwarps = 2;
+    constexpr int rows_per_cuda_block = 4;
+    constexpr int warp_size = 32;
+    constexpr int cohorts = 2;
+    constexpr int cols_per_cohort = 3;
+    const int column_begin = threadIdx.z * cols_per_cohort;
+    const int tid = warp_size*threadIdx.y + threadIdx.x;
+    const int row0 = rows_per_cuda_block*blockIdx.x;
+    const int blocks_per_row_x = ncols_x / qk;
+    constexpr int blocks_per_iter = vdr * nwarps*warp_size / qi;
+
+    const uint32_t channel_dst = blockIdx.y;
+    ggml_cuda_pdl_sync();
+    const uint32_t channel_x = fastdiv(channel_dst, channel_ratio);
+    const uint32_t channel_y = channel_dst;
+    const uint32_t sample_dst = blockIdx.z;
+    const uint32_t sample_x = fastdiv(sample_dst, sample_ratio);
+    const uint32_t sample_y = sample_dst;
+
+    float tmp[cols_per_cohort][rows_per_cuda_block] = {{0.0f}};
+    const block_q8_1 * y = ((const block_q8_1 *) vy) + sample_y*stride_sample_y + channel_y*stride_channel_y;
+    const int kbx_offset = sample_x*stride_sample_x + channel_x*stride_channel_x + row0*stride_row_x;
+
+    for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
+        const int kby = kbx * (qk/QK8_1);
+        const int kqs = vdr * (tid % (qi/vdr));
+        ggml_cuda_sm52_i16x4 pu[cols_per_cohort][2*vdr];
+        float2 dsy[cols_per_cohort];
+#pragma unroll
+        for (int j = 0; j < cols_per_cohort; ++j) {
+            const block_q8_1 * by = &y[(column_begin + j)*stride_col_y + kby];
+#pragma unroll
+            for (int ii = 0; ii < vdr; ++ii) {
+                pu[j][2*ii + 0] = ggml_cuda_sm52_expand(get_int_b4(by->qs, kqs + ii));
+                pu[j][2*ii + 1] = ggml_cuda_sm52_expand(get_int_b4(by->qs, kqs + ii + QI4_0));
+            }
+            dsy[j] = __half22float2(by->ds);
+        }
+#pragma unroll
+        for (int i = 0; i < rows_per_cuda_block; ++i) {
+            const block_q4_0 * bx = (const block_q4_0 *) vx + kbx_offset + i*stride_row_x + kbx;
+            int sumi[cols_per_cohort];
+#pragma unroll
+            for (int j = 0; j < cols_per_cohort; ++j) {
+                sumi[j] = 0;
+            }
+#pragma unroll
+            for (int ii = 0; ii < vdr; ++ii) {
+                const uint32_t v  = get_int_b2(bx->qs, kqs + ii);
+                const uint32_t lo = v & 0x0F0F0F0F;
+                const uint32_t hi = (v >> 4) & 0x0F0F0F0F;
+                ggml_cuda_sm52_i16x4 wl, wh; // nibbles 0..15: zero fill
+                wl.lo = __byte_perm(lo, 0, 0x4140);
+                wl.hi = __byte_perm(lo, 0, 0x4342);
+                wh.lo = __byte_perm(hi, 0, 0x4140);
+                wh.hi = __byte_perm(hi, 0, 0x4342);
+#pragma unroll
+                for (int j = 0; j < cols_per_cohort; ++j) {
+                    sumi[j] = ggml_cuda_sm52_dot4(wl, pu[j][2*ii + 0], sumi[j]);
+                    sumi[j] = ggml_cuda_sm52_dot4(wh, pu[j][2*ii + 1], sumi[j]);
+                }
+            }
+            const float d4 = bx->d;
+#pragma unroll
+            for (int j = 0; j < cols_per_cohort; ++j) {
+                tmp[j][i] += d4 * (sumi[j] * dsy[j].x - (8*vdr/QI4_0) * dsy[j].y);
+            }
+        }
+    }
+
+    __shared__ float tmp_shared[cohorts][nwarps-1][cols_per_cohort][rows_per_cuda_block][warp_size];
+    if (threadIdx.y > 0) {
+#pragma unroll
+        for (int j = 0; j < cols_per_cohort; ++j) {
+#pragma unroll
+            for (int i = 0; i < rows_per_cuda_block; ++i) {
+                tmp_shared[threadIdx.z][threadIdx.y-1][j][i][threadIdx.x] = tmp[j][i];
+            }
+        }
+    }
+    __syncthreads();
+    if (threadIdx.y > 0) {
+        return;
+    }
+
+    dst += sample_dst*stride_sample_dst + channel_dst*stride_channel_dst + row0;
+#pragma unroll
+    for (int j = 0; j < cols_per_cohort; ++j) {
+#pragma unroll
+        for (int i = 0; i < rows_per_cuda_block; ++i) {
+#pragma unroll
+            for (int l = 0; l < nwarps-1; ++l) {
+                tmp[j][i] += tmp_shared[threadIdx.z][l][j][i][threadIdx.x];
+            }
+            tmp[j][i] = warp_reduce_sum<warp_size>(tmp[j][i]);
+            if (threadIdx.x == i && uint32_t(row0 + i) < stride_col_dst) {
+                dst[(column_begin + j)*stride_col_dst + i] = tmp[j][i];
+            }
+        }
+    }
+}
+
 // Dedicated MoE multi-token kernel.
 // Grid: (ceil(nrows_x / c_rows_per_block), nchannels_dst)
 // Block: (warp_size, ncols_dst) - each warp handles one token independently.
@@ -1442,6 +1560,17 @@ static bool head_rowpack_enabled() {
     return enabled;
 }
 
+// The cohort is an opt-in alternative to the existing six-column XMAD path.
+static bool mmvq_n6_cohort_enabled() {
+    static const bool enabled = [] {
+        const char * cohort = getenv("GGML_CUDA_MMVQ_SM52_N6_COHORT");
+        const char * sm52 = getenv("GGML_CUDA_MMVQ_SM52");
+        const char * n8 = getenv("GGML_CUDA_MMVQ_SM52_N8");
+        return cohort && cohort[0] == '1' && sm52 && sm52[0] == '1' && !(n8 && n8[0] == '0');
+    }();
+    return enabled;
+}
+
 template <ggml_type type>
 static void mul_mat_vec_q_switch_ncols_dst(
         const void * vx, const void * vy, const int32_t * ids, const ggml_cuda_mm_fusion_args_device fusion, float * dst,
@@ -1628,6 +1757,32 @@ static void mul_mat_vec_q_switch_ncols_dst(
         } break;
         case 6: {
             constexpr int c_ncols_dst = 6;
+            if constexpr (type == GGML_TYPE_Q4_0) {
+                const bool measured_shape = (nrows_x == 5120 && ncols_x == 17408) ||
+                                            (nrows_x == 17408 && ncols_x == 5120);
+                if (cc == 520 && warp_size == 32 && mmvq_n6_cohort_enabled() && measured_shape &&
+                        !has_ids && !fusion.gate && !fusion.x_bias && !fusion.gate_bias &&
+                        !fusion.x_scale && !fusion.gate_scale && !fusion.shared_up && !fusion.shared_gate &&
+                        nchannels_x == 1 && nchannels_y == 1 && nchannels_dst == 1 &&
+                        nsamples_x == 1 && nsamples_dst == 1 &&
+                        stride_row_x == ncols_x / QK4_0 && stride_col_y == ncols_x / QK8_1 &&
+                        stride_col_dst == nrows_x) {
+                    static std::atomic<bool> reported_down{false};
+                    static std::atomic<bool> reported_up{false};
+                    auto & reported = nrows_x == 5120 ? reported_down : reported_up;
+                    if (!reported.load(std::memory_order_relaxed) && !reported.exchange(true, std::memory_order_relaxed)) {
+                        fprintf(stderr, "mmvq-n6-cohort: engaged sm52 Q4_0 M=%d K=%d N=6 block=(32,2,2)\n",
+                                nrows_x, ncols_x);
+                    }
+                    mmvq_hist_count(type, c_ncols_dst, 1);
+                    const ggml_cuda_kernel_launch_params params(dim3(nrows_x / 4), dim3(32, 2, 2), 0, stream);
+                    ggml_cuda_kernel_launch(mul_mat_vec_q_n6_cohort_sm52, params,
+                        vx, vy, ids, fusion, dst, ncols_x, nchannels_y_fd, stride_row_x, stride_col_y, stride_col_dst,
+                        channel_ratio_fd, stride_channel_x, stride_channel_y, stride_channel_dst, sample_ratio_fd,
+                        stride_sample_x, stride_sample_y, stride_sample_dst, ids_stride);
+                    break;
+                }
+            }
             std::pair<dim3, dim3> dims = calc_launch_params<type>(c_ncols_dst, nrows_x, nchannels_dst, nsamples_dst, warp_size, table_id);
             mul_mat_vec_q_switch_fusion<type, c_ncols_dst>(vx, vy, ids, fusion, dst, ncols_x, nchannels_y_fd, stride_row_x, stride_col_y, stride_col_dst,
                  channel_ratio_fd, stride_channel_x, stride_channel_y, stride_channel_dst,

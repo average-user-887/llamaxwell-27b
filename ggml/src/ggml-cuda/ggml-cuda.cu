@@ -1435,6 +1435,82 @@ static __global__ void __launch_bounds__(256) k_dequant_q4_0_T2(const block_q4_0
     }
 }
 
+__device__ __forceinline__ unsigned q4_0_transpose_halfword(const unsigned * row, int index) {
+    return (row[index / 2] >> ((index % 2) * 16)) & 0xffff;
+}
+
+static __global__ void __launch_bounds__(256) k_dequant_q4_0_T2_vec(
+        const uint4 * __restrict__ x, float * __restrict__ y, int K, int M, int LD) {
+    constexpr int TM = 128;
+    constexpr int KB = 8;
+    constexpr int TY = 2;
+    constexpr int chunks_per_tile_row = 9;
+    constexpr int shared_row_words = 4 * chunks_per_tile_row + 1;
+    __shared__ unsigned tile[TM][shared_row_words];
+
+    const int m0 = blockIdx.x * TM;
+    const int kb0 = blockIdx.y * KB;
+    const int tid = threadIdx.y * TM + threadIdx.x;
+    const int chunks_per_input_row = (K / (32 * KB)) * chunks_per_tile_row;
+    for (int i = tid; i < TM * chunks_per_tile_row; i += TM * TY) {
+        const int row = i / chunks_per_tile_row;
+        const int chunk = i % chunks_per_tile_row;
+        const int m = m0 + row;
+        if (m < M) {
+            const int64_t offset = int64_t(m) * chunks_per_input_row +
+                    int64_t(blockIdx.y) * chunks_per_tile_row + chunk;
+            const uint4 data = __ldg(x + offset);
+            tile[row][4 * chunk] = data.x;
+            tile[row][4 * chunk + 1] = data.y;
+            tile[row][4 * chunk + 2] = data.z;
+            tile[row][4 * chunk + 3] = data.w;
+        }
+    }
+    __syncthreads();
+
+    const int m = m0 + threadIdx.x;
+    if (m >= M) {
+        return;
+    }
+    const unsigned * row = tile[threadIdx.x];
+    for (int b = threadIdx.y; b < KB; b += TY) {
+        const int block_halfword = b * 9;
+        const float d = __half2float(__ushort_as_half(q4_0_transpose_halfword(row, block_halfword)));
+        float * o = y + int64_t(kb0 + b) * 32 * LD + m;
+#pragma unroll
+        for (int j = 0; j < 8; ++j) {
+            const unsigned v = q4_0_transpose_halfword(row, block_halfword + 1 + j);
+            o[(2 * j) * int64_t(LD)] = (int(v & 15) - 8) * d;
+            o[(2 * j + 1) * int64_t(LD)] = (int((v >> 8) & 15) - 8) * d;
+            o[(2 * j + 16) * int64_t(LD)] = (int((v >> 4) & 15) - 8) * d;
+            o[(2 * j + 17) * int64_t(LD)] = (int((v >> 12) & 15) - 8) * d;
+        }
+    }
+}
+
+static bool transpose_vec_allowed(bool enabled, int cc, int64_t columns, uintptr_t address) {
+    return enabled && cc == 520 && columns > 0 && columns <= 256 && (address & 15) == 0;
+}
+
+static void launch_dequant_q4_0_T2(const block_q4_0 * x, float * y, int K, int M, int LD,
+                                   int64_t N, int cc, cudaStream_t stream) {
+    const dim3 grid((M + 127) / 128, K / 256), block(128, 2);
+    static const bool enabled = [] {
+        const char * flag = getenv("GGML_CUDA_SGEMM_NN_TRANSPOSE_VEC");
+        return flag != nullptr && strcmp(flag, "1") == 0;
+    }();
+    if (transpose_vec_allowed(enabled, cc, N, reinterpret_cast<uintptr_t>(x))) {
+        static const bool logged = [N, K, M, LD] {
+            GGML_LOG_INFO("sgemm_nn_transpose_vec: selected K=%d M=%d LD=%d N=%" PRId64 "\n", K, M, LD, N);
+            return true;
+        }();
+        (void) logged;
+        k_dequant_q4_0_T2_vec<<<grid, block, 0, stream>>>(reinterpret_cast<const uint4 *>(x), y, K, M, LD);
+    } else {
+        k_dequant_q4_0_T2<<<grid, block, 0, stream>>>(x, y, K, M, LD);
+    }
+}
+
 static __global__ void k_dequant_q4_0_T(const block_q4_0 * __restrict__ x, float * __restrict__ y, const int K, const int M) {
     const int m = blockIdx.x*blockDim.x + threadIdx.x, kb = blockIdx.y;
     if (m >= M) return;
@@ -1450,6 +1526,13 @@ static __global__ void k_dequant_q4_0_T(const block_q4_0 * __restrict__ x, float
         o[(2*j+16)*(int64_t)M] = ((int)((v >> 4) & 15) - 8)*d;
         o[(2*j+17)*(int64_t)M] = ((int)((v >>12) & 15) - 8)*d;
     }
+}
+
+static int sgemm_nn_algo_for_shape(bool enable32, const char * explicit_algo, int fallback, int cc,
+                                   int64_t M, int64_t N, int64_t K, int64_t lda, int64_t ldb, int64_t ldc) {
+    const bool projection = (M == 17408 && K == 5120) || (M == 5120 && K == 17408);
+    return enable32 && explicit_algo == nullptr && cc == 520 && N == 32 && projection &&
+           lda == M && ldb == K && ldc == M ? 4 : fallback;
 }
 
 template<ggml_type compute_type>
@@ -1484,13 +1567,15 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
 
     if constexpr (compute_type == GGML_TYPE_F32) {
         static const bool sgemm_nn = getenv("GGML_CUDA_SGEMM_NN") != nullptr && atoi(getenv("GGML_CUDA_SGEMM_NN"));
-        static const int  nn_algo  = getenv("GGML_CUDA_SGEMM_NN_ALGO") ? atoi(getenv("GGML_CUDA_SGEMM_NN_ALGO")) : 5;
+        static const char * const nn_algo_env = getenv("GGML_CUDA_SGEMM_NN_ALGO");
+        static const int nn_algo = nn_algo_env != nullptr ? atoi(nn_algo_env) : 5;
         if (sgemm_nn && src0->type == GGML_TYPE_Q4_0 && ggml_is_contiguous(src0) && src1->type == GGML_TYPE_F32 &&
                 ne02 == 1 && ne03 == 1 && ne12 == 1 && ne13 == 1 && ne00 % 32 == 0) {
             ggml_cuda_pool_alloc<float> wt(ctx.pool(), ne00*ne01);
             static const int nn_split = getenv("GGML_CUDA_SGEMM_NN_SPLIT") ? atoi(getenv("GGML_CUDA_SGEMM_NN_SPLIT")) : 1;
             const float al = 1.0f, be = 0.0f;
             const block_q4_0 * xq = (const block_q4_0 *) src0->data;
+            const int cc = ggml_cuda_info().devices[ctx.device].cc;
             if (ne00 % 256 == 0 && nn_split > 1 && ne01 >= 4096 && ne11 >= 256) {
                 // 7 Nov 2026: overlap dequant of piece p+1 (aux stream) with GEMM of piece p (main stream)
                 const int nb = ne00/32;
@@ -1506,8 +1591,7 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
                 for (int p = 0; p < np; ++p) {
                     const int64_t m0 = p*piece, mp = std::min<int64_t>(piece, ne01 - m0);
                     cudaStream_t st = p == 0 ? main_stream : aux;
-                    const dim3 grid((mp + 127)/128, ne00/256), blk(128, 2);
-                    k_dequant_q4_0_T2<<<grid, blk, 0, st>>>(xq + m0*nb, wt.get() + m0, (int) ne00, (int) mp, (int) ne01);
+                    launch_dequant_q4_0_T2(xq + m0*nb, wt.get() + m0, (int) ne00, (int) mp, (int) ne01, ne11, cc, st);
                     if (p > 0) CUDA_CHECK(cudaEventRecord(e[p], aux));
                 }
                 for (int p = 0; p < np; ++p) {
@@ -1520,15 +1604,29 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
                 return;
             }
             if (ne00 % 256 == 0) {
-                const dim3 grid((ne01 + 127)/128, ne00/256), blk(128, 2);
-                k_dequant_q4_0_T2<<<grid, blk, 0, main_stream>>>(xq, wt.get(), (int) ne00, (int) ne01, (int) ne01);
+                launch_dequant_q4_0_T2(xq, wt.get(), (int) ne00, (int) ne01, (int) ne01, ne11, cc, main_stream);
             } else {
                 const dim3 grid((ne01 + 255)/256, ne00/32);
                 k_dequant_q4_0_T<<<grid, 256, 0, main_stream>>>(xq, wt.get(), (int) ne00, (int) ne01);
             }
+            static const bool algo32_enabled = [] {
+                const char * flag = getenv("GGML_CUDA_SGEMM_NN_ALGO32");
+                return flag != nullptr && strcmp(flag, "1") == 0;
+            }();
+            const int algo = sgemm_nn_algo_for_shape(algo32_enabled && ne00 == ne10, nn_algo_env, nn_algo, cc,
+                                                     ne01, ne11, ne10, ne01, s11, ldc);
+            if (algo != nn_algo) {
+                static const bool logged = [&] {
+                    GGML_LOG_INFO("sgemm_nn_algo32: selected algorithm=%d M=%" PRId64 " N=%" PRId64
+                                  " K=%" PRId64 " lda=%" PRId64 " ldb=%" PRId64 " ldc=%" PRId64 "\n",
+                                  algo, ne01, ne11, ne10, ne01, s11, ldc);
+                    return true;
+                }();
+                (void) logged;
+            }
             CUBLAS_CHECK(cublasGemmEx(cublas_h, CUBLAS_OP_N, CUBLAS_OP_N, ne01, ne11, ne10,
                     &al, wt.get(), CUDA_R_32F, ne01, src1->data, CUDA_R_32F, s11,
-                    &be, dst_ddf, CUDA_R_32F, ldc, CUBLAS_COMPUTE_32F, (cublasGemmAlgo_t) nn_algo));
+                    &be, dst_ddf, CUDA_R_32F, ldc, CUBLAS_COMPUTE_32F, (cublasGemmAlgo_t) algo));
             return;
         }
     }
