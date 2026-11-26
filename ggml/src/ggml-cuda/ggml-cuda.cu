@@ -1779,6 +1779,121 @@ static bool try_launch_gate(int64_t n, const void * q, const void * x, float * o
 
 }  // namespace fused_short
 
+namespace fused64 {
+
+using fused32::threads;
+using fused32::block_k;
+using fused32::packed_k;
+using fused32::q4_blocks;
+using fused32::packed_chunks;
+using fused32::packed_stride;
+using fused32::lanes_m;
+using fused32::lanes_n;
+constexpr int n = 64;
+
+template<int m, int k, int tile_m>
+static __global__ void __launch_bounds__(threads, 3) q4_0_fused_n64(
+        const uint4 *__restrict__ q, const float *__restrict__ x, float *__restrict__ out) {
+    static_assert(m % tile_m == 0 && k % packed_k == 0);
+    constexpr int results_m = tile_m / lanes_m;
+    constexpr int results_n = n / lanes_n;
+    constexpr int q4_lanes = threads / tile_m;
+    constexpr int row_chunks = (k / packed_k) * packed_chunks;
+    __shared__ uint32_t packed[tile_m][packed_stride];
+    __shared__ float w_tile[block_k][tile_m];
+    __shared__ float x_tile[n][block_k + 1];
+
+    const int tid = threadIdx.x;
+    const int m_lane = tid % lanes_m;
+    const int n_lane = tid / lanes_m;
+    const int decode_m = tid % tile_m;
+    const int decode_halfword = (tid / tile_m) * (8 / q4_lanes);
+    const int m0 = blockIdx.x * tile_m;
+    float sum[results_n][results_m]{};
+
+#pragma unroll 1
+    for (int group = 0; group < k / packed_k; ++group) {
+        // Nine naturally aligned 16-byte reads cover eight Q4_0 blocks per row.
+        for (int i = tid; i < tile_m * packed_chunks; i += threads) {
+            const int row = i / packed_chunks;
+            const int chunk = i % packed_chunks;
+            const uint4 data = __ldg(q + (m0 + row) * row_chunks + group * packed_chunks + chunk);
+            packed[row][4 * chunk] = data.x;
+            packed[row][4 * chunk + 1] = data.y;
+            packed[row][4 * chunk + 2] = data.z;
+            packed[row][4 * chunk + 3] = data.w;
+        }
+        __syncthreads();
+
+#pragma unroll 1
+        for (int tile = 0; tile < q4_blocks; ++tile) {
+            const int k0 = group * packed_k + tile * block_k;
+            const int q_base = tile * 9;
+            const uint32_t *row = packed[decode_m];
+            const float scale = __half2float(__ushort_as_half(fused32::halfword(row, q_base)));
+#pragma unroll
+            for (int i = 0; i < 8 / q4_lanes; ++i) {
+                const int pair = decode_halfword + i;
+                const uint32_t value = fused32::halfword(row, q_base + 1 + pair);
+                w_tile[2 * pair][decode_m] = fused32::mul_rn(float(int(value & 15) - 8), scale);
+                w_tile[2 * pair + 1][decode_m] = fused32::mul_rn(float(int((value >> 8) & 15) - 8), scale);
+                w_tile[2 * pair + 16][decode_m] = fused32::mul_rn(float(int((value >> 4) & 15) - 8), scale);
+                w_tile[2 * pair + 17][decode_m] = fused32::mul_rn(float(int((value >> 12) & 15) - 8), scale);
+            }
+#pragma unroll
+            for (int i = tid; i < n * block_k; i += threads) {
+                const int col = i / block_k;
+                const int inner = i % block_k;
+                x_tile[col][inner] = __ldg(x + col * k + k0 + inner);
+            }
+            __syncthreads();
+
+#pragma unroll 8
+            for (int inner = 0; inner < block_k; ++inner) {
+                float weights[results_m], inputs[results_n];
+#pragma unroll
+                for (int i = 0; i < results_m; ++i) {
+                    weights[i] = w_tile[inner][m_lane + lanes_m * i];
+                }
+#pragma unroll
+                for (int j = 0; j < results_n; ++j) {
+                    inputs[j] = x_tile[n_lane + lanes_n * j][inner];
+                }
+#pragma unroll
+                for (int j = 0; j < results_n; ++j) {
+#pragma unroll
+                    for (int i = 0; i < results_m; ++i) {
+                        sum[j][i] = __fmaf_ieee_rn(weights[i], inputs[j], sum[j][i]);
+                    }
+                }
+            }
+            __syncthreads();
+        }
+    }
+
+#pragma unroll
+    for (int j = 0; j < results_n; ++j) {
+        const int col = n_lane + lanes_n * j;
+#pragma unroll
+        for (int i = 0; i < results_m; ++i) {
+            out[col * m + m0 + m_lane + lanes_m * i] = sum[j][i];
+        }
+    }
+}
+
+static void launch_gate(const void * q, const void * x, float * out, cudaStream_t stream) {
+    q4_0_fused_n64<17408, 5120, 64><<<17408 / 64, threads, 0, stream>>>(
+            static_cast<const uint4 *>(q), static_cast<const float *>(x), out);
+    CUDA_CHECK(cudaGetLastError());
+    static const bool logged = [] {
+        GGML_LOG_INFO("sgemm_nn_fused64: selected M=17408 N=64 K=5120 lda=17408 ldb=5120 ldc=17408\n");
+        return true;
+    }();
+    (void) logged;
+}
+
+}  // namespace fused64
+
 static int sgemm_nn_algo_for_shape(bool enable32, const char * explicit_algo, int fallback, int cc,
                                    int64_t M, int64_t N, int64_t K, int64_t lda, int64_t ldb, int64_t ldc) {
     const bool projection = (M == 17408 && K == 5120) || (M == 5120 && K == 17408);
@@ -1834,8 +1949,13 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
                 const char * flag = getenv("GGML_CUDA_SGEMM_NN_FUSED_SHORT");
                 return flag != nullptr && strcmp(flag, "1") == 0;
             }();
+            static const bool fused64_enabled = [] {
+                const char * flag = getenv("GGML_CUDA_SGEMM_NN_FUSED64");
+                return flag != nullptr && strcmp(flag, "1") == 0;
+            }();
             const bool use_fused32 = fused32_enabled && ne11 == 32;
-            if ((use_fused32 || fused_short_enabled) && nn_algo_env == nullptr && !split && cc == 520 &&
+            const bool use_fused64 = fused64_enabled && ne11 == 64;
+            if ((use_fused32 || use_fused64 || fused_short_enabled) && nn_algo_env == nullptr && !split && cc == 520 &&
                     ne01 == 17408 && ne00 == 5120 && ne10 == 5120 &&
                     ne0 == ne01 && ne1 == ne11 && ne2 == 1 && ne3 == 1 &&
                     src1_ts == sizeof(float) && nb11 == ne10 * sizeof(float) &&
@@ -1854,6 +1974,10 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
                         return true;
                     }();
                     (void) logged;
+                    return;
+                }
+                if (use_fused64) {
+                    fused64::launch_gate(xq, src1->data, dst_ddf, main_stream);
                     return;
                 }
                 if (fused_short_enabled && fused_short::try_launch_gate(ne11, xq, src1->data, dst_ddf, main_stream)) {
