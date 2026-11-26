@@ -1,5 +1,6 @@
 #include "concat.cuh"
 
+#include <atomic>
 #include <stdint.h>
 #include <cstring>
 #include <cstdlib>
@@ -290,6 +291,83 @@ static void concat_cuda(const ggml_tensor * src0, const ggml_tensor * src1, ggml
     }
 }
 
+static __global__ void __launch_bounds__(256) compact_conv_concat(
+        const uint32_t * state, const uint32_t * qkv, uint2 * dst) {
+    constexpr unsigned channels = 10240;
+    const unsigned channel = blockIdx.x * blockDim.x + threadIdx.x;
+    const unsigned row = blockIdx.y * channels + channel;
+    const auto * s = state + 3 * row;
+    const auto * x = qkv + 3 * blockIdx.y * channels + channel;
+    auto * y = dst + 3 * row;
+
+    y[0] = make_uint2(s[0], s[1]);
+    y[1] = make_uint2(s[2], x[0]);
+    y[2] = make_uint2(x[channels], x[2 * channels]);
+}
+
+// This decode layout has three saved state values followed by three QKV values per channel.
+static bool try_concat_decode_compact(
+        ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1,
+        ggml_tensor * dst, int dim, cudaStream_t stream) {
+    static const bool enabled = [] {
+        const char * e = getenv("GGML_CUDA_CONCAT_DECODE_COMPACT");
+        return e != nullptr && strcmp(e, "1") == 0;
+    }();
+
+    constexpr int channels = 10240;
+    constexpr size_t word = sizeof(uint32_t);
+    const int64_t nseq = dst->ne[2];
+    if (!enabled || dim != 0 || dst->type != GGML_TYPE_F32 || ggml_cuda_info().devices[ctx.device].cc != 520 ||
+            (nseq != 1 && nseq != 2)) {
+        return false;
+    }
+    if (src0->ne[0] != 3 || src1->ne[0] != 3 || dst->ne[0] != 6 ||
+            src0->ne[1] != channels || src1->ne[1] != channels || dst->ne[1] != channels ||
+            src0->ne[2] != nseq || src1->ne[2] != nseq ||
+            src0->ne[3] != 1 || src1->ne[3] != 1 || dst->ne[3] != 1) {
+        return false;
+    }
+    constexpr size_t input_sequence_bytes = 3 * channels * word;
+    constexpr size_t output_sequence_bytes = 6 * channels * word;
+    const size_t input_bytes = nseq * input_sequence_bytes;
+    const size_t output_bytes = nseq * output_sequence_bytes;
+    if (src0->nb[0] != word || src0->nb[1] != 3 * word ||
+            src0->nb[2] != input_sequence_bytes || src0->nb[3] != input_bytes ||
+            src1->nb[0] != channels * word || src1->nb[1] != word ||
+            src1->nb[2] != input_sequence_bytes || src1->nb[3] != input_bytes ||
+            dst->nb[0] != word || dst->nb[1] != 6 * word ||
+            dst->nb[2] != output_sequence_bytes || dst->nb[3] != output_bytes) {
+        return false;
+    }
+    const auto state = reinterpret_cast<uintptr_t>(src0->data);
+    const auto qkv = reinterpret_cast<uintptr_t>(src1->data);
+    const auto output = reinterpret_cast<uintptr_t>(dst->data);
+    if (state == 0 || qkv == 0 || output == 0 || state % alignof(uint32_t) != 0 ||
+            qkv % alignof(uint32_t) != 0 || output % alignof(uint2) != 0) {
+        return false;
+    }
+    const auto overlaps_output = [&](uintptr_t input) {
+        return input <= output ? output - input < input_bytes : input - output < output_bytes;
+    };
+    if (overlaps_output(state) || overlaps_output(qkv)) {
+        return false;
+    }
+
+    constexpr int threads = 256;
+    static_assert(channels % threads == 0);
+    compact_conv_concat<<<dim3(channels / threads, nseq), threads, 0, stream>>>(
+        static_cast<const uint32_t *>(src0->data), static_cast<const uint32_t *>(src1->data),
+        static_cast<uint2 *>(dst->data));
+
+    static std::atomic<unsigned> logged{0};
+    const unsigned bit = 1u << (nseq - 1);
+    if (!(logged.load(std::memory_order_relaxed) & bit) &&
+            !(logged.fetch_or(bit, std::memory_order_relaxed) & bit)) {
+        GGML_LOG_INFO("concat_decode_compact: selected channels=%d state=3 qkv=3 nseq=%d\n", channels, int(nseq));
+    }
+    return true;
+}
+
 void ggml_cuda_op_concat(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     const ggml_tensor * src0 = dst->src[0];
     const ggml_tensor * src1 = dst->src[1];
@@ -300,6 +378,10 @@ void ggml_cuda_op_concat(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
 
     GGML_ASSERT(src0->type == src1->type);
     GGML_ASSERT(dst->type  == src0->type);
+
+    if (try_concat_decode_compact(ctx, src0, src1, dst, dim, stream)) {
+        return;
+    }
 
     if (ggml_is_quantized(src0->type)) {
         if (dim == 3) {
