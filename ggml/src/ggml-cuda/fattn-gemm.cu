@@ -77,6 +77,100 @@ static __global__ void __launch_bounds__(256) fag_smax(const ST * __restrict__ S
     if (!first) O[((size_t) q*H + h0 + hg)*FAG_D + tid] *= alpha;
 }
 
+#if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+constexpr int FAG_MASK_CHUNK = 4096;
+
+// A set flag proves every scored key is represented by raw FP16 positive zero.
+// The input's row base, row stride, and chunk stride are 16-byte aligned.
+static __global__ void fag_classify_positive_zero(const half * __restrict__ mask,
+        unsigned char * __restrict__ flags, size_t mrow, int nq, int nk) {
+    const int q = blockIdx.x, chunk = blockIdx.y, thread = threadIdx.x;
+    const int begin = chunk * FAG_MASK_CHUNK;
+    const int end = min(FAG_MASK_CHUNK, nk - begin);
+    const auto * words = reinterpret_cast<const unsigned short *>(mask + size_t(q)*mrow + begin);
+    const auto * vectors = reinterpret_cast<const uint4 *>(words);
+    const int complete_vectors = end / 8;
+    unsigned int bits = 0;
+#pragma unroll
+    for (int i = 0; i < 2; ++i) {
+        const int j = thread + i * 256;
+        if (j < complete_vectors) {
+            const uint4 raw = vectors[j];
+            bits |= raw.x | raw.y | raw.z | raw.w;
+        }
+    }
+    if (thread < end % 8) {
+        bits |= words[complete_vectors * 8 + thread];
+    }
+    const int has_nonzero = __syncthreads_or(bits != 0);
+    if (thread == 0) {
+        flags[size_t(chunk)*nq + q] = !has_nonzero;
+    }
+}
+
+static __global__ void __launch_bounds__(256) fag_smax_mask_zero(const float * __restrict__ S, half * __restrict__ P, const half * __restrict__ mask,
+        size_t mrow, float * __restrict__ O, float2 * __restrict__ ml, int nq, int H, int h0, int KCs, int kc, int c0, int first, const unsigned char * positive_zero) {
+    const int q = blockIdx.x, hg = blockIdx.y, tid = threadIdx.x;
+    const float * s = S + ((size_t) hg*nq + q)*KCs;
+    half * p = P + ((size_t) hg*nq + q)*KCs;
+    const half * mk = mask ? mask + (size_t) q*mrow + c0 : nullptr;
+    __shared__ float red[8];
+    float v[16]; float mx = -INFINITY;
+    if (positive_zero[q]) {
+#pragma unroll
+        for (int i = 0; i < 16; ++i) {
+            const int k = i*256 + tid;
+            const float x = k < kc ? __fadd_rn(s[k], 0.0f) : -INFINITY;
+            v[i] = x;
+            mx = fmaxf(mx, x);
+        }
+    } else {
+#pragma unroll
+        for (int i = 0; i < 16; ++i) {
+            const int k = i*256 + tid;
+            const float x = k < kc ? s[k] + (mk ? __half2float(mk[k]) : 0.0f) : -INFINITY;
+            v[i] = x;
+            mx = fmaxf(mx, x);
+        }
+    }
+    for (int o = 16; o; o >>= 1) mx = fmaxf(mx, __shfl_xor_sync(0xffffffff, mx, o));
+    if ((tid & 31) == 0) red[tid >> 5] = mx; __syncthreads();
+    mx = red[0];
+#pragma unroll
+    for (int i = 1; i < 8; ++i) mx = fmaxf(mx, red[i]);
+    __syncthreads();
+    float2 * mlp = ml + (size_t) hg*nq + q;
+    const float2 mlo = first ? make_float2(-INFINITY, 0.0f) : *mlp;
+    const float mn = fmaxf(mlo.x, mx);
+    const float alpha = mn == -INFINITY ? 1.0f : __expf(mlo.x - mn);
+    float sum = 0.0f;
+#pragma unroll
+    for (int i = 0; i < 16; ++i) { const int k = i*256 + tid; if (k < KCs) { const float e = (k < kc && mn != -INFINITY) ? __expf(v[i] - mn) : 0.0f;
+        sum += e; p[k] = __float2half(e); } }
+    for (int o = 16; o; o >>= 1) sum += __shfl_xor_sync(0xffffffff, sum, o);
+    if ((tid & 31) == 0) red[tid >> 5] = sum; __syncthreads();
+    if (tid == 0) { float t = 0; for (int i = 0; i < 8; ++i) t += red[i]; *mlp = make_float2(mn, mlo.y*alpha + t); }
+    if (!first) O[((size_t) q*H + h0 + hg)*FAG_D + tid] *= alpha;
+}
+
+static bool fag_use_positive_zero_mask(const ggml_backend_cuda_context & ctx, const ggml_tensor * mask,
+        const ggml_tensor * K, const ggml_tensor * V, int nq, int H, int HK, int nk, int ns, int KC) {
+    static const bool enabled = [] {
+        const char * flag = getenv("GGML_CUDA_FA_GEMM_MASK_ZERO");
+        return flag != nullptr && strcmp(flag, "1") == 0;
+    }();
+    return enabled && ggml_cuda_info().devices[ctx.device].cc == 520 &&
+           K->type == GGML_TYPE_Q4_0 && V->type == GGML_TYPE_Q4_0 &&
+           H == 24 && HK == 4 && KC == FAG_MASK_CHUNK &&
+           nk >= 77824 && nk <= 81920 && nk % 256 == 0 &&
+           ((nq == 1024 && ns == 1) || (nq == 512 && ns == 2)) &&
+           mask != nullptr && mask->data != nullptr && mask->type == GGML_TYPE_F16 &&
+           mask->ne[0] == nk && mask->ne[1] == nq && mask->ne[2] == 1 && mask->ne[3] == ns &&
+           ggml_is_contiguous(mask) && mask->nb[1] % 16 == 0 && mask->nb[3] % 16 == 0 &&
+           (reinterpret_cast<uintptr_t>(mask->data) & 15) == 0;
+}
+#endif
+
 static __global__ void fag_norm(float * O, const float2 * ml, int nq, int H, int h0) {
     const int q = blockIdx.x, hg = blockIdx.y; const float l = ml[(size_t) hg*nq + q].y;
     O[((size_t) q*H + h0 + hg)*FAG_D + threadIdx.x] *= (l > 0.0f ? 1.0f/l : 0.0f);
@@ -131,10 +225,30 @@ void ggml_cuda_fa_gemm(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     const float one = 1.0f, zero = 0.0f;
     const size_t mrow = mask ? mask->nb[1]/sizeof(half) : 0;
 
+#if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+    const bool use_mask_zero = !s16 && fag_use_positive_zero_mask(ctx, mask, K, V, nq, H, HK, nk, ns, KC);
+    ggml_cuda_pool_alloc<unsigned char> mask_flags(pool);
+    const int chunks = (nk + KC - 1) / KC;
+    if (use_mask_zero) {
+        mask_flags.alloc(size_t(nq) * chunks);
+    }
+#endif
+
     for (int s3 = 0; s3 < ns; ++s3) {
         fag_q2h<<<dim3(nq, H), FAG_D, 0, st>>>((const char *) Q->data + s3*Q->nb[3], Qh.get(), H, Q->nb[1], Q->nb[2]);
         float * O = (float *) ((char *) dst->data + s3*dst->nb[3]);
         const half * mk = mask ? (const half *) ((const char *) mask->data + (s3 % mask->ne[3])*mask->nb[3]) : nullptr;
+#if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+        if (use_mask_zero) {
+            // The existing stream consumes these flags for all head groups before the next s3 rewrites them.
+            fag_classify_positive_zero<<<dim3(nq, chunks), 256, 0, st>>>(mk, mask_flags.get(), mrow, nq, nk);
+            static const bool logged = [&] {
+                GGML_LOG_INFO("fa_gemm_mask_zero: selected nq=%d ns=%d nk=%d KC=%d\n", nq, ns, nk, KC);
+                return true;
+            }();
+            (void) logged;
+        }
+#endif
         const char * Kb = (const char *) Kh + s3*kb[3];
         const char * Vb = (const char *) Vh + s3*vb[3];
         for (int g = 0; g < HK; ++g) {
@@ -146,6 +260,12 @@ void ggml_cuda_fa_gemm(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
                     Qh.get() + (size_t) h0*FAG_D, CUDA_R_16F, H*FAG_D, FAG_D, &zero,
                     s16 ? (void *) S16.get() : (void *) S.get(), s16 ? CUDA_R_16F : CUDA_R_32F, KC, (long long) nq*KC, G, CUBLAS_COMPUTE_32F, CUBLAS_GEMM_DEFAULT));
                 if (s16) fag_smax<half><<<dim3(nq, G), 256, 0, st>>>(S16.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, KC, kc, c0, ci == 0);
+#if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+                else if (use_mask_zero) {
+                    fag_smax_mask_zero<<<dim3(nq, G), 256, 0, st>>>(S.get(), P.get(), mk, mrow, O, ml.get(),
+                        nq, H, h0, KC, kc, c0, ci == 0, mask_flags.get() + size_t(ci) * nq);
+                }
+#endif
                 else fag_smax<float><<<dim3(nq, G), 256, 0, st>>>(S.get(), P.get(), mk, mrow, O, ml.get(), nq, H, h0, KC, kc, c0, ci == 0);
                 const float beta = ci == 0 ? 0.0f : 1.0f;
                 CUBLAS_CHECK(cublasGemmStridedBatchedEx(hb, CUBLAS_OP_N, CUBLAS_OP_N, FAG_D, nq, kc, &one,
