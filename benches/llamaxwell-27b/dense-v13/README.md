@@ -15,6 +15,20 @@ All 20 greedy request trajectories matched, including 433 generated token IDs pe
 
 One of six timed deep pairs had matching sampled P0 clocks (1,126 MHz graphics and 3,304 MHz memory). In that pair, client generation improved 4.43% and wall time fell 3.80%. Neither short pair had matched clock samples. The remaining timings include clock variation or missing samples. The parity result covers these greedy fixtures. Logprob distributions and performance under concurrent requests were unmeasured.
 
+## N3/P4 lower boundary
+
+On the same M6000, an OFF, ON, ON, OFF replay isolated `GGML_CUDA_FA_DRAFT_F16_P4=0/1` with the same v13 CUDA library and profile. The target prompt had 65,265 tokens, of which 65,261 were reused and four replayed. The draft attention physically dispatched at 49,152 padded K/V cells, the first enabled width. The two ON arms both selected the four-warp kernel on the stock 1 x 4 x 12 grid. OFF used eight warps.
+
+| Run order | Timed pairs | Client generation gain | Server generation gain | Request wall time saved |
+| --- | ---: | ---: | ---: | ---: |
+| OFF to ON | 3 | 0.468% | 0.463% | 0.403% |
+| ON to OFF | 3 | 0.434% | 0.394% | 0.336% |
+| Pooled | 6 | 0.451% | 0.428% | 0.400% |
+
+Each arm ran one dispatch witness and three timed warm requests of 128 output tokens. All 512 generated IDs per arm matched, along with text, cache and prompt counts, MTP proposals and acceptances, output count, stop behavior, truncation and slot ID.
+
+One pair per order had a shared P0 sample at 1,101 MHz graphics and 3,304 MHz memory, with one sample per arm in each pair. Client generation gains in those two pairs were 0.387% and 0.425%. The other four pairs lacked a shared P0 observation. The [boundary JSON receipt](n3-p4-49152.json) records absolute rates, time to first token and wall times for each pair. These results cover this warm cache fixture.
+
 ## Measured profile
 
 Both profiles used two 131,072-token slots, separate Q4_0 K/V caches, flash attention, batch size 2,048 and microbatch size 1,024. The measurement pins the same model, server and non-CUDA libraries across arms. Dense v13 used the CUDA library from source commit `536ce1093a4cb4eb76f6e1f69c39aca832e3d731` with 17 added switches. The [JSON receipt](receipts.json) contains all switch values, binary hashes and individual paired timing rows.
