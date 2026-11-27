@@ -3801,6 +3801,172 @@ static int ggml_cuda_try_gdn_cache_fusion(
     return skip;
 }
 
+struct ggml_cuda_gdn_indexed_match {
+    int gdn_index = -1;
+    int skip = 0;
+    ggml_cuda_gated_delta_net_fused_cache output{};
+    const float * states = nullptr;
+    const int32_t * row = nullptr;
+};
+
+static bool ggml_cuda_gdn_indexed_solo_enabled(const ggml_backend_cuda_context & ctx) {
+    static const bool enabled = [] {
+        const char * value = getenv("GGML_CUDA_GDN_SOLO_GATHER_DIRECT");
+        const char * disable_fusion = getenv("GGML_CUDA_DISABLE_FUSION");
+        return value && strcmp(value, "1") == 0 && !(disable_fusion && atoi(disable_fusion) != 0);
+    }();
+    return enabled && ggml_cuda_info().devices[ctx.device].cc == 520 &&
+        ggml_cuda_gdn_indexed_solo_supported();
+}
+
+static bool ggml_cuda_gdn_range_overlaps(const ggml_tensor * a, const ggml_tensor * b) {
+    const auto x = reinterpret_cast<uintptr_t>(a->data);
+    const auto y = reinterpret_cast<uintptr_t>(b->data);
+    return x < y ? y - x < ggml_nbytes(a) : x - y < ggml_nbytes(b);
+}
+
+static bool ggml_cuda_match_gdn_indexed_solo(const ggml_backend_cuda_context & ctx,
+        const ggml_cgraph * cgraph, int first, ggml_cuda_gdn_indexed_match & match) {
+    constexpr int64_t dim = 128, heads = 48, qk_heads = 16, tokens = 3, cell_words = dim * dim * heads;
+    constexpr size_t cell_bytes = cell_words * sizeof(float);
+    constexpr int max_distance = 64;
+    const auto * buft = ggml_backend_cuda_buffer_type(ctx.device);
+    const auto resident = [&](const ggml_tensor * t, ggml_type type) {
+        return t && t->data && t->buffer && t->buffer->buft == buft &&
+            t->type == type && reinterpret_cast<uintptr_t>(t->data) % sizeof(float) == 0;
+    };
+    const auto f32 = [&](const ggml_tensor * t, const std::array<int64_t, GGML_MAX_DIMS> & shape) {
+        return resident(t, GGML_TYPE_F32) && std::equal(shape.begin(), shape.end(), t->ne);
+    };
+    const auto private_node = [](const ggml_tensor * t) {
+        return !(t->flags & GGML_TENSOR_FLAG_OUTPUT);
+    };
+
+    const ggml_tensor * gather = cgraph->nodes[first];
+    const ggml_tensor * states = gather->src[0];
+    const ggml_tensor * cache = states ? states->view_src : nullptr;
+    const ggml_tensor * row = gather->src[1];
+    if (!f32(gather, {cell_words, 1, 1, 1}) || !private_node(gather) ||
+            gather->view_src || !ggml_is_contiguous(gather) ||
+            !f32(states, {cell_words, 6, 1, 1}) || states->op != GGML_OP_RESHAPE ||
+            !ggml_is_contiguous(states) || !f32(cache, {cell_words, 6, 1, 1}) ||
+            cache->op != GGML_OP_NONE || cache->view_src || states->src[0] != cache ||
+            states->view_offs != 0 || states->data != cache->data || !ggml_is_contiguous(cache) ||
+            !resident(row, GGML_TYPE_I32) || row->op != GGML_OP_NONE || row->view_src ||
+            ggml_nelements(row) != 1 || !ggml_is_contiguous(row) ||
+            ggml_cuda_gdn_range_overlaps(states, row) || ggml_cuda_gdn_range_overlaps(states, gather) ||
+            ggml_cuda_gdn_range_overlaps(row, gather)) {
+        return false;
+    }
+
+    int gdn_index = first + 1;
+    const int end = std::min(first + max_distance, cgraph->n_nodes);
+    for (; gdn_index < end && cgraph->nodes[gdn_index]->op != GGML_OP_GATED_DELTA_NET; ++gdn_index) {
+        const ggml_tensor * node = cgraph->nodes[gdn_index];
+        if (!ggml_cuda_is_view_or_noop(node) && (node->flags & GGML_TENSOR_FLAG_COMPUTE) &&
+                (!node->data || !node->buffer || node->buffer->buft != buft ||
+                 ggml_cuda_gdn_range_overlaps(node, states) || ggml_cuda_gdn_range_overlaps(node, row))) {
+            return false;
+        }
+    }
+    if (gdn_index == end) {
+        return false;
+    }
+
+    const ggml_tensor * gdn = cgraph->nodes[gdn_index];
+    const ggml_tensor * state = gdn->src[5];
+    if (!(gdn->flags & GGML_TENSOR_FLAG_COMPUTE) || !private_node(gdn) ||
+            !f32(gdn, {dim * heads, tokens + tokens * dim, 1, 1}) || gdn->view_src ||
+            !ggml_is_contiguous(gdn) || ggml_get_op_params_i32(gdn, 0) != tokens ||
+            !f32(state, {dim, dim, heads, 1}) || state->op != GGML_OP_RESHAPE ||
+            !private_node(state) || state->view_src != gather || state->view_offs != 0 ||
+            state->data != gather->data || !ggml_is_contiguous(state) ||
+            !f32(gdn->src[0], {dim, qk_heads, tokens, 1}) ||
+            !f32(gdn->src[1], {dim, qk_heads, tokens, 1}) ||
+            !f32(gdn->src[2], {dim, heads, tokens, 1}) ||
+            !f32(gdn->src[3], {1, heads, tokens, 1}) || !f32(gdn->src[4], {1, heads, tokens, 1}) ||
+            !ggml_are_same_stride(gdn->src[0], gdn->src[1]) ||
+            !ggml_is_contiguous_rows(gdn->src[0]) || !ggml_is_contiguous_rows(gdn->src[1]) ||
+            !ggml_is_contiguous_rows(gdn->src[2]) ||
+            !ggml_is_contiguous(gdn->src[3]) || !ggml_is_contiguous(gdn->src[4]) ||
+            !ggml_are_same_stride(gdn->src[3], gdn->src[4]) ||
+            ggml_cuda_gdn_range_overlaps(gdn, row) || ggml_cuda_gdn_range_overlaps(gdn, states)) {
+        return false;
+    }
+
+    const ggml_tensor * view = state->src[0];
+    if (!f32(view, {cell_words, 1, 1, 1}) || view->op != GGML_OP_VIEW ||
+            !private_node(view) || view->src[0] != gather || view->view_src != gather ||
+            view->view_offs != 0 || view->data != gather->data || !ggml_is_contiguous(view)) {
+        return false;
+    }
+    for (int s = 0; s < 5; ++s) {
+        const ggml_tensor * input = gdn->src[s];
+        if (ggml_cuda_gdn_range_overlaps(input, states) || ggml_cuda_gdn_range_overlaps(input, gather) ||
+                ggml_cuda_gdn_range_overlaps(input, gdn)) {
+            return false;
+        }
+    }
+
+    // Empty extra-row copies have no effects when build_rs gathers one cell.
+    // Check all edges from the removed gather and its two aliases within this
+    // graph and account for them against the original global use counts.
+    const std::array<const ggml_tensor *, 3> chain{gather, view, state};
+    std::array<int, 3> index{first, -1, -1};
+    std::array<int, 3> uses{};
+    for (int j = first + 1; j <= gdn_index; ++j) {
+        const ggml_tensor * node = cgraph->nodes[j];
+        if (node == view) {
+            index[1] = j;
+        } else if (node == state) {
+            index[2] = j;
+        }
+        const bool empty = ggml_is_empty(node);
+        for (int a = 0; a < 3; ++a) {
+            if (!empty && node != view && node != state && node->view_src == chain[a]) {
+                return false;
+            }
+            for (int s = 0; s < GGML_MAX_SRC; ++s) {
+                if (node->src[s] != chain[a]) {
+                    continue;
+                }
+                const bool state_edge = (a == 0 && node == view && s == 0) ||
+                    (a == 1 && node == state && s == 0) ||
+                    (a == 2 && node == gdn && s == 5);
+                if (!state_edge && !(empty && private_node(node))) {
+                    return false;
+                }
+                ++uses[a];
+            }
+        }
+    }
+    for (int a = 0; a < 3; ++a) {
+        if (index[a] < 0 || uses[a] != ggml_node_get_use_count(cgraph, index[a])) {
+            return false;
+        }
+    }
+
+    ggml_cuda_gated_delta_net_fused_cache output{};
+    const int skip = ggml_cuda_try_gdn_cache_fusion(cgraph, gdn_index, output);
+    if (skip <= 0 || skip > 4 || output.slot_stride != 2 * cell_words) {
+        return false;
+    }
+    const ggml_tensor * cpy = cgraph->nodes[gdn_index + skip];
+    const ggml_tensor * dst = cpy->src[1];
+    if (!(cpy->flags & GGML_TENSOR_FLAG_COMPUTE) || !resident(cpy, GGML_TYPE_F32) ||
+            !resident(dst, GGML_TYPE_F32) || dst->view_src != cache ||
+            (dst->view_offs != 0 && dst->view_offs != cell_bytes) ||
+            dst->data != static_cast<const char *>(states->data) + dst->view_offs ||
+            dst->data != cpy->data || cpy->view_src != cache || cpy->view_offs != dst->view_offs) {
+        return false;
+    }
+
+    match = {gdn_index, skip, output, static_cast<const float *>(states->data),
+             static_cast<const int32_t *>(row->data)};
+    return true;
+}
+
+
 // match ssm_scan + the strided cpy that scatters its state snapshots into the cache, so the kernel writes them and skips the cpy
 static int ggml_cuda_try_ssm_scan_cache_fusion(
         const ggml_cgraph * cgraph, int node_idx, ggml_cuda_ssm_scan_fused_cache & fused_state_cpy) {
@@ -5739,6 +5905,9 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
             }
 
             cuda_ctx->q8r_valid = false; // q8_1 reuse never spans graph evaluations
+            const bool indexed_gdn = !use_cuda_graph && stream_ctx.concurrent_events.empty() &&
+                ggml_cuda_gdn_indexed_solo_enabled(*cuda_ctx);
+            ggml_cuda_gdn_indexed_match pending;
             for (int i = 0; i < cgraph->n_nodes; i++) {
                 ggml_tensor * node = cgraph->nodes[i];
                 if (is_concurrent_event_active) {
@@ -5782,7 +5951,32 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
                 }
 
                 cuda_ctx->q8r_invalidate_if_overlaps(node);
-                int nodes_to_skip = ggml_cuda_try_fuse(cuda_ctx, cgraph, i);
+                int nodes_to_skip = 0;
+                if (i == pending.gdn_index) {
+                    GGML_ASSERT(cuda_ctx->curr_stream_no == 0);
+                    ggml_cuda_op_gdn_indexed_solo(*cuda_ctx, node, pending.output,
+                            pending.states, pending.row);
+                    CUDA_CHECK(cudaGetLastError());
+                    static std::atomic<bool> logged{false};
+                    if (!logged.load(std::memory_order_relaxed) &&
+                            !logged.exchange(true, std::memory_order_relaxed)) {
+                        GGML_LOG_INFO("gdn_indexed_solo: selected nseq=1 ntok=3 H=48 K=3\n");
+                    }
+                    nodes_to_skip = pending.skip;
+                    pending = {};
+                } else if (pending.gdn_index >= 0) {
+                    // Let the normal dispatch and fusion process the intervening nodes,
+                    // but prevent any fusion from consuming the already matched GDN.
+                    ggml_cgraph before_gdn = *cgraph;
+                    before_gdn.n_nodes = pending.gdn_index;
+                    nodes_to_skip = ggml_cuda_try_fuse(cuda_ctx, &before_gdn, i);
+                } else if (indexed_gdn && cuda_ctx->curr_stream_no == 0 &&
+                        node->op == GGML_OP_GET_ROWS &&
+                        ggml_cuda_match_gdn_indexed_solo(*cuda_ctx, cgraph, i, pending)) {
+                    continue;
+                } else {
+                    nodes_to_skip = ggml_cuda_try_fuse(cuda_ctx, cgraph, i);
+                }
 
                 if (nodes_to_skip != 0) {
                     for (int j = 1; j <= nodes_to_skip; ++j) {

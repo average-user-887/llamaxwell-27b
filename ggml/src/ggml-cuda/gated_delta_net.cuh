@@ -16,3 +16,8 @@ void ggml_cuda_op_gated_delta_net_fused_cache(ggml_backend_cuda_context & ctx, g
 bool ggml_cuda_gdn_direct_pair_supported();
 void ggml_cuda_gdn_direct_pair(ggml_backend_cuda_context&ctx,ggml_tensor*dst,const float*source,
         const int32_t*ids,size_t source_stride,float*state,float*attn_override);
+
+__attribute__((visibility("hidden"))) bool ggml_cuda_gdn_indexed_solo_supported();
+__attribute__((visibility("hidden"))) void ggml_cuda_op_gdn_indexed_solo(
+        ggml_backend_cuda_context & ctx, ggml_tensor * dst, ggml_cuda_gated_delta_net_fused_cache cache,
+        const float * states, const int32_t * state_row);
