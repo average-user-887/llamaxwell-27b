@@ -4217,6 +4217,158 @@ static bool ggml_cuda_can_fuse(const struct ggml_cgraph *                cgraph,
     return false;
 }
 
+static __global__ void __launch_bounds__(128) compact_conv_snapshots(
+        const uint32_t * __restrict__ conv, uint32_t * __restrict__ state, unsigned head) {
+    constexpr unsigned channels = 10240;
+    constexpr unsigned cell_words = 3 * channels;
+    constexpr unsigned snapshot_words = 2 * cell_words;
+
+    const unsigned channel = blockIdx.x * blockDim.x + threadIdx.x;
+    const unsigned sequence = blockIdx.y;
+    const uint32_t * src = conv + 6 * (sequence * channels + channel);
+    uint32_t * newest = state + (head + sequence) * cell_words + 3 * channel;
+    uint32_t * middle = newest + snapshot_words;
+    uint32_t * oldest = middle + snapshot_words;
+
+    const uint32_t v1 = src[1];
+    const uint32_t v2 = src[2];
+    const uint32_t v3 = src[3];
+    const uint32_t v4 = src[4];
+    const uint32_t v5 = src[5];
+    oldest[0] = v1;
+    oldest[1] = v2;
+    oldest[2] = v3;
+    middle[0] = v2;
+    middle[1] = v3;
+    middle[2] = v4;
+    newest[0] = v3;
+    newest[1] = v4;
+    newest[2] = v5;
+}
+
+static bool ggml_cuda_conv_snapshot_layout(const ggml_tensor * t,
+        const std::array<int64_t, GGML_MAX_DIMS> & shape,
+        const std::array<size_t, GGML_MAX_DIMS> & strides,
+        ggml_backend_buffer_type_t buft) {
+    return t && t->type == GGML_TYPE_F32 && t->data && t->buffer && t->buffer->buft == buft &&
+        std::equal(shape.begin(), shape.end(), t->ne) &&
+        std::equal(strides.begin(), strides.end(), t->nb);
+}
+
+static int ggml_cuda_try_conv_snapshots_compact(
+        ggml_backend_cuda_context & ctx, const ggml_cgraph * cgraph, int first) {
+    static const bool enabled = [] {
+        const char * value = getenv("GGML_CUDA_CONV_SNAPSHOTS_COMPACT");
+        return value && strcmp(value, "1") == 0;
+    }();
+    if (!enabled || ggml_cuda_info().devices[ctx.device].cc != 520 ||
+            ctx.curr_stream_no != 0 || !ctx.stream_context().concurrent_events.empty()) {
+        return 0;
+    }
+
+    constexpr int channels = 10240;
+    constexpr int cell_words = 3 * channels;
+    constexpr size_t word = sizeof(uint32_t);
+    constexpr size_t cell_bytes = cell_words * word;
+    constexpr size_t snapshot_bytes = 2 * cell_bytes;
+    constexpr size_t cache_bytes = 3 * snapshot_bytes;
+
+    const ggml_tensor * first_copy = cgraph->nodes[first];
+    const ggml_tensor * conv = first_copy->src[0] ? first_copy->src[0]->view_src : nullptr;
+    const ggml_tensor * cache = first_copy->src[1] ? first_copy->src[1]->view_src : nullptr;
+    if (!conv || conv->op != GGML_OP_CONCAT || ggml_get_op_params_i32(conv, 0) != 0 || conv->view_src ||
+            !cache || cache->op != GGML_OP_NONE || cache->view_src) {
+        return 0;
+    }
+    const int64_t nseq = conv->ne[2];
+    if (nseq != 1 && nseq != 2) {
+        return 0;
+    }
+
+    const auto buft = ggml_backend_cuda_buffer_type(ctx.device);
+    const size_t conv_bytes = size_t(nseq) * snapshot_bytes;
+    const size_t active_bytes = size_t(nseq) * cell_bytes;
+    if (!ggml_cuda_conv_snapshot_layout(conv, {6, channels, nseq, 1},
+                {word, 6 * word, snapshot_bytes, conv_bytes}, buft) ||
+        !ggml_cuda_conv_snapshot_layout(cache, {cell_words, 6, 1, 1},
+                {word, cell_bytes, cache_bytes, cache_bytes}, buft)) {
+        return 0;
+    }
+
+    const auto input = reinterpret_cast<uintptr_t>(conv->data);
+    const auto output = reinterpret_cast<uintptr_t>(cache->data);
+    if (input % alignof(uint32_t) != 0 || output % alignof(uint32_t) != 0 ||
+            (input <= output ? output - input < conv_bytes : input - output < cache_bytes)) {
+        return 0;
+    }
+    const size_t oldest_offset = first_copy->src[1]->view_offs;
+    if (oldest_offset != 2 * snapshot_bytes &&
+            (nseq != 1 || oldest_offset != 2 * snapshot_bytes + cell_bytes)) {
+        return 0;
+    }
+    const unsigned head = (oldest_offset - 2 * snapshot_bytes) / cell_bytes;
+
+    // The graph emits oldest, middle, then newest. Between copies it only
+    // creates source/destination views for the next copy.
+    int index = first;
+    for (int snapshot = 0; snapshot < 3; ++snapshot) {
+        const int view_start = index;
+        if (snapshot != 0) {
+            ++index;
+            while (index < cgraph->n_nodes && index <= view_start + 2 &&
+                    cgraph->nodes[index]->op == GGML_OP_VIEW) {
+                ++index;
+            }
+        }
+        if (index >= cgraph->n_nodes) {
+            return 0;
+        }
+        const ggml_tensor * copy = cgraph->nodes[index];
+        if (copy->op != GGML_OP_CPY || !(copy->flags & GGML_TENSOR_FLAG_COMPUTE) ||
+                !copy->src[0] || !copy->src[1]) {
+            return 0;
+        }
+        const ggml_tensor * src = copy->src[0];
+        const ggml_tensor * dst = copy->src[1];
+        for (int j = view_start + 1; j < index; ++j) {
+            if (cgraph->nodes[j] != src && cgraph->nodes[j] != dst) {
+                return 0;
+            }
+        }
+
+        const size_t src_offset = size_t(snapshot + 1) * word;
+        const size_t dst_offset = oldest_offset - size_t(snapshot) * snapshot_bytes;
+        if (!ggml_cuda_conv_snapshot_layout(src, {3, channels, nseq, 1},
+                    {word, 6 * word, snapshot_bytes, conv_bytes}, buft) ||
+            !ggml_cuda_conv_snapshot_layout(dst, {cell_words, nseq, 1, 1},
+                    {word, cell_bytes, active_bytes, active_bytes}, buft) ||
+            !ggml_cuda_conv_snapshot_layout(copy, {cell_words, nseq, 1, 1},
+                    {word, cell_bytes, active_bytes, active_bytes}, buft) ||
+            src->op != GGML_OP_VIEW || src->src[0] != conv || src->view_src != conv ||
+            src->view_offs != src_offset || src->data != static_cast<const char *>(conv->data) + src_offset ||
+            dst->op != GGML_OP_VIEW || dst->src[0] != cache || dst->view_src != cache ||
+            dst->view_offs != dst_offset || dst->data != static_cast<char *>(cache->data) + dst_offset ||
+            copy->view_src != cache || copy->view_offs != dst_offset || copy->data != dst->data) {
+            return 0;
+        }
+    }
+
+    constexpr unsigned threads = 128;
+    static_assert(channels % threads == 0);
+    compact_conv_snapshots<<<dim3(channels / threads, nseq), threads, 0, ctx.stream()>>>(
+        static_cast<const uint32_t *>(conv->data), static_cast<uint32_t *>(cache->data), head);
+    CUDA_CHECK(cudaGetLastError());
+
+    static std::atomic<unsigned> logged{0};
+    const unsigned bit = 1u << (nseq - 1);
+    if (!(logged.load(std::memory_order_relaxed) & bit) &&
+            !(logged.fetch_or(bit, std::memory_order_relaxed) & bit)) {
+        GGML_LOG_INFO("conv_snapshots_compact: selected channels=%d nseq=%d head=%u\n",
+                channels, int(nseq), head);
+    }
+    return index - first;
+}
+
 // try and fuse nodes and return the number of nodes to skip
 static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph * cgraph, int i) {
 
@@ -4226,6 +4378,13 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph 
     }
 
     ggml_tensor * node = cgraph->nodes[i];
+    if (node->op == GGML_OP_CPY) {
+        const int skip = ggml_cuda_try_conv_snapshots_compact(*cuda_ctx, cgraph, i);
+        if (skip > 0) {
+            return skip;
+        }
+    }
+
     static thread_local bool inside_state_direct=false;
 
     // native-occamy Track G: whole qwen35moe GDN layer segment (attn_norm .. attention residual add) as one fused decode kernel
