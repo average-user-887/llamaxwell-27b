@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "hardware": {
+    "gpu": "NVIDIA Quadro M6000 24 GiB",
+    "architecture": "sm_52"
+  },
+  "profile": {
+    "model": "Qwen3.8-27B-Q4_0-head4",
+    "mtp_draft_depth": 2,
+    "slot_count": 2,
+    "context_cells_per_slot": 131072,
+    "input_tokens_by_slot": [
+      1024,
+      2048
+    ],
+    "arm_order": [
+      "off",
+      "on"
+    ],
+    "enable_env": "GGML_CUDA_DENSE_N3_GLU"
+  },
+  "provenance": {
+    "public_source_commit": "b2a821dcb6aa554afda8879b296d90de013f2146",
+    "cuda_sha256_both_arms": "c63604052a92ee04213a97962c6e3dfbff7d9f839676ce60e44bf073e4691105"
+  },
+  "parity": {
+    "exact_requests": 16,
+    "generated_token_positions_checked": 1824,
+    "matched_fields": [
+      "token_ids",
+      "streamed_text",
+      "native_slot",
+      "prompt_count",
+      "cache_count",
+      "output_count",
+      "finish_reason",
+      "stop_word",
+      "truncation",
+      "mtp_proposals",
+      "mtp_acceptances"
+    ]
+  },
+  "dispatch": {
+    "n6_mmvq_host_launch_or_capture_count": {
+      "off": 81803,
+      "on": 81803
+    },
+    "n3_fusion_witness_during_solo_prime": {
+      "off": false,
+      "on": true
+    }
+  },
+  "paired_warm_goodput_change_median_pct": -0.212746,
+  "phases": {
+    "prime": {
+      "exact": true,
+      "output_ids_per_slot": 8
+    },
+    "sentinel": {
+      "exact": true,
+      "output_ids_per_slot": 64,
+      "joint_wall_change_pct": 0.15195,
+      "joint_goodput_change_pct": -0.151719,
+      "matched_sampled_p0": false,
+      "arms": {
+        "off": {
+          "aggregate_generated_tps": 21.863893,
+          "decode_overlap_s": 5.07113,
+          "wall_s": 5.854401,
+          "sampled_clock_signature_mhz": null,
+          "clock_sample_count": 0
+        },
+        "on": {
+          "aggregate_generated_tps": 21.830721,
+          "decode_overlap_s": 5.083398,
+          "wall_s": 5.863297,
+          "sampled_clock_signature_mhz": [
+            1063,
+            3304
+          ],
+          "clock_sample_count": 1
+        }
+      }
+    },
+    "warm-0": {
+      "exact": true,
+      "output_ids_per_slot": 192,
+      "joint_wall_change_pct": 0.317361,
+      "joint_goodput_change_pct": -0.316357,
+      "matched_sampled_p0": false,
+      "arms": {
+        "off": {
+          "aggregate_generated_tps": 25.625198,
+          "decode_overlap_s": 13.993716,
+          "wall_s": 14.98525,
+          "sampled_clock_signature_mhz": null,
+          "clock_sample_count": 3
+        },
+        "on": {
+          "aggregate_generated_tps": 25.544131,
+          "decode_overlap_s": 14.041524,
+          "wall_s": 15.032807,
+          "sampled_clock_signature_mhz": null,
+          "clock_sample_count": 2
+        }
+      }
+    },
+    "warm-1": {
+      "exact": true,
+      "output_ids_per_slot": 192,
+      "joint_wall_change_pct": 0.109255,
+      "joint_goodput_change_pct": -0.109135,
+      "matched_sampled_p0": true,
+      "arms": {
+        "off": {
+          "aggregate_generated_tps": 25.588086,
+          "decode_overlap_s": 14.017208,
+          "wall_s": 15.006984,
+          "sampled_clock_signature_mhz": [
+            1088,
+            3304
+          ],
+          "clock_sample_count": 2
+        },
+        "on": {
+          "aggregate_generated_tps": 25.56016,
+          "decode_overlap_s": 14.039971,
+          "wall_s": 15.02338,
+          "sampled_clock_signature_mhz": [
+            1088,
+            3304
+          ],
+          "clock_sample_count": 3
+        }
+      }
+    }
+  }
+}

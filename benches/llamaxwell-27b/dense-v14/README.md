@@ -36,3 +36,14 @@ export GGML_CUDA_DENSE_N3_GLU=1
 ```
 
 The opt-in matcher requires SM52, two adjacent exclusive matrix products from one shared FP32 activation, contiguous Q4_0 weights with 17,408 output rows and 5,120 input columns, three physical columns and unswapped bias-free SwiGLU. It also checks graph output ownership and memory ranges. Unmatched operations use the stock path. The default and value `0` select the stock dispatch.
+
+## Two-slot follow-up
+
+A separate OFF → ON run used the same v14 library and production two-slot MTP2 profile with frozen 1,024- and 2,048-token inputs. Each arm primed both slots with eight outputs, then ran a concurrent 64-output sentinel and two 192-output rounds per slot. All **16 requests and 1,824 generated token positions** matched, including text, cache, finish and MTP counters. The sentinel overlapped about 5 seconds and warm decode about 14 seconds. Both arms witnessed 81,803 N6 MMVQ host launches or graph captures. The ON arm also witnessed N3 fusion during solo priming.
+
+| Warm round | OFF aggregate tok/s | ON aggregate tok/s | Goodput change |
+| --- | ---: | ---: | ---: |
+| First | 25.625 | 25.544 | −0.32% |
+| Second | 25.588 | 25.560 | −0.11% |
+
+Median warm goodput changed **−0.21%**. The second pair matched sampled P0 clocks at 1,088 MHz graphics and 3,304 MHz memory. The two-round, single-order run establishes output parity for the tested concurrent shape. [Two-slot receipt](two-slot.json)
