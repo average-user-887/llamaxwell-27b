@@ -1331,6 +1331,20 @@ static void launch_fattn_with_draft_p4(
             GGML_UNUSED(logged);
         }
     }
+#if defined(GGML_CUDA_D256_DIRECT_V) && !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA) && (!defined(__CUDA_ARCH__) || __CUDA_ARCH__ == 520)
+    if constexpr (DV == 256 && ncols1 == 1 && ncols2 == 2) {
+        if (draft_p4_kernel && n_kv == 78080 && !stream_k && !use_sparse && !KV_max.ptr &&
+                blocks_num.x == 1 && blocks_num.y == 6 && blocks_num.z == 12 &&
+                launch_block.x == 32 && launch_block.y == 4 && launch_block.z == 1 && nbytes_shared == 0) {
+            fattn_kernel = draft_p4_kernel;
+            static const bool logged = [] {
+                GGML_LOG_INFO("ggml_cuda: F16 draft attention N1 KV78080 stock P6 direct-V grid=1x6x12 block=32x4x1\n");
+                return true;
+            }();
+            GGML_UNUSED(logged);
+        }
+    }
+#endif
     ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(blocks_num, launch_block, nbytes_shared, main_stream);
     ggml_cuda_kernel_launch(fattn_kernel, launch_params,
         (const char *) Q->data,

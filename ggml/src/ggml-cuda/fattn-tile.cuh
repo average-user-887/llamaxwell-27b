@@ -1184,6 +1184,36 @@ static bool ggml_cuda_fattn_draft_p4_layout(const ggml_tensor * dst) {
            params[0] == 0.0625f && params[1] == 0.0f && params[2] == 0.0f;
 }
 
+#if defined(GGML_CUDA_D256_DIRECT_V) && !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA) && (!defined(__CUDA_ARCH__) || __CUDA_ARCH__ == 520)
+#include "fattn-n1-direct-v.cuh"
+
+static bool ggml_cuda_fattn_draft_n1_layout(const ggml_tensor * dst) {
+    const ggml_tensor * q = dst->src[0];
+    const ggml_tensor * k = dst->src[1];
+    const ggml_tensor * v = dst->src[2];
+    const ggml_tensor * m = dst->src[3];
+    const int64_t width = k->ne[1];
+    if (width != 78080) {
+        return false;
+    }
+    const auto cache_layout = [width](const ggml_tensor * t) {
+        return t->type == GGML_TYPE_F16 && t->ne[0] == 256 && t->ne[1] == width &&
+               t->ne[2] == 4 && t->ne[3] == 1 && t->nb[0] == 2 && t->nb[1] == 2048 &&
+               t->nb[2] == 512 && t->nb[3] == 131072ULL*2048 && uintptr_t(t->data) % 16 == 0;
+    };
+    float params[3];
+    memcpy(params, dst->op_params, sizeof(params));
+    return q->type == GGML_TYPE_F32 && q->ne[0] == 256 && q->ne[1] == 1 &&
+           q->ne[2] == 24 && q->ne[3] == 1 && q->nb[0] == 4 && q->nb[1] == 24576 &&
+           q->nb[2] == 1024 && uintptr_t(q->data) % 16 == 0 && cache_layout(k) && cache_layout(v) &&
+           m && m->type == GGML_TYPE_F16 && m->ne[0] == width && m->ne[1] == 1 &&
+           m->ne[2] == 1 && m->ne[3] == 1 && m->nb[0] == 2 && m->nb[1] == size_t(width)*sizeof(half) &&
+           !dst->src[4] && dst->type == GGML_TYPE_F32 && ggml_is_contiguous(dst) &&
+           params[0] == 0.0625f && params[1] == 0.0f && params[2] == 0.0f;
+}
+
+#endif
+
 // local patch 20261012 fattn: single launch path for the tile kernel so GGML_CUDA_FA_MAXWELL_TUNE=N can select a
 // tuned variant on NVIDIA cc < 6.0. Tuned variants are only instantiated for (DKQ, DV, ncols) = (256, 256, 8);
 // every other shape, and tune == 0, launches the upstream kernel with the upstream config.
@@ -1206,6 +1236,20 @@ static void launch_fattn_tile_cols(ggml_backend_cuda_context & ctx, ggml_tensor 
             default: break;
         }
     }
+#if defined(GGML_CUDA_D256_DIRECT_V) && !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA) && (!defined(__CUDA_ARCH__) || __CUDA_ARCH__ == 520)
+    if constexpr (DKQ == 256 && DV == 256 && ncols1 == 1 && ncols2 == 2 && !use_logit_softcap) {
+        static const bool direct_v = ggml_cuda_fattn_env_int("GGML_CUDA_FA_DRAFT_N1_DIRECT_V") == 1;
+        if (direct_v && tune == 0 && cc == 520 && ggml_cuda_highest_compiled_arch(cc) == 520 &&
+                warp_size == 32 && nwarps == 4 && nbatch_fa == 64 &&
+                ggml_cuda_fattn_env_parallel_blocks() == 0 && ggml_cuda_fattn_env_parallel_blocks_mult() == 0 &&
+                ggml_cuda_fattn_draft_n1_layout(dst)) {
+            static int direct_debug_count = 0;
+            launch_fattn_with_draft_p4<DV,ncols1,ncols2>(ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa,
+                    true, true, false, false, warp_size, false, n1_direct_v, direct_debug_count);
+            return;
+        }
+    }
+#endif
     if constexpr (DKQ == 256 && DV == 256 && ncols1 == 4 && ncols2 == 2 && !use_logit_softcap) {
         static const bool draft_p4 = ggml_cuda_fattn_env_int("GGML_CUDA_FA_DRAFT_F16_P4") == 1;
         if (draft_p4 && tune == 0 && cc == 520 && ggml_cuda_highest_compiled_arch(cc) == 520 &&
