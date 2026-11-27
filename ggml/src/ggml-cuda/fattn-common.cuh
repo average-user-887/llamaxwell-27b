@@ -1024,10 +1024,10 @@ static __global__ void flash_attn_combine_results(
 }
 
 template <int DV, int ncols1, int ncols2>
-void launch_fattn(
+static void launch_fattn_with_draft_p4(
     ggml_backend_cuda_context & ctx, ggml_tensor * dst, fattn_kernel_t fattn_kernel, const int nwarps, const size_t nbytes_shared,
     const int nbatch_fa, const bool need_f16_K, const bool need_f16_V, const bool stream_k, const bool use_sparse,
-    const int warp_size = WARP_SIZE, const bool async_kv_preload = false
+    const int warp_size, const bool async_kv_preload, const fattn_kernel_t draft_p4_kernel, int & n_logged
 ) {
     constexpr int ncols = ncols1 * ncols2;
 
@@ -1282,7 +1282,6 @@ void launch_fattn(
     }
 
     if (ggml_cuda_fattn_env_debug()) { // local patch 20261012 fattn
-        static int n_logged = 0;
         if (n_logged < 32) {
             ++n_logged;
             GGML_LOG_INFO("%s: cc=%d DV=%d ncols1=%d ncols2=%d nwarps=%d nbatch_fa=%d smem=%zu | Q=[%ld,%ld,%ld,%ld] K=[%ld,%ld,%ld,%ld] n_kv=%ld "
@@ -1318,7 +1317,21 @@ void launch_fattn(
 
     GGML_ASSERT(block_dim.x % warp_size == 0);
 
-    ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(blocks_num, block_dim, nbytes_shared, main_stream);
+    dim3 launch_block = block_dim;
+    if constexpr (DV == 256 && ncols1 == 4 && ncols2 == 2) {
+        // The stock kernel determined occupancy, the split width, allocations and grid.
+        // Keep that exact schedule, changing only the kernel body and its warp count.
+        if (draft_p4_kernel && !stream_k && blocks_num.x == 1 && blocks_num.y == 4 && blocks_num.z == 12) {
+            fattn_kernel = draft_p4_kernel;
+            launch_block.y = 4;
+            static const bool logged = [n_kv] {
+                GGML_LOG_INFO("ggml_cuda: F16 draft attention N3 KV%lld stock P4 tune1\n", (long long) n_kv);
+                return true;
+            }();
+            GGML_UNUSED(logged);
+        }
+    }
+    ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(blocks_num, launch_block, nbytes_shared, main_stream);
     ggml_cuda_kernel_launch(fattn_kernel, launch_params,
         (const char *) Q->data,
         K_data,
@@ -1382,4 +1395,19 @@ void launch_fattn(
             dst_tmp.ptr, dst_tmp_meta.ptr, (float *) KQV->data, parallel_blocks);
     }
     CUDA_CHECK(cudaGetLastError());
+}
+
+template <int DV, int ncols1, int ncols2>
+#if defined(__GNUC__) || defined(__clang__)
+__attribute__((used, noinline))
+#endif
+void launch_fattn(
+    ggml_backend_cuda_context & ctx, ggml_tensor * dst, fattn_kernel_t fattn_kernel, const int nwarps, const size_t nbytes_shared,
+    const int nbatch_fa, const bool need_f16_K, const bool need_f16_V, const bool stream_k, const bool use_sparse,
+    const int warp_size = WARP_SIZE, const bool async_kv_preload = false
+) {
+    // Keep the exported stock launcher and its original per-specialization debug counter.
+    static int n_logged = 0;
+    launch_fattn_with_draft_p4<DV, ncols1, ncols2>(ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa,
+            need_f16_K, need_f16_V, stream_k, use_sparse, warp_size, async_kv_preload, nullptr, n_logged);
 }
