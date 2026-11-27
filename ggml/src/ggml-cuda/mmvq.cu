@@ -2060,6 +2060,77 @@ static void fp32mv_q4_0_launch(const void * x, const float * ys, const float * y
     fp32mv_q4_0<N, 16, 128, 2><<<nrows / 16, 128, 0, stream>>>((const block_q4_0 *) x, ys, yc, dst, K / 32, K, stride_col_dst);
 }
 
+// Exact dense N3 layout from the current SM52 route.
+static __global__ __launch_bounds__(32)
+void dense_n3_glu(const block_q4_0 * __restrict__ gate, const block_q4_0 * __restrict__ up,
+                  const block_q8_1 * __restrict__ y, float * __restrict__ dst) {
+    constexpr int rows_per_cuda_block = 4, ncols_dst = 3, qk = QK4_0, qi = QI4_0;
+    constexpr int stride_row_x = 160, stride_col_y = 160, stride_col_dst = 17408;
+    constexpr int blocks_per_row_x = 160, vdr = VDR_Q4_0_Q8_1_MMVQ;
+    constexpr int blocks_per_iter = vdr*32/qi;
+    const int tid = threadIdx.x, row0 = blockIdx.x * rows_per_cuda_block;
+    float tmp[ncols_dst][2*rows_per_cuda_block]{};
+    for (int kbx = tid / (qi/vdr); kbx < blocks_per_row_x; kbx += blocks_per_iter) {
+        const int kby = kbx * (qk/QK8_1);
+        const int kqs = vdr * (tid % (qi/vdr));
+        ggml_cuda_sm52_i16x4 pu[ncols_dst][2*vdr];
+        float2 dsy[ncols_dst];
+#pragma unroll
+        for (int j = 0; j < ncols_dst; ++j) {
+            const block_q8_1 * by = &y[j*stride_col_y + kby];
+#pragma unroll
+            for (int ii = 0; ii < vdr; ++ii) {
+                pu[j][2*ii + 0] = ggml_cuda_sm52_expand(get_int_b4(by->qs, kqs + ii));
+                pu[j][2*ii + 1] = ggml_cuda_sm52_expand(get_int_b4(by->qs, kqs + ii + QI4_0));
+            }
+            dsy[j] = __half22float2(by->ds);
+        }
+#pragma unroll
+        for (int i = 0; i < 2*rows_per_cuda_block; ++i) {
+            const block_q4_0 * weights = i < rows_per_cuda_block ? gate : up;
+            const block_q4_0 * bx = weights + (row0 + i % rows_per_cuda_block)*stride_row_x + kbx;
+            int sumi[ncols_dst];
+#pragma unroll
+            for (int j = 0; j < ncols_dst; ++j) {
+                sumi[j] = 0;
+            }
+#pragma unroll
+            for (int ii = 0; ii < vdr; ++ii) {
+                const uint32_t v  = get_int_b2(bx->qs, kqs + ii);
+                const uint32_t lo = v & 0x0F0F0F0F;
+                const uint32_t hi = (v >> 4) & 0x0F0F0F0F;
+                ggml_cuda_sm52_i16x4 wl, wh; // nibbles 0..15: zero fill
+                wl.lo = __byte_perm(lo, 0, 0x4140);
+                wl.hi = __byte_perm(lo, 0, 0x4342);
+                wh.lo = __byte_perm(hi, 0, 0x4140);
+                wh.hi = __byte_perm(hi, 0, 0x4342);
+#pragma unroll
+                for (int j = 0; j < ncols_dst; ++j) {
+                    sumi[j] = ggml_cuda_sm52_dot4(wl, pu[j][2*ii + 0], sumi[j]);
+                    sumi[j] = ggml_cuda_sm52_dot4(wh, pu[j][2*ii + 1], sumi[j]);
+                }
+            }
+            const float d4 = bx->d;
+#pragma unroll
+            for (int j = 0; j < ncols_dst; ++j) {
+                tmp[j][i] += d4 * (sumi[j] * dsy[j].x - (8*vdr/QI4_0) * dsy[j].y);
+            }
+        }
+    }
+
+#pragma unroll
+    for (int j = 0; j < ncols_dst; ++j) {
+#pragma unroll
+        for (int i = 0; i < rows_per_cuda_block; ++i) {
+            float g = warp_reduce_sum<32>(tmp[j][i]);
+            float u = warp_reduce_sum<32>(tmp[j][i + rows_per_cuda_block]);
+            if (tid == i) {
+                dst[j*stride_col_dst + row0 + i] = ggml_cuda_op_silu_single(g) * u;
+            }
+        }
+    }
+}
+
 void ggml_cuda_mul_mat_vec_q(
         ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst,
         const ggml_cuda_mm_fusion_args_host * fusion) {
@@ -2088,7 +2159,9 @@ void ggml_cuda_mul_mat_vec_q(
 
     ggml_cuda_mm_fusion_args_device fusion_local{};
 
-    if (fusion) {
+    // Only the checked dense three-node matcher constructs a non-ID N3 fusion.
+    const bool dense_n3 = fusion && !ids && ne1 == 3;
+    if (fusion && !dense_n3) {
         const int cc = ggml_cuda_info().devices[ggml_cuda_get_device()].cc;
         GGML_ASSERT( !ids || dst->ne[2] <= get_mmvq_mmid_max_batch(src0->type, cc));
         GGML_ASSERT(  ids || dst->ne[1] == 1);
@@ -2180,6 +2253,7 @@ void ggml_cuda_mul_mat_vec_q(
     const size_t  q8_1_size   = ne13*ne12 * ne11*ne10_padded * sizeof(block_q8_1)/QK8_1;
     ggml_cuda_pool_alloc<char> src1_q8_1_pool(ctx.pool());
     char * src1_q8_1 = nullptr;
+    const char * q8_source = "pool";
     {
         const int64_t s11 = src1->nb[1] / ts_src1;
         const int64_t s12 = src1->nb[2] / ts_src1;
@@ -2203,7 +2277,9 @@ void ggml_cuda_mul_mat_vec_q(
         }
         if (use_cache) {
             src1_q8_1 = (char *) ctx.q8r_buf;
-            if (!(ctx.q8r_valid && memcmp(key, ctx.q8r_key, sizeof(key)) == 0)) {
+            const bool hit = ctx.q8r_valid && memcmp(key, ctx.q8r_key, sizeof(key)) == 0;
+            q8_source = hit ? "hit" : "fill";
+            if (!hit) {
                 quantize_row_q8_1_cuda(src1_d, nullptr, src1_q8_1, src0->type, ne10, s11, s12, s13, ne10_padded, ne11, ne12, ne13, stream);
                 memcpy(ctx.q8r_key, key, sizeof(key));
                 ctx.q8r_lo    = (const char *) src1->data;
@@ -2214,6 +2290,29 @@ void ggml_cuda_mul_mat_vec_q(
             src1_q8_1 = src1_q8_1_pool.alloc(q8_1_size);
             quantize_row_q8_1_cuda(src1_d, nullptr, src1_q8_1, src0->type, ne10, s11, s12, s13, ne10_padded, ne11, ne12, ne13, stream);
         }
+    }
+
+    static const bool dense_trace = [] {
+        const char * flag = getenv("GGML_CUDA_DENSE_N3_TRACE");
+        return flag && strcmp(flag, "1") == 0;
+    }();
+    if (dense_trace && !ids && ne00 == 5120 && ne01 == 17408 && ne11 == 3 && src0->type == GGML_TYPE_Q4_0) {
+        static std::atomic<unsigned> seen{0};
+        const unsigned lane = dense_n3 ? 0 : strstr(src0->name, "ffn_gate") ? 1 : 2;
+        const unsigned key = 1u << (3*lane + (q8_source[0] == 'h' ? 0 : q8_source[0] == 'f' ? 1 : 2));
+        if (!(seen.fetch_or(key, std::memory_order_relaxed) & key)) {
+            if (dense_n3) {
+                GGML_LOG_INFO("dense_n3 route=fused q8=%s gate=%s up=%s\n", q8_source, fusion->gate->name, src0->name);
+            } else {
+                GGML_LOG_INFO("dense_n3 route=stock q8=%s weight=%s\n", q8_source, src0->name);
+            }
+        }
+    }
+    if (dense_n3) {
+        dense_n3_glu<<<17408/4, 32, 0, stream>>>(
+                (const block_q4_0 *) fusion->gate->data, (const block_q4_0 *) src0->data,
+                (const block_q8_1 *) src1_q8_1, dst_d);
+        return;
     }
 
     const int64_t s01 = src0->nb[1] / ts_src0;

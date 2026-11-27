@@ -5350,6 +5350,47 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph 
         return bias_node->src[1];
     };
 
+    // Dense SM52 N3: consume only two exclusive, bias-free MMVQs with one input.
+    static const bool dense_n3_glu = [] {
+        const char * flag = getenv("GGML_CUDA_DENSE_N3_GLU");
+        const char * fp32 = getenv("GGML_CUDA_FP32MV");
+        return flag && strcmp(flag, "1") == 0 && !(fp32 && atoi(fp32));
+    }();
+    if (dense_n3_glu && cgraph->nodes[i]->op == GGML_OP_MUL_MAT && i + 2 < cgraph->n_nodes &&
+            cgraph->nodes[i + 1]->op == GGML_OP_MUL_MAT && cgraph->nodes[i + 2]->op == GGML_OP_GLU &&
+            ggml_cuda_info().devices[cuda_ctx->device].cc == 520) {
+        ggml_tensor * glu = cgraph->nodes[i + 2];
+        const ggml_tensor * gate = glu->src[0];
+        const ggml_tensor * up = glu->src[1];
+        const auto shape = [](const ggml_tensor * t, ggml_type type, int k, int n) {
+            return t && t->type == type && t->ne[0] == k && t->ne[1] == n &&
+                   t->ne[2] == 1 && t->ne[3] == 1 && ggml_is_contiguous(t);
+        };
+        const auto local_weight = [&](const ggml_tensor * t) {
+            return shape(t, GGML_TYPE_Q4_0, 5120, 17408) && t->buffer &&
+                   t->buffer->buft == ggml_backend_cuda_buffer_type(cuda_ctx->device) &&
+                   ggml_backend_buffer_get_usage(t->buffer) == GGML_BACKEND_BUFFER_USAGE_WEIGHTS;
+        };
+        const bool pair = (gate == cgraph->nodes[i] && up == cgraph->nodes[i + 1]) ||
+                          (up == cgraph->nodes[i] && gate == cgraph->nodes[i + 1]);
+        if (pair && ggml_get_glu_op(glu) == GGML_GLU_OP_SWIGLU &&
+                ggml_cuda_should_fuse_mul_mat(up, gate, glu) &&
+                local_weight(gate->src[0]) && local_weight(up->src[0]) &&
+                shape(up->src[1], GGML_TYPE_F32, 5120, 3) &&
+                shape(gate, GGML_TYPE_F32, 17408, 3) && shape(up, GGML_TYPE_F32, 17408, 3) &&
+                shape(glu, GGML_TYPE_F32, 17408, 3) &&
+                ggml_can_fuse_subgraph(cgraph, i, {GGML_OP_MUL_MAT, GGML_OP_MUL_MAT, GGML_OP_GLU}, {i + 2})) {
+            const int outputs[] = { i + 2 };
+            if (ggml_cuda_check_fusion_memory_ranges(cgraph, i, 3, outputs, 1)) {
+                ggml_cuda_mm_fusion_args_host args{};
+                args.gate = gate->src[0];
+                args.glu_op = GGML_GLU_OP_SWIGLU;
+                ggml_cuda_mul_mat_vec_q(*cuda_ctx, up->src[0], up->src[1], nullptr, glu, &args);
+                return 2;
+            }
+        }
+    }
+
     // gate + glu + up, with optional scale/bias on both lanes.
     for (ggml_op op : { GGML_OP_MUL_MAT, GGML_OP_MUL_MAT_ID }) {
         const ggml_op bias_op = op == GGML_OP_MUL_MAT ? GGML_OP_ADD : GGML_OP_ADD_ID;
