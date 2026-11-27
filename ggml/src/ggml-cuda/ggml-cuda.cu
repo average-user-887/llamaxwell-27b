@@ -2163,6 +2163,18 @@ static void launch_gate56(const void * q, const void * x, float * out, int n, cu
     }
 }
 
+static void launch_gate49(const void * q, const void * x, float * out, cudaStream_t stream) {
+    q4_0_fused_range<17408, 5120, 64, 56><<<17408 / 64, threads, 0, stream>>>(
+            static_cast<const uint4 *>(q), static_cast<const float *>(x), out, 49);
+    CUDA_CHECK(cudaGetLastError());
+
+    static const bool logged = [] {
+        GGML_LOG_INFO("sgemm_nn_fused_tail49: selected M=17408 N=49 K=5120 lda=17408 ldb=5120 ldc=17408\n");
+        return true;
+    }();
+    (void) logged;
+}
+
 }  // namespace fused_range
 
 static int sgemm_nn_algo_for_shape(bool enable32, const char * explicit_algo, int fallback, int cc,
@@ -2240,6 +2252,10 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
                 const char * flag = getenv("GGML_CUDA_SGEMM_NN_FUSED_TAIL56");
                 return flag != nullptr && strcmp(flag, "1") == 0;
             }();
+            static const bool fused_tail49_enabled = [] {
+                const char * flag = getenv("GGML_CUDA_SGEMM_NN_FUSED_TAIL49");
+                return flag != nullptr && strcmp(flag, "1") == 0;
+            }();
             const bool gate_shape = ne01 == 17408 && ne00 == 5120;
             const bool use_fused32 = fused32_enabled && gate_shape && ne11 == 32;
             const bool use_fused64 = fused64_enabled && gate_shape && ne11 == 64;
@@ -2248,8 +2264,9 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
             const bool use_fused_tail32 = fused_tail32_enabled && gate_shape && fused_range::supports_width(ne11);
             const bool use_fused_tail48 = fused_tail48_enabled && gate_shape && 33 <= ne11 && ne11 <= 48;
             const bool use_fused_tail56 = fused_tail56_enabled && gate_shape && 50 <= ne11 && ne11 <= 56;
+            const bool use_fused_tail49 = fused_tail49_enabled && gate_shape && ne11 == 49;
             if ((use_fused32 || use_fused64 || use_fused_short || use_fused32_down ||
-                    use_fused_tail32 || use_fused_tail48 || use_fused_tail56) &&
+                    use_fused_tail32 || use_fused_tail48 || use_fused_tail56 || use_fused_tail49) &&
                     nn_algo_env == nullptr && !split && cc == 520 && ne10 == ne00 &&
                     ne0 == ne01 && ne1 == ne11 && ne2 == 1 && ne3 == 1 &&
                     src1_ts == sizeof(float) && nb11 == ne10 * sizeof(float) &&
@@ -2291,6 +2308,10 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context & ctx, const
                 }
                 if (use_fused_tail56) {
                     fused_range::launch_gate56(xq, src1->data, dst_ddf, int(ne11), main_stream);
+                    return;
+                }
+                if (use_fused_tail49) {
+                    fused_range::launch_gate49(xq, src1->data, dst_ddf, main_stream);
                     return;
                 }
             }
