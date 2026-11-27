@@ -1,0 +1,498 @@
+{
+  "schema_version": 1,
+  "hardware": {
+    "gpu": "Quadro M6000 24 GiB",
+    "cuda_architecture": "sm_52"
+  },
+  "source_and_binary": {
+    "v13_profile_source_commit": "536ce1093a4cb4eb76f6e1f69c39aca832e3d731",
+    "v13_dso_sha256": "545dd11164cd16e5e1c303447f355ccc6c0a096a20c8f1fc301098d614d6a4d3",
+    "v14_source_commit": "b2a821dcb6aa554afda8879b296d90de013f2146",
+    "v14_dso_sha256": "c63604052a92ee04213a97962c6e3dfbff7d9f839676ce60e44bf073e4691105",
+    "fused_kernel_sass_sha256": "1a554bc8cfdfed04da7c7c67c618f59e3a06dce37e807b3fc1f94cc94a25665e"
+  },
+  "profile": {
+    "model": "Qwen3.8-27B-Q4_0-head4",
+    "slots": 2,
+    "context_tokens_per_slot": 131072,
+    "key_cache_type": "Q4_0",
+    "value_cache_type": "Q4_0",
+    "batch": 2048,
+    "microbatch": 1024,
+    "speculative_decoding": "MTP",
+    "max_draft_tokens": 2,
+    "gpu_governor": "active",
+    "off": {
+      "GGML_CUDA_DENSE_N3_GLU": "0"
+    },
+    "on": {
+      "GGML_CUDA_DENSE_N3_GLU": "1"
+    },
+    "benchmark_trace": {
+      "GGML_CUDA_DENSE_N3_TRACE": "1"
+    }
+  },
+  "parity": {
+    "exact_request_count": 48,
+    "exact_generated_token_count": 9216,
+    "matched_fields": [
+      "generated token IDs",
+      "streamed text",
+      "prompt and cache counters",
+      "MTP proposals and acceptances",
+      "finish reason",
+      "stop word",
+      "truncation"
+    ]
+  },
+  "operator": {
+    "matrix_dimensions": {
+      "M": 17408,
+      "K": 5120,
+      "N": 3
+    },
+    "repeated_launches_per_timed_window": 64,
+    "exact_fp32_words_per_fixture": 52224,
+    "signed_zero_verified": true,
+    "buffer_guards_verified": true,
+    "sampled_clock_observations": 0,
+    "by_order": {
+      "ABBA": {
+        "stock_group_us": 484.7550095,
+        "fused_group_us": 466.10425399999997,
+        "savings_pct": 3.847460084886456,
+        "wins": 8,
+        "comparisons": 8
+      },
+      "BAAB": {
+        "stock_group_us": 488.086745,
+        "fused_group_us": 469.6302565,
+        "savings_pct": 3.7813951493397058,
+        "wins": 8,
+        "comparisons": 8
+      }
+    },
+    "mmvq_resources": {
+      "stock": {
+        "registers": 94,
+        "shared_bytes": 0,
+        "local_bytes": 0,
+        "cta_per_sm": 20,
+        "warps_per_sm": 20
+      },
+      "fused": {
+        "registers": 96,
+        "shared_bytes": 0,
+        "local_bytes": 0,
+        "cta_per_sm": 20,
+        "warps_per_sm": 20
+      }
+    }
+  },
+  "serving_replays": [
+    {
+      "order": "ABBA",
+      "arm_order": [
+        "OFF",
+        "ON",
+        "ON",
+        "OFF"
+      ],
+      "prompt_tokens": 4096,
+      "sentinel_output_tokens": 64,
+      "timed_requests_per_arm": 4,
+      "timed_output_tokens_per_request": 256,
+      "client_generation_interval_output_tokens": [
+        16,
+        240
+      ],
+      "all_requests_exact": true,
+      "exact_request_count": 20,
+      "generated_token_count_per_arm": 1088,
+      "dispatch_witness_arm_counts": {
+        "stock_fill_arms": 2,
+        "stock_hit_arms": 2,
+        "fused_fill_arms": 2,
+        "fused_hit_arms": 0
+      },
+      "by_order": {
+        "OFF-ON": {
+          "timed_pairs": 4,
+          "median_paired_change_pct": {
+            "middle_tg": 0.9433516655076191,
+            "tg": 0.9509315688483233,
+            "wall_s": -0.9215953966991264,
+            "ttft_s": 0.7039574349628486
+          },
+          "median_measurements": {
+            "off": {
+              "middle_tg": 25.579161542128475,
+              "tg": 26.164278306329592,
+              "wall_s": 9.986419223,
+              "ttft_s": 0.240461071
+            },
+            "on": {
+              "middle_tg": 25.811608425024215,
+              "tg": 26.41015380486312,
+              "wall_s": 9.9005672405,
+              "ttft_s": 0.24189877650000002
+            }
+          },
+          "both_arms_with_stable_sampled_p0_pairs": 3,
+          "matched_sampled_p0_pairs": 0,
+          "stable_paired_graphics_mhz_counts": {
+            "off": {
+              "1075": 3
+            },
+            "on": {
+              "1088": 2,
+              "1101": 1
+            }
+          },
+          "distinct_stable_paired_memory_mhz": [
+            3304
+          ]
+        },
+        "ON-OFF": {
+          "timed_pairs": 4,
+          "median_paired_change_pct": {
+            "middle_tg": 1.1996059859930908,
+            "tg": 1.2163822758114784,
+            "wall_s": -1.2077065498408257,
+            "ttft_s": -0.5775870166870256
+          },
+          "median_measurements": {
+            "off": {
+              "middle_tg": 25.470286202911165,
+              "tg": 26.119141938900807,
+              "wall_s": 10.005431913999999,
+              "ttft_s": 0.2416888855
+            },
+            "on": {
+              "middle_tg": 25.78623077594822,
+              "tg": 26.40786302065566,
+              "wall_s": 9.898385465,
+              "ttft_s": 0.24027613250000002
+            }
+          },
+          "both_arms_with_stable_sampled_p0_pairs": 2,
+          "matched_sampled_p0_pairs": 0,
+          "stable_paired_graphics_mhz_counts": {
+            "off": {
+              "1050": 1,
+              "1063": 1
+            },
+            "on": {
+              "1075": 1,
+              "1088": 1
+            }
+          },
+          "distinct_stable_paired_memory_mhz": [
+            3304
+          ]
+        }
+      },
+      "pooled": {
+        "timed_pairs": 8,
+        "median_paired_change_pct": {
+          "middle_tg": 1.0240981243351155,
+          "tg": 1.0346805839106077,
+          "wall_s": -0.9818812721924419,
+          "ttft_s": -0.2720431508861587
+        },
+        "median_measurements": {
+          "off": {
+            "middle_tg": 25.511367446243312,
+            "tg": 26.12942521650947,
+            "wall_s": 10.000641212,
+            "ttft_s": 0.2412865705
+          },
+          "on": {
+            "middle_tg": 25.789997121233444,
+            "tg": 26.40882799037216,
+            "wall_s": 9.898770363499999,
+            "ttft_s": 0.240996028
+          }
+        },
+        "both_arms_with_stable_sampled_p0_pairs": 5,
+        "matched_sampled_p0_pairs": 0,
+        "stable_paired_graphics_mhz_counts": {
+          "off": {
+            "1050": 1,
+            "1063": 1,
+            "1075": 3
+          },
+          "on": {
+            "1075": 1,
+            "1088": 3,
+            "1101": 1
+          }
+        },
+        "distinct_stable_paired_memory_mhz": [
+          3304
+        ]
+      }
+    },
+    {
+      "order": "ABBA",
+      "arm_order": [
+        "OFF",
+        "ON",
+        "ON",
+        "OFF"
+      ],
+      "prompt_tokens": 77920,
+      "sentinel_output_tokens": 128,
+      "timed_requests_per_arm": 2,
+      "timed_output_tokens_per_request": 128,
+      "client_generation_interval_output_tokens": [
+        8,
+        120
+      ],
+      "all_requests_exact": true,
+      "exact_request_count": 12,
+      "generated_token_count_per_arm": 384,
+      "dispatch_witness_arm_counts": {
+        "stock_fill_arms": 2,
+        "stock_hit_arms": 2,
+        "fused_fill_arms": 2,
+        "fused_hit_arms": 0
+      },
+      "by_order": {
+        "OFF-ON": {
+          "timed_pairs": 2,
+          "median_paired_change_pct": {
+            "middle_tg": 0.4669175700203865,
+            "tg": 0.5321585297647036,
+            "wall_s": -0.5290913471326042,
+            "ttft_s": -0.564068556307723
+          },
+          "median_measurements": {
+            "off": {
+              "middle_tg": 21.783843935819302,
+              "tg": 20.862391483935745,
+              "wall_s": 6.6453779755,
+              "ttft_s": 0.55512676
+            },
+            "on": {
+              "middle_tg": 21.885554113451228,
+              "tg": 20.973397359893355,
+              "wall_s": 6.610217411000001,
+              "ttft_s": 0.551973416
+            }
+          },
+          "both_arms_with_stable_sampled_p0_pairs": 0,
+          "matched_sampled_p0_pairs": 0,
+          "stable_paired_graphics_mhz_counts": {
+            "off": {},
+            "on": {}
+          },
+          "distinct_stable_paired_memory_mhz": []
+        },
+        "ON-OFF": {
+          "timed_pairs": 2,
+          "median_paired_change_pct": {
+            "middle_tg": 0.502533813997097,
+            "tg": 0.48049116682333803,
+            "wall_s": -0.40384804453810763,
+            "ttft_s": 0.40873775873824236
+          },
+          "median_measurements": {
+            "off": {
+              "middle_tg": 21.799801589808908,
+              "tg": 20.883978934956524,
+              "wall_s": 6.6368540305,
+              "ttft_s": 0.5529044704999999
+            },
+            "on": {
+              "middle_tg": 21.90935254698601,
+              "tg": 20.984323391309157,
+              "wall_s": 6.6100498925,
+              "ttft_s": 0.555128146
+            }
+          },
+          "both_arms_with_stable_sampled_p0_pairs": 0,
+          "matched_sampled_p0_pairs": 0,
+          "stable_paired_graphics_mhz_counts": {
+            "off": {},
+            "on": {}
+          },
+          "distinct_stable_paired_memory_mhz": []
+        }
+      },
+      "pooled": {
+        "timed_pairs": 4,
+        "median_paired_change_pct": {
+          "middle_tg": 0.48792938298221067,
+          "tg": 0.48049116682333803,
+          "wall_s": -0.47426353377562624,
+          "ttft_s": -0.14724686157072675
+        },
+        "median_measurements": {
+          "off": {
+            "middle_tg": 21.797016760651992,
+            "tg": 20.88034676373116,
+            "wall_s": 6.6418761825,
+            "ttft_s": 0.554632225
+          },
+          "on": {
+            "middle_tg": 21.901973802395347,
+            "tg": 20.980431015750852,
+            "wall_s": 6.610217411000001,
+            "ttft_s": 0.553291706
+          }
+        },
+        "both_arms_with_stable_sampled_p0_pairs": 0,
+        "matched_sampled_p0_pairs": 0,
+        "stable_paired_graphics_mhz_counts": {
+          "off": {},
+          "on": {}
+        },
+        "distinct_stable_paired_memory_mhz": []
+      }
+    },
+    {
+      "order": "BAAB",
+      "arm_order": [
+        "ON",
+        "OFF",
+        "OFF",
+        "ON"
+      ],
+      "prompt_tokens": 4096,
+      "sentinel_output_tokens": 64,
+      "timed_requests_per_arm": 3,
+      "timed_output_tokens_per_request": 256,
+      "client_generation_interval_output_tokens": [
+        16,
+        240
+      ],
+      "all_requests_exact": true,
+      "exact_request_count": 16,
+      "generated_token_count_per_arm": 832,
+      "dispatch_witness_arm_counts": {
+        "fused_fill_arms": 2,
+        "fused_hit_arms": 0,
+        "stock_fill_arms": 2,
+        "stock_hit_arms": 2
+      },
+      "by_order": {
+        "OFF-ON": {
+          "timed_pairs": 3,
+          "median_paired_change_pct": {
+            "middle_tg": 1.115175444027372,
+            "tg": 1.0720754695566548,
+            "wall_s": -1.016405515388552,
+            "ttft_s": 0.8823717651577079
+          },
+          "median_measurements": {
+            "off": {
+              "middle_tg": 25.52534488901918,
+              "tg": 26.1254564911258,
+              "wall_s": 10.002341183,
+              "ttft_s": 0.239806744
+            },
+            "on": {
+              "middle_tg": 25.809997267224816,
+              "tg": 26.399291877817863,
+              "wall_s": 9.908373757,
+              "ttft_s": 0.241922731
+            }
+          },
+          "both_arms_with_stable_sampled_p0_pairs": 3,
+          "matched_sampled_p0_pairs": 0,
+          "stable_paired_graphics_mhz_counts": {
+            "off": {
+              "1063": 2,
+              "1075": 1
+            },
+            "on": {
+              "1088": 1,
+              "1101": 2
+            }
+          },
+          "distinct_stable_paired_memory_mhz": [
+            3304
+          ]
+        },
+        "ON-OFF": {
+          "timed_pairs": 3,
+          "median_paired_change_pct": {
+            "middle_tg": 1.5003288670158987,
+            "tg": 1.4640046527442996,
+            "wall_s": -1.4006219481315751,
+            "ttft_s": 0.28798013352591134
+          },
+          "median_measurements": {
+            "off": {
+              "middle_tg": 25.58391359241693,
+              "tg": 26.194397768196218,
+              "wall_s": 9.975636325,
+              "ttft_s": 0.241268379
+            },
+            "on": {
+              "middle_tg": 25.96627017972353,
+              "tg": 26.57711187463274,
+              "wall_s": 9.837997131,
+              "ttft_s": 0.241963184
+            }
+          },
+          "both_arms_with_stable_sampled_p0_pairs": 3,
+          "matched_sampled_p0_pairs": 0,
+          "stable_paired_graphics_mhz_counts": {
+            "off": {
+              "1063": 1,
+              "1075": 2
+            },
+            "on": {
+              "1101": 2,
+              "1113": 1
+            }
+          },
+          "distinct_stable_paired_memory_mhz": [
+            3304
+          ]
+        }
+      },
+      "pooled": {
+        "timed_pairs": 6,
+        "median_paired_change_pct": {
+          "middle_tg": 1.3082033646174218,
+          "tg": 1.2830533572715463,
+          "wall_s": -1.2122966533344826,
+          "ttft_s": 0.8142019548405988
+        },
+        "median_measurements": {
+          "off": {
+            "middle_tg": 25.55878524048511,
+            "tg": 26.157605406371687,
+            "wall_s": 9.989754822,
+            "ttft_s": 0.240564673
+          },
+          "on": {
+            "middle_tg": 25.910759728185944,
+            "tg": 26.488017833150607,
+            "wall_s": 9.869007741,
+            "ttft_s": 0.2419429575
+          }
+        },
+        "both_arms_with_stable_sampled_p0_pairs": 6,
+        "matched_sampled_p0_pairs": 0,
+        "stable_paired_graphics_mhz_counts": {
+          "off": {
+            "1063": 3,
+            "1075": 3
+          },
+          "on": {
+            "1088": 1,
+            "1101": 4,
+            "1113": 1
+          }
+        },
+        "distinct_stable_paired_memory_mhz": [
+          3304
+        ]
+      }
+    }
+  ]
+}
